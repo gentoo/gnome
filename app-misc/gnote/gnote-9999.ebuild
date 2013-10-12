@@ -20,7 +20,7 @@ if [[ ${PV} = 9999 ]]; then
 else
 	KEYWORDS="~amd64 ~x86"
 fi
-IUSE="debug X"
+IUSE="debug +X"
 
 # Automagic glib-2.32 dep
 COMMON_DEPEND="
@@ -66,12 +66,13 @@ src_prepare() {
 }
 
 src_configure() {
-	[[ ${PV} != 9999 ]] && G2CONF="ITSTOOL=$(type -P true)"
+	local myconf=""
+	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		--disable-static \
 		$(use_enable debug) \
 		$(use_with X x11-support) \
-		$G2CONF
+		${myconf}
 }
 
 src_install() {
