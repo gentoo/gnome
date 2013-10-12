@@ -1,20 +1,19 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
 EAPI="5"
 GCONF_DEBUG="no"
-GNOME2_LA_PUNT="yes"
 
 inherit gnome2
 if [[ ${PV} = 9999 ]]; then
-	VALA_MIN_API_VERSION="0.18"
+	VALA_MIN_API_VERSION="0.22s"
 	VALA_USE_DEPEND="vapigen"
 	inherit gnome2-live vala
 fi
 
-DESCRIPTION="Disk usage browser for GNOME 3"
-HOMEPAGE="https://live.gnome.org/GnomeUtils"
+DESCRIPTION="Disk usage browser for GNOME"
+HOMEPAGE="https://live.gnome.org/Baobab"
 
 LICENSE="GPL-2+ FDL-1.1+"
 SLOT="0"
@@ -26,12 +25,8 @@ else
 fi
 
 COMMON_DEPEND="
-	>=dev-libs/glib-2.30.0:2
-	gnome-base/libgtop:2=
-	x11-libs/cairo
-	x11-libs/gdk-pixbuf
-	>=x11-libs/gtk+-3.5.9:3
-	x11-libs/pango
+	>=dev-libs/glib-2.37.5:2
+	>=x11-libs/gtk+-3.9.10:3
 "
 RDEPEND="${COMMON_DEPEND}
 	gnome-base/gsettings-desktop-schemas
@@ -57,12 +52,13 @@ src_prepare() {
 }
 
 src_configure() {
+	local myconf=""
 	if [[ ${PV} != 9999 ]]; then
-		G2CONF="${G2CONF}
+		myconf="${myconf}
 			ITSTOOL=$(type -P true)
 			XMLLINT=$(type -P true)
 			VALAC=$(type -P true)
 			VAPIGEN=$(type -P true)"
 	fi
-	gnome2_src_configure
+	gnome2_src_configure ${myconf}
 }
