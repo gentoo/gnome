@@ -6,10 +6,7 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
-inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+inherit autotools eutils gnome2
 
 DESCRIPTION="Disk Utility for GNOME using udisks"
 HOMEPAGE="http://git.gnome.org/browse/gnome-disk-utility"
@@ -17,11 +14,7 @@ HOMEPAGE="http://git.gnome.org/browse/gnome-disk-utility"
 LICENSE="GPL-2+"
 SLOT="0"
 IUSE="fat +gnome systemd"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.31:2
