@@ -5,10 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="no"
 
-inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+inherit eutils gnome2
 
 DESCRIPTION="A document manager application for GNOME"
 HOMEPAGE="https://live.gnome.org/Design/Apps/Documents"
@@ -16,11 +13,7 @@ HOMEPAGE="https://live.gnome.org/Design/Apps/Documents"
 LICENSE="GPL-2+"
 SLOT="0"
 IUSE=""
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 # Need gdk-pixbuf-2.25 for gdk_pixbuf_get_pixels_with_length
 COMMON_DEPEND="
@@ -53,3 +46,9 @@ DEPEND="${COMMON_DEPEND}
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
 "
+
+src_prepare() {
+	# Add prev/back navigation with Left and Right keys (from 'master')
+	epatch "${FILESDIR}/${PN}-3.8.3-navigation-keys.patch"
+	gnome2_src_prepare
+}
