@@ -8,9 +8,6 @@ GNOME2_LA_PUNT="yes" # plugins are dlopened
 PYTHON_COMPAT=( python3_{2,3} )
 
 inherit eutils gnome2 multilib python-r1 virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="A text editor for the GNOME desktop"
 HOMEPAGE="http://live.gnome.org/Gedit"
@@ -20,12 +17,8 @@ SLOT="0"
 
 IUSE="+introspection +python spell zeitgeist"
 REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux"
-fi
+
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux"
 
 # X libs are not needed for OSX (aqua)
 COMMON_DEPEND="
@@ -69,15 +62,7 @@ DEPEND="${COMMON_DEPEND}
 "
 # yelp-tools, gnome-common needed to eautoreconf
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1 )
-		app-text/yelp-tools"
-fi
-
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	DOCS="AUTHORS BUGS ChangeLog MAINTAINERS NEWS README"
 	gnome2_src_configure \
 		--disable-deprecations \
@@ -87,8 +72,7 @@ src_configure() {
 		$(use_enable python) \
 		$(use_enable spell) \
 		$(use_enable zeitgeist) \
-		ITSTOOL=$(type -P true) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
 
 src_test() {
