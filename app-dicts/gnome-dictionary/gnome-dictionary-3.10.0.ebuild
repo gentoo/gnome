@@ -7,9 +7,6 @@ GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Dictionary utility for GNOME"
 HOMEPAGE="https://live.gnome.org/GnomeUtils"
@@ -17,12 +14,7 @@ HOMEPAGE="https://live.gnome.org/GnomeUtils"
 LICENSE="GPL-2+ LGPL-2.1+ FDL-1.1+"
 SLOT="0/6" # subslot = suffix of libgdict-1.0.so
 IUSE="ipv6"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.28:2
@@ -42,16 +34,8 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools
-		doc? ( >=dev-util/gtk-doc-1.15 )"
-fi
-
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		$(use_enable ipv6) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
