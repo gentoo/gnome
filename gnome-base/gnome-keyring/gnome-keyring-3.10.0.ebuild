@@ -7,9 +7,6 @@ GCONF_DEBUG="yes" # Not gnome macro but similar
 GNOME2_LA_PUNT="yes"
 
 inherit fcaps gnome2 pam versionator virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Password and keyring managing daemon"
 HOMEPAGE="http://live.gnome.org/GnomeKeyring"
@@ -17,11 +14,7 @@ HOMEPAGE="http://live.gnome.org/GnomeKeyring"
 LICENSE="GPL-2+ LGPL-2+"
 SLOT="0"
 IUSE="+caps debug pam selinux"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~sparc-solaris ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~sparc-solaris ~x86-solaris"
 
 RDEPEND="
 	>=app-crypt/gcr-3.5.3:=[gtk]
@@ -47,6 +40,19 @@ src_prepare() {
 	sed -e 's/CFLAGS="$CFLAGS -g"//' \
 		-e 's/CFLAGS="$CFLAGS -O0"//' \
 		-i configure.ac configure || die
+
+	# FIXME: some tests write to /tmp (instead of TMPDIR)
+	# Disable failing tests
+	sed -e '/g_test_add.*test_remove_file_abort/d' \
+		-e '/g_test_add.*test_write_file/d' \
+		-e '/g_test_add.*write_large_file/,+2 c\ {}; \ ' \
+		-e '/g_test_add.*test_write_file_abort_.*/d' \
+		-e '/g_test_add.*test_unique_file_conflict.*/d' \
+		-i pkcs11/gkm/tests/test-transaction.c || die
+	sed -e '/g_test_add.*test_create_assertion_complete_on_token/d' \
+		-i pkcs11/xdg-store/tests/test-xdg-trust.c || die
+	sed -e '/g_test_add.*gnome2-store.import.pkcs12/,+1 d' \
+		-i pkcs11/gnome2-store/tests/test-import.c || die
 
 	gnome2_src_prepare
 }
