@@ -4,12 +4,8 @@
 
 EAPI="5"
 GCONF_DEBUG="yes"
-VALA_MIN_API_DEPEND="0.18"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live vala
-fi
 
 DESCRIPTION="A GNOME application for managing encryption keys"
 HOMEPAGE="http://projects.gnome.org/seahorse/index.html"
@@ -17,11 +13,7 @@ HOMEPAGE="http://projects.gnome.org/seahorse/index.html"
 LICENSE="GPL-2+ FDL-1.1+"
 SLOT="0"
 IUSE="avahi debug ldap"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 
 COMMON_DEPEND="
 	>=app-crypt/gcr-3.9.1:=
@@ -49,11 +41,6 @@ DEPEND="${COMMON_DEPEND}
 RDEPEND="${COMMON_DEPEND}
 	!<app-crypt/seahorse-plugins-2.91.0_pre20110114
 "
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		$(vala_depend)
-		app-text/yelp-tools"
-fi
 
 src_prepare() {
 	# FIXME: Do not mess with CFLAGS with USE="debug"
@@ -65,12 +52,6 @@ src_prepare() {
 }
 
 src_configure() {
-	local myconf=""
-	if [[ ${PV} != 9999 ]]; then
-		myconf="${myconf}
-			ITSTOOL=$(type -P true)
-			VALAC=$(type -P true)"
-	fi
 	gnome2_src_configure \
 		--enable-pgp \
 		--enable-ssh \
@@ -80,5 +61,6 @@ src_configure() {
 		$(use_enable avahi sharing) \
 		$(use_enable debug) \
 		$(use_enable ldap) \
-		${myconf}
+		ITSTOOL=$(type -P true) \
+		VALAC=$(type -P true)
 }
