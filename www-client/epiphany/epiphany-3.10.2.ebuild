@@ -4,11 +4,9 @@
 
 EAPI="5"
 GCONF_DEBUG="yes"
+GNOME2_LA_PUNT="yes"
 
-inherit autotools eutils gnome2 pax-utils versionator virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+inherit eutils gnome2 pax-utils versionator virtualx
 
 DESCRIPTION="GNOME webbrowser based on Webkit"
 HOMEPAGE="http://projects.gnome.org/epiphany/"
@@ -16,30 +14,26 @@ HOMEPAGE="http://projects.gnome.org/epiphany/"
 # TODO: coverage
 LICENSE="GPL-2"
 SLOT="0"
-IUSE="+nss test"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+IUSE="+jit +nss test"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 RDEPEND="
-	>=app-crypt/libsecret-0.14
 	>=app-crypt/gcr-3.5.5
+	>=app-crypt/libsecret-0.14
 	>=app-text/iso-codes-0.35
 	>=dev-libs/glib-2.35.6:2
 	>=dev-libs/libxml2-2.6.12:2
 	>=dev-libs/libxslt-1.1.7
 	>=gnome-base/gsettings-desktop-schemas-0.0.1
-	>=net-dns/avahi-0.6.22
-	>=net-libs/webkit-gtk-1.11.5:3
-	>=net-libs/libsoup-2.41.3:2.4
-	>=x11-libs/gtk+-3.7.10:3
+	>=net-dns/avahi-0.6.22[dbus]
+	>=net-libs/webkit-gtk-2.2.2:3[jit?]
+	>=net-libs/libsoup-2.42.1:2.4
+	>=x11-libs/gtk+-3.9.12:3
 	>=x11-libs/libnotify-0.5.1:=
 	gnome-base/gnome-desktop:3=
 
 	dev-db/sqlite:3
-	x11-libs/libwnck
+	x11-libs/libwnck:3
 	x11-libs/libX11
 
 	x11-themes/gnome-icon-theme
@@ -56,13 +50,17 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 "
 
+# Tests refuse to run with the gsettings trick for some reason
+RESTRICT="test"
+
 src_configure() {
 	gnome2_src_configure \
 		--enable-shared \
 		--disable-static \
 		--with-distributor-name=Gentoo \
-		$(use_enable nss)
-		$(use_enable test tests)
+		$(use_enable nss) \
+		$(use_enable test tests) \
+		ITSTOOL=$(type -P true)
 }
 
 src_compile() {
@@ -75,10 +73,12 @@ src_test() {
 	# FIXME: this should be handled at eclass level
 	"${EROOT}${GLIB_COMPILE_SCHEMAS}" --allow-any-name "${S}/data" || die
 
+	unset DISPLAY
 	GSETTINGS_SCHEMA_DIR="${S}/data" Xemake check
 }
 
 src_install() {
 	DOCS="AUTHORS ChangeLog* HACKING MAINTAINERS NEWS README TODO"
 	gnome2_src_install
+	use jit && pax-mark m "${ED}usr/bin/epiphany"
 }
