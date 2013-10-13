@@ -4,8 +4,9 @@
 
 EAPI="5"
 GCONF_DEBUG="yes"
+GNOME2_LA_PUNT="yes"
 
-inherit autotools eutils gnome2 pax-utils versionator virtualx
+inherit eutils gnome2 pax-utils versionator virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -16,7 +17,7 @@ HOMEPAGE="http://projects.gnome.org/epiphany/"
 # TODO: coverage
 LICENSE="GPL-2"
 SLOT="0"
-IUSE="+nss test"
+IUSE="+jit +nss test"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
@@ -25,21 +26,21 @@ fi
 
 RDEPEND="
 	>=app-crypt/gcr-3.5.5
+	>=app-crypt/libsecret-0.14
 	>=app-text/iso-codes-0.35
 	>=dev-libs/glib-2.35.6:2
 	>=dev-libs/libxml2-2.6.12:2
 	>=dev-libs/libxslt-1.1.7
-	>=gnome-base/gnome-keyring-2.26.0
 	>=gnome-base/gsettings-desktop-schemas-0.0.1
-	>=net-dns/avahi-0.6.22
-	>=net-libs/webkit-gtk-1.11.5:3
-	>=net-libs/libsoup-2.41.3:2.4
-	>=x11-libs/gtk+-3.5.4:3
+	>=net-dns/avahi-0.6.22[dbus]
+	>=net-libs/webkit-gtk-2.1.4:3[jit?]
+	>=net-libs/libsoup-2.42.1:2.4
+	>=x11-libs/gtk+-3.9.12:3
 	>=x11-libs/libnotify-0.5.1:=
 	gnome-base/gnome-desktop:3=
 
 	dev-db/sqlite:3
-	x11-libs/libwnck
+	x11-libs/libwnck:3
 	x11-libs/libX11
 
 	x11-themes/gnome-icon-theme
@@ -55,15 +56,20 @@ DEPEND="${RDEPEND}
 	sys-devel/gettext
 	virtual/pkgconfig
 "
+if [[ ${PV} == 9999 ]]; then
+	DEPEND="${DEPEND} app-text/yelp-tools"
+fi
 
 src_configure() {
-	G2CONF="${G2CONF}
-		--enable-shared
-		--disable-static
-		--with-distributor-name=Gentoo
-		$(use_enable nss)
-		$(use_enable test tests)"
-	gnome2_src_configure
+	local myconf=""
+	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
+	gnome2_src_configure \
+		--enable-shared \
+		--disable-static \
+		--with-distributor-name=Gentoo \
+		$(use_enable nss) \
+		$(use_enable test tests) \
+		${myconf}
 }
 
 src_compile() {
