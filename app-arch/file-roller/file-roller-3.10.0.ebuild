@@ -7,9 +7,6 @@ GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
 inherit eutils gnome2 readme.gentoo
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Archive manager for GNOME"
 HOMEPAGE="http://fileroller.sourceforge.net/"
@@ -17,11 +14,7 @@ HOMEPAGE="http://fileroller.sourceforge.net/"
 LICENSE="GPL-2+ CC-BY-SA-3.0"
 SLOT="0"
 IUSE="nautilus packagekit"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux"
 
 # gdk-pixbuf used extensively in the source
 # cairo used in eggtreemultidnd.c
@@ -49,11 +42,6 @@ DEPEND="${RDEPEND}
 "
 # eautoreconf needs:
 #	gnome-base/gnome-common
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools"
-fi
 
 DISABLE_AUTOFORMATTING="yes"
 DOC_CONTENTS="
@@ -89,8 +77,6 @@ src_prepare() {
 }
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
 	DOCS="AUTHORS ChangeLog HACKING MAINTAINERS NEWS README* TODO"
 	# --disable-debug because enabling it adds -O0 to CFLAGS
 	gnome2_src_configure \
@@ -102,7 +88,7 @@ src_configure() {
 		--with-smclient=xsmp \
 		$(use_enable nautilus nautilus-actions) \
 		$(use_enable packagekit) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
 
 src_install() {
