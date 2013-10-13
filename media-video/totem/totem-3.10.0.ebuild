@@ -9,10 +9,6 @@ PYTHON_COMPAT=( python2_{6,7} )
 PYTHON_REQ_USE="threads"
 
 inherit autotools eutils gnome2 multilib python-single-r1
-if [[ ${PV} = 9999 ]]; then
-	VALA_MIN_API_VERSION="0.14"
-	inherit gnome2-live vala
-fi
 
 DESCRIPTION="Media player for GNOME"
 HOMEPAGE="http://projects.gnome.org/totem/"
@@ -27,13 +23,7 @@ REQUIRED_USE="
 	zeitgeist? ( introspection )
 "
 
-if [[ ${PV} = 9999 ]]; then
-	IUSE+=" doc vala"
-	REQUIRED_USE+=" zeitgeist? ( vala )"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 
 # TODO:
 # Cone (VLC) plugin needs someone with the right setup to test it
@@ -97,32 +87,18 @@ DEPEND="${RDEPEND}
 	x11-proto/xextproto
 	x11-proto/xproto
 	virtual/pkgconfig
-	test? ( python? ( dev-python/pylint ) )
 "
 # docbook-xml-dtd is needed for user doc
 # Prevent dev-python/pylint dep, bug #482538
-# Only needed when regenerating C sources from Vala files
-if [[ ${PV} = 9999 ]]; then
-	DEPEND+=" vala? ( $(vala_depend) )
-		app-text/yelp-tools
-		doc? ( >=dev-util/gtk-doc-1.14 )"
-fi
-
 pkg_setup() {
 	use python && python-single-r1_pkg_setup
 }
 
 src_prepare() {
-	# AC_CONFIG_AUX_DIR_DEFAULT doesn't exist, and eautoreconf/aclocal fails
-	mkdir -p m4
-
 	# Prevent pylint usage by tests, bug #482538
 	sed -i -e 's/ check-pylint//' src/plugins/Makefile.plugins || die
 
-	if [[ ${PV} = 9999 ]]; then
-		# Only needed when regenerating C sources from Vala files
-		use vala && vala_src_prepare
-	fi
+	eautoreconf
 	gnome2_src_prepare
 
 	# FIXME: upstream should provide a way to set GST_INSPECT, bug #358755 & co.
@@ -133,7 +109,6 @@ src_prepare() {
 }
 
 src_configure() {
-	local myconf=""
 	use nsplugin && DOCS="${DOCS} browser-plugin/README.browser-plugin"
 
 	# Disabled: sample-python, sample-vala
@@ -145,14 +120,6 @@ src_configure() {
 	use lirc && plugins+=",lirc"
 	use nautilus && plugins+=",save-file"
 	use python && plugins+=",dbusservice,pythonconsole,opensubtitles"
-	if [[ ${PV} = 9999 ]]; then
-		# Only needed when regenerating C sources from Vala files
-		myconf="${myconf} $(use_enable vala)"
-		use vala && plugins+=",rotation"
-	else
-		myconf="${myconf} --enable-vala VALAC=$(type -P true)"
-		plugins+=",rotation"
-	fi
 	use zeitgeist && plugins+=",zeitgeist-dp"
 
 	#--with-smclient=auto needed to correctly link to libICE and libSM
@@ -173,6 +140,5 @@ src_configure() {
 		PYLINT=$(type -P true) \
 		VALAC=$(type -P true) \
 		BROWSER_PLUGIN_DIR=/usr/$(get_libdir)/nsbrowser/plugins \
-		--with-plugins=${plugins} \
-		${myconf}
+		--with-plugins=${plugins}
 }
