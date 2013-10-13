@@ -6,21 +6,14 @@ EAPI="5"
 GCONF_DEBUG="no"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="The Gnome System Monitor"
 HOMEPAGE="https://help.gnome.org/users/gnome-system-monitor/"
 
 LICENSE="GPL-2"
 SLOT="0"
-IUSE="systemd"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
-fi
+IUSE="systemd +X"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 
 RDEPEND="
 	>=dev-libs/glib-2.37.3:2
@@ -43,16 +36,9 @@ DEPEND="${RDEPEND}
 	systemd? ( !=sys-apps/systemd-43* )
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools"
-fi
-
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		$(use_enable systemd) \
 		$(use_enable X wnck) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
