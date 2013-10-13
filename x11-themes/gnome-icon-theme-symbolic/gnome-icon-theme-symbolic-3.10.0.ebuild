@@ -6,9 +6,6 @@ EAPI="5"
 GCONF_DEBUG="no"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Symbolic icons for GNOME default icon theme"
 HOMEPAGE="https://git.gnome.org/browse/gnome-icon-theme-symbolic/"
@@ -16,11 +13,7 @@ HOMEPAGE="https://git.gnome.org/browse/gnome-icon-theme-symbolic/"
 LICENSE="CC-BY-SA-3.0"
 SLOT="0"
 IUSE=""
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux"
 
 COMMON_DEPEND=">=x11-themes/hicolor-icon-theme-0.10"
 
