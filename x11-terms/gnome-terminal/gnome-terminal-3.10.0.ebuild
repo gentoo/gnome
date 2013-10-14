@@ -7,9 +7,6 @@ GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
 inherit gnome2 readme.gentoo
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="The Gnome Terminal"
 HOMEPAGE="https://help.gnome.org/users/gnome-terminal/"
@@ -17,12 +14,7 @@ HOMEPAGE="https://help.gnome.org/users/gnome-terminal/"
 LICENSE="GPL-3+"
 SLOT="0"
 IUSE="+nautilus"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux"
-fi
-
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux"
 
 # FIXME: automagic dependency on gtk+[X]
 RDEPEND="
@@ -45,10 +37,6 @@ DEPEND="${RDEPEND}
 	sys-devel/gettext
 	virtual/pkgconfig
 "
-if [[ ${PV} == 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools"
-fi
 
 DOC_CONTENTS="To get previous working directory inherited in new opened
 	tab you will need to add the following line to your ~/.bashrc:\n
