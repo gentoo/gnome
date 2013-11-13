@@ -19,7 +19,7 @@ HOMEPAGE="http://projects.gnome.org/evolution/arch.shtml"
 
 # Note: explicitly "|| ( LGPL-2 LGPL-3 )", not "LGPL-2+".
 LICENSE="|| ( LGPL-2 LGPL-3 ) BSD Sleepycat"
-SLOT="0/45" # subslot = libcamel-1.2 soname version
+SLOT="0/47" # subslot = libcamel-1.2 soname version
 # TODO: Ubuntu online accounts (libaccounts-glib, rest, json-glib, libsignon-glib )
 IUSE="api-doc-extras +gnome-online-accounts +gtk +introspection ipv6 ldap kerberos vala +weather"
 REQUIRED_USE="vala? ( introspection )"
@@ -33,22 +33,24 @@ else
 fi
 
 RDEPEND="
-	>=dev-libs/glib-2.34:2
+	dev-libs/icu
+	>=dev-libs/glib-2.36:2
 	>=dev-db/sqlite-3.5:=
 	>=dev-libs/libgdata-0.10:=
 	>=app-crypt/libsecret-0.5
 	>=dev-libs/libical-0.43:=
-	>=net-libs/libsoup-2.40.3:2.4
+	>=net-libs/libsoup-2.42:2.4
 	>=dev-libs/libxml2-2
 	>=sys-libs/db-4:=
 	>=dev-libs/nspr-4.4:=
 	>=dev-libs/nss-3.9:=
-	>=app-crypt/gcr-3.4
-
 	sys-libs/zlib:=
 	virtual/libiconv
 
-	gtk? ( >=x11-libs/gtk+-3.2:3 )
+	gtk? ( 
+		>=app-crypt/gcr-3.4[gtk]
+		>=x11-libs/gtk+-3.2:3
+	)
 	gnome-online-accounts? ( >=net-libs/gnome-online-accounts-3.8 )
 	introspection? ( >=dev-libs/gobject-introspection-0.9.12 )
 	kerberos? ( virtual/krb5:= )
@@ -86,6 +88,7 @@ src_prepare() {
 src_configure() {
 	gnome2_src_configure \
 		--disable-schemas-compile \
+		--disable-examples \
 		--disable-uoa \
 		$(use_enable api-doc-extras gtk-doc) \
 		$(use_with api-doc-extras private-docs) \
