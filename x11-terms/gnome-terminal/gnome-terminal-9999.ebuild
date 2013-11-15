@@ -28,7 +28,7 @@ fi
 RDEPEND="
 	>=dev-libs/glib-2.33.2:2
 	>=x11-libs/gtk+-3.6:3[X]
-	>=x11-libs/vte-0.34.8:2.90
+	>=x11-libs/vte-0.34.9:2.90
 	>=gnome-base/dconf-0.12
 	>=gnome-base/gconf-2.31.3
 	>=gnome-base/gsettings-desktop-schemas-0.1.0
