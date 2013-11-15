@@ -1,16 +1,17 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
 EAPI="5"
 GCONF_DEBUG="no"
+GNOME2_LA_PUNT="yes"
 
 inherit gnome2
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
-DESCRIPTION="A document manager application for GNOME"
+DESCRIPTION="GNOME document manager"
 HOMEPAGE="https://live.gnome.org/Design/Apps/Documents"
 
 LICENSE="GPL-2+"
@@ -19,37 +20,34 @@ IUSE=""
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
+	KEYWORDS="~amd64 ~x86"
 fi
 
 # Need gdk-pixbuf-2.25 for gdk_pixbuf_get_pixels_with_length
 COMMON_DEPEND="
-	>=app-misc/tracker-0.16:=
-	>=app-text/evince-3.7.4[introspection]
+	>=app-misc/tracker-0.13.1:=
+	>=app-text/evince-3.3.0[introspection]
 	dev-libs/gjs
-	>=dev-libs/glib-2.37:2
+	>=dev-libs/glib-2.31.6:2
 	>=dev-libs/gobject-introspection-1.31.6
-	>=dev-libs/libgdata-0.13.3[gnome,introspection]
+	>=dev-libs/libgdata-0.13.1[gnome,introspection]
 	gnome-base/gnome-desktop:3=
 	>=media-libs/clutter-1.10:1.0
 	>=media-libs/clutter-gtk-1.3.2:1.0[introspection]
 	>=net-libs/gnome-online-accounts-3.2.0
-	>=net-libs/libsoup-2.41.3:2.4
+	net-libs/libsoup:2.4
 	>=net-libs/libzapojit-0.0.2
-	>=net-libs/webkit-gtk-1.10.0:3
 	>=x11-libs/gdk-pixbuf-2.25:2[introspection]
-	>=x11-libs/gtk+-3.9.11:3[introspection]
+	>=x11-libs/gtk+-3.5.5:3[introspection]
 	x11-libs/pango[introspection]
 "
 RDEPEND="${COMMON_DEPEND}
-	gnome-extra/gnome-online-miners
 	media-libs/clutter[introspection]
 	sys-apps/dbus
 	x11-themes/gnome-icon-theme-symbolic
 "
 DEPEND="${COMMON_DEPEND}
-	dev-libs/libxslt
-	>=dev-util/intltool-0.50.1
+	>=dev-util/intltool-0.40
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
 "

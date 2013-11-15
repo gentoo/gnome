@@ -4,31 +4,30 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
-VALA_MIN_API_VERSION=0.18
+GNOME2_LA_PUNT="yes"
 
-inherit gnome2 vala
+inherit gnome2
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
 DESCRIPTION="VNC client for the GNOME desktop"
-HOMEPAGE="https://wiki.gnome.org/Vinagre"
+HOMEPAGE="http://live.gnome.org/Vinagre"
 
 LICENSE="GPL-3+"
 SLOT="0"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
+	KEYWORDS="~alpha ~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 fi
 IUSE="avahi rdp +ssh spice +telepathy"
 
 # cairo used in vinagre-tab
 # gdk-pixbuf used all over the place
-# FIXME: uses xfreerdp ???
 RDEPEND="
 	>=dev-libs/glib-2.28.0:2
-	>=x11-libs/gtk+-3.9.6:3
+	>=x11-libs/gtk+-3.0.3:3
 	app-crypt/libsecret
 	>=dev-libs/libxml2-2.6.31:2
 	>=net-libs/gtk-vnc-0.4.3[gtk3]
@@ -49,31 +48,30 @@ DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.50
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
-	$(vala_depend)
 "
 
 if [[ ${PV} = 9999 ]]; then
 	DEPEND+="
+		dev-lang/vala:0.18
 		app-text/yelp-tools
 		gnome-base/gnome-common"
 fi
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} = 9999 ]] || myconf="ITSTOOL=$(type -P true)"
 	DOCS="AUTHORS ChangeLog ChangeLog.pre-git NEWS README"
+	[[ ${PV} = 9999 ]] || G2CONF="${G2CONF} ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
+		VALAC=$(type -P valac-0.18) \
 		$(use_with avahi) \
 		$(use_enable rdp) \
 		$(use_enable ssh) \
 		$(use_enable spice) \
-		$(use_with telepathy) \
-		${myconf}
+		$(use_with telepathy)
 }
 
 src_install() {
 	gnome2_src_install
 
 	# Remove its own installation of DOCS that go to $PN instead of $P and aren't ecompressed
-	rm -rf "${ED}"/usr/share/doc/vinagre || die
+	rm -rf "${ED}"/usr/share/doc/vinagre
 }
