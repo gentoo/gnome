@@ -5,11 +5,11 @@
 EAPI="5"
 GCONF_DEBUG="no"
 # python3 not really supported, bug #478678
-PYTHON_COMPAT=( python2_7 pypy{1_9,2_0} )
+PYTHON_COMPAT=( python2_7 pypy2_0 )
 VALA_MIN_API_VERSION="0.18"
 VALA_USE_DEPEND="vapigen"
 
-inherit db-use eutils flag-o-matic gnome2 python-any-r1 vala versionator virtualx
+inherit db-use flag-o-matic gnome2 python-any-r1 vala virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -20,7 +20,6 @@ HOMEPAGE="http://projects.gnome.org/evolution/arch.shtml"
 # Note: explicitly "|| ( LGPL-2 LGPL-3 )", not "LGPL-2+".
 LICENSE="|| ( LGPL-2 LGPL-3 ) BSD Sleepycat"
 SLOT="0/45" # subslot = libcamel-1.2 soname version
-# TODO: Ubuntu online accounts (libaccounts-glib, rest, json-glib, libsignon-glib )
 IUSE="api-doc-extras +gnome-online-accounts +gtk +introspection ipv6 ldap kerberos vala +weather"
 REQUIRED_USE="vala? ( introspection )"
 
@@ -29,7 +28,7 @@ if [[ ${PV} = 9999 ]]; then
 	REQUIRED_USE="${REQUIRED_USE} api-doc-extras? ( doc )"
 	KEYWORDS=""
 else
-	KEYWORDS="~amd64 ~ppc ~ppc64 ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~ia64-linux ~x86-linux ~x86-solaris"
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~ia64-linux ~x86-linux ~x86-solaris"
 fi
 
 RDEPEND="
@@ -56,9 +55,10 @@ RDEPEND="
 	weather? ( >=dev-libs/libgweather-3.5:2= )
 "
 DEPEND="${RDEPEND}
+	${PYTHON_DEPS}
 	dev-util/fix-la-relink-command
 	dev-util/gperf
-	>=dev-util/gtk-doc-am-1.9
+	>=dev-util/gtk-doc-am-1.14
 	>=dev-util/intltool-0.35.5
 	>=gnome-base/gnome-common-3.5.5
 	>=sys-devel/gettext-0.17
@@ -75,18 +75,21 @@ pkg_setup() {
 }
 
 src_prepare() {
-	gnome2_src_prepare
 	use vala && vala_src_prepare
+	gnome2_src_prepare
 
 	# /usr/include/db.h is always db-1 on FreeBSD
 	# so include the right dir in CPPFLAGS
 	append-cppflags "-I$(db_includedir)"
+
+	# FIXME: Fix compilation flags crazyness
+	sed 's/^\(AM_CFLAGS="\)$WARNING_FLAGS/\1/' \
+		-i configure || die "sed failed"
 }
 
 src_configure() {
+	# phonenumber does not exist in tree
 	gnome2_src_configure \
-		--disable-schemas-compile \
-		--disable-uoa \
 		$(use_enable api-doc-extras gtk-doc) \
 		$(use_with api-doc-extras private-docs) \
 		$(use_enable gnome-online-accounts goa) \
@@ -101,7 +104,9 @@ src_configure() {
 		--enable-nntp \
 		--enable-largefile \
 		--enable-smime \
-		--with-libdb="${EPREFIX}"/usr
+		--with-libdb="${EPREFIX}"/usr \
+		--without-phonenumber \
+		--disable-uoa
 }
 
 src_install() {
@@ -114,10 +119,9 @@ src_install() {
 	gnome2_src_install
 
 	if use ldap; then
-		MY_MAJORV=$(get_version_component_range 1-2)
 		insinto /etc/openldap/schema
-		doins "${FILESDIR}"/calentry.schema || die "doins failed"
-		dosym /usr/share/${PN}-${MY_MAJORV}/evolutionperson.schema /etc/openldap/schema/evolutionperson.schema
+		doins "${FILESDIR}"/calentry.schema
+		dosym /usr/share/${PN}/evolutionperson.schema /etc/openldap/schema/evolutionperson.schema
 	fi
 }
 
@@ -125,16 +129,6 @@ src_test() {
 	unset DBUS_SESSION_BUS_ADDRESS
 	unset ORBIT_SOCKETDIR
 	unset SESSION_MANAGER
-	export XDG_DATA_HOME="${T}"
 	unset DISPLAY
-	Xemake check || die "Tests failed."
-}
-
-pkg_postinst() {
-	gnome2_pkg_postinst
-
-	if use ldap; then
-		elog ""
-		elog "LDAP schemas needed by evolution are installed in /etc/openldap/schema"
-	fi
+	Xemake check
 }
