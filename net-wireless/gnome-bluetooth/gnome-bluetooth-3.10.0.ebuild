@@ -16,7 +16,7 @@ IUSE="+introspection"
 KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86"
 
 COMMON_DEPEND="
-	>=dev-libs/glib-2.36:2
+	>=dev-libs/glib-2.37.3:2
 	>=x11-libs/gtk+-2.91.3:3[introspection?]
 	virtual/udev
 	introspection? ( >=dev-libs/gobject-introspection-0.9.5 )
