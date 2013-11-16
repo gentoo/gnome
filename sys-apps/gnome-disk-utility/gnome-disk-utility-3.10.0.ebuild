@@ -20,7 +20,7 @@ COMMON_DEPEND="
 	>=dev-libs/glib-2.31:2
 	>=sys-fs/udisks-2.1.1:2
 	>=x11-libs/gtk+-3.5.8:3
-	app-arch/xz-utils
+	>=app-arch/xz-utils-5.0.5
 	>=app-crypt/libsecret-0.7
 	dev-libs/libpwquality
 	systemd? ( >=sys-apps/systemd-44 )
