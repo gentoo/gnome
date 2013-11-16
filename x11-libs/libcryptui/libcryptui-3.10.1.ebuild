@@ -6,9 +6,6 @@ EAPI="5"
 GCONF_DEBUG="yes"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="User interface components for OpenPGP"
 HOMEPAGE="http://www.gnome.org/projects/seahorse/index.html"
@@ -16,12 +13,7 @@ HOMEPAGE="http://www.gnome.org/projects/seahorse/index.html"
 LICENSE="GPL-2+ LGPL-2.1+ FDL-1.1"
 SLOT="0"
 IUSE="+introspection libnotify"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64 ~x86 ~x86-fbsd"
-fi
+KEYWORDS="~amd64 ~x86 ~x86-fbsd"
 
 # Pull in libnotify-0.7 because it's controlled via an automagic ifdef
 COMMON_DEPEND="
@@ -51,11 +43,6 @@ DEPEND="${COMMON_DEPEND}
 RDEPEND="${COMMON_DEPEND}
 	!<app-crypt/seahorse-3.1.4
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.9 )"
-fi
 
 src_prepare() {
 	# FIXME: Do not mess with CFLAGS with USE="debug"
