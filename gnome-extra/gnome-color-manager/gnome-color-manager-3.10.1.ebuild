@@ -6,20 +6,13 @@ EAPI="5"
 GCONF_DEBUG="no"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Color profile manager for the GNOME desktop"
 HOMEPAGE="http://projects.gnome.org/gnome-color-manager/"
 
 LICENSE="GPL-2+"
 SLOT="0"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 IUSE="clutter packagekit raw"
 
 # Need gtk+-3.3.8 for https://bugzilla.gnome.org/show_bug.cgi?id=673331
@@ -56,23 +49,18 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools"
-fi
-
 # FIXME: run test-suite with files on live file-system
 RESTRICT="test"
 
 src_configure() {
 	# Always enable tests since they are check_PROGRAMS anyway
-	[[ ${PV} != 9999 ]] && G2CONF="${G2CONF} ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		--disable-static \
 		--enable-tests \
 		$(use_enable clutter) \
 		$(use_enable packagekit) \
-		$(use_enable raw exiv)
+		$(use_enable raw exiv) \
+		ITSTOOL=$(type -P true)
 }
 
 pkg_postinst() {
