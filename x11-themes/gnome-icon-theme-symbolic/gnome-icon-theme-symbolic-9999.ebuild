@@ -26,8 +26,10 @@ COMMON_DEPEND=">=x11-themes/hicolor-icon-theme-0.10"
 
 RDEPEND="${COMMON_DEPEND}
 	!=gnome-extra/gnome-power-manager-3.0*
-	!=gnome-extra/gnome-power-manager-3.1*
 "
+# Matches 3.10
+#	!=gnome-extra/gnome-power-manager-3.1*
+
 # keyboard-brightness icon file collision with old gnome-power-manager
 DEPEND="${COMMON_DEPEND}
 	>=x11-misc/icon-naming-utils-0.8.7
