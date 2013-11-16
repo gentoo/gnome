@@ -6,7 +6,7 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
-inherit autotools eutils flag-o-matic readme.gentoo gnome2
+inherit eutils flag-o-matic readme.gentoo gnome2 #autotools
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -22,7 +22,7 @@ if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 fi
 
 # We need a graphical pinentry frontend to be able to ask for the GPG
@@ -32,11 +32,10 @@ PINENTRY_DEPEND="|| ( app-crypt/pinentry[gtk] app-crypt/pinentry-qt app-crypt/pi
 # glade-3 support is for maintainers only per configure.ac
 # pst is not mature enough and changes API/ABI frequently
 COMMON_DEPEND="
-	>=app-crypt/gcr-3.4
-	>=dev-libs/glib-2.36:2
+	>=dev-libs/glib-2.34:2
 	>=x11-libs/cairo-1.9.15:=[glib]
 	>=x11-libs/gtk+-3.4.0:3
-	>=x11-libs/gdk-pixbuf-2.24
+	>=x11-libs/gdk-pixbuf-2.24:2
 	>=gnome-base/gnome-desktop-2.91.3:3=
 	>=gnome-base/gsettings-desktop-schemas-2.91.92
 	>=media-libs/libcanberra-0.25[gtk3]
@@ -46,11 +45,11 @@ COMMON_DEPEND="
 	dev-libs/atk
 	>=dev-libs/dbus-glib-0.6
 	>=dev-libs/libxml2-2.7.3:2
-	|| ( >=net-libs/libsoup-2.42:2.4 >=net-libs/libsoup-gnome-2.40.3:2.4 )
+	>=net-libs/libsoup-gnome-2.40.3:2.4
 	>=x11-misc/shared-mime-info-0.22
 	>=x11-themes/gnome-icon-theme-2.30.2.1
 	>=dev-libs/libgdata-0.10:=
-	>=net-libs/webkit-gtk-2.0.1
+	>=net-libs/webkit-gtk-2.0.1:3
 
 	x11-libs/libSM
 	x11-libs/libICE
@@ -60,17 +59,14 @@ COMMON_DEPEND="
 		=app-crypt/gnupg-1.4* ) )
 	map? (
 		>=app-misc/geoclue-0.12.0
-		>=media-libs/libchamplain-0.12:0.12
+		>=media-libs/libchamplain-0.12:0.12[gtk]
 		>=media-libs/clutter-1.0.0:1.0
 		>=media-libs/clutter-gtk-0.90:1.0
 		>=sci-geosciences/geocode-glib-3.10.0
 		x11-libs/mx:1.0 )
-	gstreamer? ( || (
-		 ( media-libs/gstreamer:1.0
-		   media-libs/gst-plugins-base:1.0 )
-		 ( media-libs/gstreamer:0.10
-		   media-libs/gst-plugins-base:0.10 )
-	) )
+	gstreamer? (
+		media-libs/gstreamer:1.0
+		media-libs/gst-plugins-base:1.0 )
 	kerberos? ( virtual/krb5:= )
 	ldap? ( >=net-nds/openldap-2:= )
 	ssl? (
@@ -91,7 +87,7 @@ RDEPEND="${COMMON_DEPEND}
 	bogofilter? ( mail-filter/bogofilter )
 	highlight? ( app-text/highlight )
 	spamassassin? ( mail-filter/spamassassin )
-	!<gnome-extra/evolution-exchange-2.32
+	!gnome-extra/evolution-exchange
 "
 
 if [[ ${PV} = 9999 ]]; then
@@ -113,10 +109,12 @@ x-scheme-handler/https=firefox.desktop
 file from /usr/share/applications if you use a different browser)."
 
 src_prepare() {
+	# Reason?
 	ELTCONF="--reverse-deps"
+
 	DOCS="AUTHORS ChangeLog* HACKING MAINTAINERS NEWS* README"
 
-	eautoreconf # See https://bugzilla.gnome.org/701904
+	#eautoreconf # See https://bugzilla.gnome.org/701904
 
 	gnome2_src_prepare
 
@@ -131,7 +129,6 @@ src_configure() {
 	local myconf
 	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
-		--disable-schemas-compile \
 		--without-glade-catalog \
 		--disable-image-inline \
 		--disable-pst-import \
