@@ -16,18 +16,19 @@ SRC_URI="http://www.webkitgtk.org/releases/${MY_P}.tar.xz"
 LICENSE="LGPL-2+ BSD"
 SLOT="3/29" # soname version
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~amd64-linux ~ia64-linux ~x86-linux ~x86-macos"
-IUSE="aqua coverage debug +geoloc +gstreamer libsecret +introspection +jit spell +webgl"
+IUSE="aqua coverage debug +geoloc gles2 +gstreamer +introspection +jit libsecret +opengl spell +webgl"
 # bugs 372493, 416331
 REQUIRED_USE="
 	geoloc? ( introspection )
 	introspection? ( gstreamer )
+	webgl? ( ^^ ( gles2 opengl ) )
+
 "
 
 # use sqlite, svg by default
 # Aqua support in gtk3 is untested
 # gtk2 is needed for plugin process support
 # gtk3-3.10 required for wayland
-# TODO: There's 3 acceleration backends: opengl, egl and gles2
 RDEPEND="
 	dev-libs/libxml2:2
 	dev-libs/libxslt
@@ -53,7 +54,8 @@ RDEPEND="
 	libsecret? ( app-crypt/libsecret )
 	spell? ( >=app-text/enchant-0.22:= )
 	webgl? (
-		virtual/opengl
+		gles2? ( media-libs/mesa[egl,gles2] )
+		opengl? ( media-libs/mesa[egl] )
 		x11-libs/cairo[opengl]
 		x11-libs/libXcomposite
 		x11-libs/libXdamage )
@@ -192,30 +194,7 @@ src_configure() {
 	# Try to use less memory, bug #469942
 	append-ldflags "-Wl,--no-keep-memory"
 
-	local myconf
-	# TODO: Check Web Audio support
-	# TODO: There's 3 acceleration backends: opengl, egl and gles2
-	# should somehow let user select between them?
-	#
-	# * dependency-tracking is required so parallel builds won't fail
-	myconf="
-		$(use_enable coverage)
-		$(use_enable debug)
-		$(use_enable geoloc geolocation)
-		$(use_enable spell spellcheck)
-		$(use_enable introspection)
-		$(use_enable gstreamer video)
-		$(use_enable jit)
-		$(use_enable libsecret credential_storage)
-		$(use_enable webgl)
-		--disable-egl
-		--disable-gles2
-		--with-gtk=3.0
-		--enable-accelerated-compositing
-		--enable-dependency-tracking
-		--disable-gtk-doc
-		"$(usex aqua "--with-font-backend=pango --with-target=quartz" "")
-		# Aqua support in gtk3 is untested
+	local myconf=""
 
 	if has_version "virtual/rubygems[ruby_targets_ruby20]"; then
 		myconf="${myconf} RUBY=$(type -P ruby20)"
@@ -225,7 +204,31 @@ src_configure() {
 		myconf="${myconf} RUBY=$(type -P ruby18)"
 	fi
 
-	econf ${myconf}
+	# TODO: Check Web Audio support
+	# should somehow let user select between them?
+	#
+	# * Aqua support in gtk3 is untested
+	# * egl is needed for gles2
+	# * dependency-tracking is required so parallel builds won't fail
+	econf \
+		$(use_enable coverage) \
+		$(use_enable debug) \
+		$(use_enable geoloc geolocation) \
+		$(use_enable gles2) \
+		$(use_enable gstreamer video) \
+		$(use_enable introspection) \
+		$(use_enable jit) \
+		$(use_enable libsecret credential_storage) \
+		$(use_enable opengl glx) \
+		$(use_enable spell spellcheck) \
+		$(use_enable webgl egl) \
+		$(use_enable webgl) \
+		--with-gtk=3.0 \
+		--enable-accelerated-compositing \
+		--enable-dependency-tracking \
+		--disable-gtk-doc \
+		$(usex aqua "--with-font-backend=pango --with-target=quartz" "")
+		${myconf}
 }
 
 #src_compile() {
