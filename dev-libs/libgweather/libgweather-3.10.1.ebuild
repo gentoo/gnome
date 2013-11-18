@@ -8,9 +8,6 @@ VALA_MIN_API_VERSION="0.18"
 VALA_USE_DEPEND="vapigen"
 
 inherit gnome2 vala
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Library to access weather information from online services"
 HOMEPAGE="https://wiki.gnome.org/LibGWeather"
@@ -19,12 +16,7 @@ LICENSE="GPL-2+"
 SLOT="2/3-6" # subslot = 3-(libgweather-3 soname suffix)
 IUSE="glade +introspection vala"
 REQUIRED_USE="vala? ( introspection )"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~x86-solaris"
 
 COMMON_DEPEND="
 	>=x11-libs/gtk+-2.90.0:3[introspection?]
@@ -46,11 +38,6 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 	vala? ( $(vala_depend) )
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.11 )"
-fi
 
 src_prepare() {
 	use vala && vala_src_prepare
