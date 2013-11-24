@@ -18,6 +18,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd6
 RDEPEND="
 	>=dev-libs/glib-2.31:2
 	introspection? ( >=dev-libs/gobject-introspection-1.31.0 )
+	!<gnome-base/gdm-3.8
 "
 DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.40
