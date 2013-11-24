@@ -8,9 +8,6 @@ PYTHON_COMPAT=( python2_7 )
 PYTHON_REQ_USE="xml"
 
 inherit gnome2 python-single-r1 toolchain-funcs
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Introspection infrastructure for generating gobject library bindings for various languages"
 HOMEPAGE="http://live.gnome.org/GObjectIntrospection/"
@@ -22,12 +19,7 @@ REQUIRED_USE="
 	${PYTHON_REQUIRED_USE}
 	test? ( cairo )
 "
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-	IUSE="${IUSE} doc"
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 
 RDEPEND="
 	>=dev-libs/gobject-introspection-common-${PV}
@@ -43,12 +35,6 @@ DEPEND="${RDEPEND}
 	sys-devel/flex
 	virtual/pkgconfig
 "
-
-if [[ ${PV} == 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.15 )"
-fi
-
 # PDEPEND to avoid circular dependencies, bug #391213
 PDEPEND="cairo? ( x11-libs/cairo[glib] )"
 
