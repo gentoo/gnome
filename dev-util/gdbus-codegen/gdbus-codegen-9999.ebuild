@@ -1,10 +1,10 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
 EAPI="5"
 GNOME_ORG_MODULE="glib"
-PYTHON_COMPAT=( python{2_5,2_6,2_7,3_1,3_2,3_3} )
+PYTHON_COMPAT=( python{2_6,2_7,3_2,3_3} )
 PYTHON_REQ_USE="xml"
 
 inherit eutils python-r1
@@ -58,12 +58,12 @@ src_prepare() {
 }
 
 src_configure() {
-	ECONF_SOURCE="${S}" python_foreach_impl run_in_build_dir econf 
+	ECONF_SOURCE="${S}" python_foreach_impl run_in_build_dir econf
 }
 
 src_compile() {
 	python_foreach_impl run_in_build_dir emake -C gio/gdbus-2.0/codegen
-	python_foreach_impl run_in_build_dir emake -C docs/reference/gio gdbus-codegen.1 
+	python_foreach_impl run_in_build_dir emake -C docs/reference/gio gdbus-codegen.1
 }
 
 src_test() {
