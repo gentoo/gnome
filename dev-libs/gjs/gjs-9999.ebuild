@@ -15,7 +15,7 @@ HOMEPAGE="http://live.gnome.org/Gjs"
 
 LICENSE="MIT || ( MPL-1.1 LGPL-2+ GPL-2+ )"
 SLOT="0"
-IUSE="cairo examples"
+IUSE="+cairo examples test"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
@@ -34,6 +34,7 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	sys-devel/gettext
 	virtual/pkgconfig
+	test? ( sys-apps/dbus )
 "
 
 src_configure() {
@@ -48,7 +49,6 @@ src_configure() {
 }
 
 src_test() {
-	# Tests need dbus
 	Xemake check
 }
 

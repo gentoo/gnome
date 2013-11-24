@@ -12,7 +12,7 @@ HOMEPAGE="http://live.gnome.org/Gjs"
 
 LICENSE="MIT || ( MPL-1.1 LGPL-2+ GPL-2+ )"
 SLOT="0"
-IUSE="+cairo examples"
+IUSE="+cairo examples test"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd"
 
 RDEPEND="
@@ -27,6 +27,7 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	sys-devel/gettext
 	virtual/pkgconfig
+	test? ( sys-apps/dbus )
 "
 
 src_prepare() {
@@ -49,9 +50,7 @@ src_configure() {
 }
 
 src_test() {
-	# Tests need dbus
-	#Xemake check
-	dbus-launch emake check
+	Xemake check
 }
 
 src_install() {
