@@ -3,38 +3,42 @@
 # $Header: $
 
 EAPI="5"
-PYTHON_DEPEND="utils? 2"
+PYTHON_COMPAT=( python2_{6,7} )
 # Avoid runtime dependency on python when USE=test
 
-inherit autotools gnome.org libtool eutils flag-o-matic gnome2-utils multilib pax-utils python toolchain-funcs virtualx linux-info
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+inherit autotools bash-completion-r1 gnome.org libtool eutils flag-o-matic gnome2-utils multilib pax-utils python-r1 toolchain-funcs versionator virtualx linux-info multilib-minimal
 
 DESCRIPTION="The GLib library of C routines"
 HOMEPAGE="http://www.gtk.org/"
 SRC_URI="${SRC_URI}
-	http://pkgconfig.freedesktop.org/releases/pkg-config-0.26.tar.gz" # pkg.m4 for eautoreconf
+	http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz" # pkg.m4 for eautoreconf
 
 LICENSE="LGPL-2+"
 SLOT="2"
 IUSE="debug fam kernel_linux selinux static-libs systemtap test utils xattr"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux"
 
-RDEPEND="virtual/libiconv
-	virtual/libffi
-	sys-libs/zlib
+# FIXME: want libselinux[${MULTILIB_USEDEP}] - bug #480960
+RDEPEND="
+	virtual/libiconv[${MULTILIB_USEDEP}]
+	virtual/libffi[${MULTILIB_USEDEP}]
+	sys-libs/zlib[${MULTILIB_USEDEP}]
 	|| (
 		>=dev-libs/elfutils-0.142
-		>=dev-libs/libelf-0.8.12 )
-	xattr? ( sys-apps/attr )
-	fam? ( virtual/fam )
-	utils? ( >=dev-util/gdbus-codegen-${PV} )"
+		>=dev-libs/libelf-0.8.12
+		>=sys-freebsd/freebsd-lib-9.2_rc1
+		)
+	selinux? ( sys-libs/libselinux )
+	xattr? ( sys-apps/attr[${MULTILIB_USEDEP}] )
+	fam? ( virtual/fam[${MULTILIB_USEDEP}] )
+	utils? (
+		${PYTHON_DEPS}
+		>=dev-util/gdbus-codegen-${PV}[${PYTHON_USEDEP}] )
+	abi_x86_32? (
+		!<=app-emulation/emul-linux-x86-baselibs-20130224-r9
+		!app-emulation/emul-linux-x86-baselibs[-abi_x86_32(-)]
+	)
+"
 DEPEND="${RDEPEND}
 	app-text/docbook-xml-dtd:4.1.2
 	>=dev-libs/libxslt-1.0
@@ -43,46 +47,39 @@ DEPEND="${RDEPEND}
 	systemtap? ( >=dev-util/systemtap-1.3 )
 	test? (
 		sys-devel/gdb
-		=dev-lang/python-2*
-		>=dev-util/gdbus-codegen-${PV}
+		${PYTHON_DEPS}
+		>=dev-util/gdbus-codegen-${PV}[${PYTHON_USEDEP}]
 		>=sys-apps/dbus-1.2.14 )
-	!<dev-util/gtk-doc-1.15-r2"
+	!<dev-libs/gobject-introspection-1.$(get_version_component_range 2)
+	!<dev-util/gtk-doc-1.15-r2
+"
+# gobject-introspection blocker to ensure people don't mix
+# different g-i and glib major versions
+
 PDEPEND="x11-misc/shared-mime-info
 	!<gnome-base/gvfs-1.6.4-r990"
 # shared-mime-info needed for gio/xdgmime, bug #409481
 # Earlier versions of gvfs do not work with glib
 
-# For safety, generate sources using the gdbus-codegen from glib git tree
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? (
-			>=dev-util/gdbus-codegen-${PV}
-			>=dev-util/gtk-doc-1.15 )
-		=dev-lang/python-2*"
-fi
+DOCS="AUTHORS ChangeLog* NEWS* README"
 
 pkg_setup() {
-	# Needed for gio/tests/gdbus-testserver.py
-	if use test || [[ ${PV} = 9999 ]]; then
-		python_set_active_version 2
-		python_pkg_setup
-		if [[ ${PV} = 9999 ]]; then
-			# Make gdbus-codegen from ${S} work despite all our patches
-			MAKEOPTS="${MAKEOPTS} PYTHON=$(PYTHON -2 -a)"
-		fi
-	fi
-
 	if use kernel_linux ; then
 		CONFIG_CHECK="~INOTIFY_USER"
+		if use test; then
+			CONFIG_CHECK="~IPV6"
+			WARNING_IPV6="Your kernel needs IPV6 support for running some tests, skipping them."
+			export IPV6_DISABLED="yes"
+		fi
 		linux-info_pkg_setup
 	fi
 }
 
 src_prepare() {
-	[[ ${PV} = 9999 ]] && gnome2-live_src_prepare
-	mv -f "${WORKDIR}"/pkg-config-*/pkg.m4 "${WORKDIR}"/ || die
+	# Prevent build failure in stage3 where pkgconfig is not available, bug #481056
+	mv -f "${WORKDIR}"/pkg-config-*/pkg.m4 "${S}"/m4macros/ || die
 
-	# Fix gmodule issues on fbsd; bug #184301
+	# Fix gmodule issues on fbsd; bug #184301, upstream bug #107626
 	epatch "${FILESDIR}"/${PN}-2.12.12-fbsd.patch
 
 	if use test; then
@@ -90,7 +87,7 @@ src_prepare() {
 		sed 's:^\(.*"/desktop-app-info/delete".*\):/*\1*/:' \
 			-i "${S}"/gio/tests/desktop-app-info.c || die "sed failed"
 
-		# Disable tests requiring dev-util/desktop-file-utils when not installed, bug #286629
+		# Disable tests requiring dev-util/desktop-file-utils when not installed, bug #286629, upstream bug #629163
 		if ! has_version dev-util/desktop-file-utils ; then
 			ewarn "Some tests will be skipped due dev-util/desktop-file-utils not being present on your system,"
 			ewarn "think on installing it to get these tests run."
@@ -122,31 +119,51 @@ src_prepare() {
 			ln -sfn $(type -P true) gio/tests/gdbus-testserver.py
 		fi
 
-		epatch "${FILESDIR}/${PN}-2.34.0-testsuite-skip-thread4.patch"
+		# Some tests need ipv6, upstream bug #667468
+		if [[ -n "${IPV6_DISABLED}" ]]; then
+			sed -i -e "/socket\/ipv6_sync/d" gio/tests/socket.c || die
+			sed -i -e "/socket\/ipv6_async/d" gio/tests/socket.c || die
+			sed -i -e "/socket\/ipv6_v4mapped/d" gio/tests/socket.c || die
+		fi
+
+		# Test relies on /usr/bin/true, but we have /bin/true, upstream bug #698655
+		sed -i -e "s:/usr/bin/true:/bin/true:" gio/tests/desktop-app-info.c || die
 	fi
 
-	# gdbus-codegen is a separate package
-	epatch "${FILESDIR}/${PN}-2.35.x-external-gdbus-codegen.patch"
+	# thread test fails, upstream bug #679306
+	epatch "${FILESDIR}/${PN}-2.34.0-testsuite-skip-thread4.patch"
 
-	# bashcomp goes in /usr/share/bash-completion
-	epatch "${FILESDIR}/${PN}-2.32.4-bashcomp.patch"
+	# gdbus-codegen is a separate package
+	epatch "${FILESDIR}/${PN}-2.37.x-external-gdbus-codegen.patch"
+
+	# do not allow libgobject to unload; bug #405173, https://bugzilla.gnome.org/show_bug.cgi?id=707298
+	epatch "${FILESDIR}/${PN}-2.36.4-znodelete.patch"
+
+	# leave python shebang alone
+	sed -e '/${PYTHON}/d' \
+		-i glib/Makefile.{am,in} || die
+
+	# Gentoo handles completions in a different directory
+	sed -i "s|^completiondir =.*|completiondir = $(get_bashcompdir)|" \
+		gio/Makefile.am || die
+
+	# Support compilation in clang until upstream solves this, upstream bug #691608
+	append-flags -Wno-format-nonliteral
 
 	epatch_user
 
-	# disable pyc compiling
-	use test && python_clean_py-compile_files
-
 	# Needed for the punt-python-check patch, disabling timeout test
-	# Also needed to prevent croscompile failures, see bug #267603
+	# Also needed to prevent cross-compile failures, see bug #267603
 	# Also needed for the no-gdbus-codegen patch
-	AT_M4DIR="${WORKDIR}" eautoreconf
+	eautoreconf
 
-	[[ ${CHOST} == *-freebsd* ]] && elibtoolize
+	# FIXME: Really needed when running eautoreconf before? bug#????
+	#[[ ${CHOST} == *-freebsd* ]] && elibtoolize
 
 	epunt_cxx
 }
 
-src_configure() {
+multilib_src_configure() {
 	# Avoid circular depend with dev-util/pkgconfig and
 	# native builds (cross-compiles won't need pkg-config
 	# in the target ROOT to work here)
@@ -161,47 +178,48 @@ src_configure() {
 
 	local myconf
 
+	case "${CHOST}" in
+		*-mingw*) myconf="${myconf} --with-threads=win32" ;;
+		*)        myconf="${myconf} --with-threads=posix" ;;
+	esac
+
 	# Building with --disable-debug highly unrecommended.  It will build glib in
 	# an unusable form as it disables some commonly used API.  Please do not
 	# convert this to the use_enable form, as it results in a broken build.
-	# -- compnerd (3/27/06)
 	use debug && myconf="--enable-debug"
 
-	if use test; then
-		myconf="${myconf} --enable-modular-tests"
+	# Only used by the gresource bin
+	multilib_is_native_abi || myconf="${myconf} --disable-libelf"
+
+	# FIXME: change to "$(use_enable selinux)" when libselinux is multilibbed, bug #480960
+	if multilib_is_native_abi; then
+		myconf="${myconf} $(use_enable selinux)"
 	else
-		if [[ ${PV} = 9999 ]] && use doc; then
-			# need to build tests if USE=doc for bug #387385
-			myconf="${myconf} --enable-modular-tests"
-		else
-			myconf="${myconf} --disable-modular-tests"
-		fi
+		myconf="${myconf} --disable-selinux"
 	fi
 
-	[[ ${PV} = 9999 ]] && myconf="${myconf} $(use_enable doc gtk-doc)"
-
 	# Always use internal libpcre, bug #254659
-	econf ${myconf} \
+	ECONF_SOURCE="${S}" econf ${myconf} \
 		$(use_enable xattr) \
 		$(use_enable fam) \
 		$(use_enable selinux) \
 		$(use_enable static-libs static) \
 		$(use_enable systemtap dtrace) \
 		$(use_enable systemtap systemtap) \
+		--disable-compile-warnings \
 		--enable-man \
 		--with-pcre=internal \
-		--with-threads=posix \
 		--with-xml-catalog="${EPREFIX}/etc/xml/catalog"
 }
 
-src_install() {
-	local f
+multilib_src_install_all() {
+	einstalldocs
 
-	# install-exec-hook substitutes ${PYTHON} in glib/gtester-report
-	emake DESTDIR="${D}" PYTHON="${EPREFIX}/usr/bin/python2" install
-
-	if ! use utils; then
+	if use utils ; then
+		python_replicate_script "${ED}"/usr/bin/gtester-report
+	else
 		rm "${ED}usr/bin/gtester-report"
+		rm "${ED}usr/share/man/man1/gtester-report.1"
 	fi
 
 	# Do not install charset.alias even if generated, leave it to libiconv
@@ -210,16 +228,12 @@ src_install() {
 	# Don't install gdb python macros, bug 291328
 	rm -rf "${ED}/usr/share/gdb/" "${ED}/usr/share/glib-2.0/gdb/"
 
-	# This is there for git snapshots and the live ebuild, bug 351966
-	[[ ${PV} = 9999 ]] && { emake README || die "emake README failed"; }
-	dodoc AUTHORS ChangeLog* NEWS* README
-
 	# Completely useless with or without USE static-libs, people need to use
 	# pkg-config
 	prune_libtool_files --modules
 }
 
-src_test() {
+multilib_src_test() {
 	gnome2_environment_reset
 
 	unset DBUS_SESSION_BUS_ADDRESS
@@ -228,6 +242,7 @@ src_test() {
 	export G_DBUS_COOKIE_SHA1_KEYRING_DIR="${T}/temp"
 	unset GSETTINGS_BACKEND # bug 352451
 	export LC_TIME=C # bug #411967
+	python_export_best
 
 	# Related test is a bit nitpicking
 	mkdir "$G_DBUS_COOKIE_SHA1_KEYRING_DIR"
@@ -235,7 +250,7 @@ src_test() {
 
 	# Hardened: gdb needs this, bug #338891
 	if host-is-pax ; then
-		pax-mark -mr "${S}"/tests/.libs/assert-msg-test \
+		pax-mark -mr "${BUILD_DIR}"/tests/.libs/assert-msg-test \
 			|| die "Hardened adjustment failed"
 	fi
 
@@ -243,26 +258,7 @@ src_test() {
 	Xemake check
 }
 
-pkg_preinst() {
-	# Only give the introspection message if:
-	# * The user has gobject-introspection
-	# * Has glib already installed
-	# * Previous version was different from new version
-	# TODO: add a subslotted virtual to trigger this automatically
-	if has_version "dev-libs/gobject-introspection" && ! has_version "=${CATEGORY}/${PF}"; then
-		ewarn "You must rebuild gobject-introspection so that the installed"
-		ewarn "typelibs and girs are regenerated for the new APIs in glib"
-	fi
-}
-
 pkg_postinst() {
-	# Inform users about possible breakage when updating glib and not dbus-glib, bug #297483
-	# TODO: add a subslotted virtual to trigger this automatically
-	if has_version dev-libs/dbus-glib; then
-		ewarn "If you experience a breakage after updating dev-libs/glib try"
-		ewarn "rebuilding dev-libs/dbus-glib"
-	fi
-
 	if has_version '<x11-libs/gtk+-3.0.12:3'; then
 		# To have a clear upgrade path for gtk+-3.0.x users, have to resort to
 		# a warning instead of a blocker
