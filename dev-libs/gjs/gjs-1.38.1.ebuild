@@ -5,22 +5,15 @@
 EAPI="5"
 GCONF_DEBUG="no"
 
-inherit gnome2 pax-utils virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+inherit autotools eutils gnome2 pax-utils virtualx
 
 DESCRIPTION="Javascript bindings for GNOME"
 HOMEPAGE="http://live.gnome.org/Gjs"
 
 LICENSE="MIT || ( MPL-1.1 LGPL-2+ GPL-2+ )"
 SLOT="0"
-IUSE="cairo examples"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd"
-fi
+IUSE="+cairo examples"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd"
 
 RDEPEND="
 	>=dev-libs/glib-2.36:2
@@ -36,6 +29,14 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 "
 
+src_prepare() {
+	# From master/1.39
+	epatch "${FILESDIR}/${PN}-1.38.1-fix-unittests.patch"
+	eautoreconf
+
+	gnome2_src_prepare
+}
+
 src_configure() {
 	# FIXME: add systemtap/dtrace support, like in glib:2
 	# FIXME: --enable-systemtap installs files in ${D}/${D} for some reason
@@ -49,7 +50,8 @@ src_configure() {
 
 src_test() {
 	# Tests need dbus
-	Xemake check
+	#Xemake check
+	dbus-launch emake check
 }
 
 src_install() {
