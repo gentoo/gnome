@@ -1,0 +1,8 @@
+# Copyright 1999-2013 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+# Gilles Dartiguelongue <eva@gentoo.org> (25 Nov 2013)
+# gjs: tests fail and support for it was purely and simply removed in master/1.9
+# python2_6: unit tests fail for this abi, must report usptream
+dev-libs/libpeas gjs python_targets_python2_6
