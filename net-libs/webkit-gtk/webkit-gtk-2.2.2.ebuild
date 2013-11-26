@@ -16,13 +16,13 @@ SRC_URI="http://www.webkitgtk.org/releases/${MY_P}.tar.xz"
 LICENSE="LGPL-2+ BSD"
 SLOT="3/29" # soname version
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~amd64-linux ~ia64-linux ~x86-linux ~x86-macos"
-IUSE="aqua coverage debug +geoloc gles2 +gstreamer +introspection +jit libsecret +opengl spell +webgl"
+IUSE="aqua coverage debug +egl +geoloc gles2 +gstreamer +introspection +jit libsecret +opengl spell +webgl"
 # bugs 372493, 416331
 REQUIRED_USE="
 	geoloc? ( introspection )
 	introspection? ( gstreamer )
 	webgl? ( ^^ ( gles2 opengl ) )
-
+	gles2? ( egl )
 "
 
 # use sqlite, svg by default
@@ -46,16 +46,17 @@ RDEPEND="
 	x11-libs/libXrender
 	>=x11-libs/gtk+-2.24.10:2
 
+	egl? ( media-libs/mesa[egl] )
 	geoloc? ( app-misc/geoclue )
+	gles2? ( media-libs/mesa[gles2] )
 	gstreamer? (
 		>=media-libs/gstreamer-1.0.3:1.0
 		>=media-libs/gst-plugins-base-1.0.3:1.0 )
 	introspection? ( >=dev-libs/gobject-introspection-1.32.0 )
 	libsecret? ( app-crypt/libsecret )
+	opengl? ( virtual/opengl )
 	spell? ( >=app-text/enchant-0.22:= )
 	webgl? (
-		gles2? ( media-libs/mesa[egl,gles2] )
-		opengl? ( media-libs/mesa[egl] )
 		x11-libs/cairo[opengl]
 		x11-libs/libXcomposite
 		x11-libs/libXdamage )
@@ -208,11 +209,11 @@ src_configure() {
 	# should somehow let user select between them?
 	#
 	# * Aqua support in gtk3 is untested
-	# * egl is needed for gles2
 	# * dependency-tracking is required so parallel builds won't fail
 	econf \
 		$(use_enable coverage) \
 		$(use_enable debug) \
+		$(use_enable egl) \
 		$(use_enable geoloc geolocation) \
 		$(use_enable gles2) \
 		$(use_enable gstreamer video) \
@@ -221,21 +222,14 @@ src_configure() {
 		$(use_enable libsecret credential_storage) \
 		$(use_enable opengl glx) \
 		$(use_enable spell spellcheck) \
-		$(use_enable webgl egl) \
 		$(use_enable webgl) \
+		$(use_enable webgl accelerated-compositing)
 		--with-gtk=3.0 \
-		--enable-accelerated-compositing \
 		--enable-dependency-tracking \
 		--disable-gtk-doc \
 		$(usex aqua "--with-font-backend=pango --with-target=quartz" "")
 		${myconf}
 }
-
-#src_compile() {
-	# Avoid parallel make failure with -j9, bug #????
-#	emake DerivedSources/WebCore/JSNode.h
-#	default
-#}
 
 src_test() {
 	# Tests expect an out-of-source build in WebKitBuild
