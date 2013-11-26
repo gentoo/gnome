@@ -223,7 +223,7 @@ src_configure() {
 		$(use_enable opengl glx) \
 		$(use_enable spell spellcheck) \
 		$(use_enable webgl) \
-		$(use_enable webgl accelerated-compositing)
+		$(use_enable webgl accelerated-compositing) \
 		--with-gtk=3.0 \
 		--enable-dependency-tracking \
 		--disable-gtk-doc \
