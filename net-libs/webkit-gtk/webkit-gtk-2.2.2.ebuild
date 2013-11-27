@@ -178,6 +178,9 @@ src_prepare() {
 	# bug #459978, upstream bug #113397
 	epatch "${FILESDIR}/${PN}-1.11.90-gtk-docize-fix.patch"
 
+	# Do not build unittests unless requested
+	epatch "${FILESDIR}"/${PN}-2.2.2-unittests-build.patch
+
 	# Prevent maintainer mode from being triggered during make
 	AT_M4DIR=Source/autotools eautoreconf
 }
