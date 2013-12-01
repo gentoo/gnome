@@ -27,10 +27,10 @@ fi
 # XXX: uprof needed for profiling
 # >=libX11-1.3.1 needed for X Generic Event support
 RDEPEND="
-	>=dev-libs/glib-2.31.19:2
+	>=dev-libs/glib-2.37.3:2
 	>=dev-libs/atk-2.5.3[introspection?]
 	>=dev-libs/json-glib-0.12[introspection?]
-	>=media-libs/cogl-1.13.4:1.0=[introspection?,pango]
+	>=media-libs/cogl-1.15.9:1.0=[introspection?,pango]
 	media-libs/fontconfig
 	>=x11-libs/cairo-1.10:=[glib]
 	>=x11-libs/pango-1.30[introspection?]
@@ -42,11 +42,11 @@ RDEPEND="
 	x11-libs/libXdamage
 	x11-proto/inputproto
 	>=x11-libs/libXi-1.3
-	>=x11-libs/libXfixes-3
 	>=x11-libs/libXcomposite-0.4
 
 	gtk? ( >=x11-libs/gtk+-3.3.18:3 )
-	introspection? ( >=dev-libs/gobject-introspection-0.9.6 )"
+	introspection? ( >=dev-libs/gobject-introspection-0.9.6 )
+"
 DEPEND="${RDEPEND}
 	>=dev-util/gtk-doc-am-1.15
 	virtual/pkgconfig
@@ -59,36 +59,9 @@ DEPEND="${RDEPEND}
 
 # Tests fail with both swrast and llvmpipe
 # They pass under r600g or i965, so the bug is in mesa
-RESTRICT="test"
+#RESTRICT="test"
 
 src_prepare() {
-	DOCS="README NEWS ChangeLog*"
-
-	# XXX: Conformance test suite (and clutter itself) does not work under Xvfb
-	# (GLX error blabla)
-	# XXX: Profiling, coverage disabled for now
-	# XXX: What about cex100/egl/osx/wayland/win32 backends?
-	# XXX: evdev/tslib input seem to be experimental?
-	G2CONF="${G2CONF} ${myconf}
-		--enable-xinput
-		--enable-x11-backend=yes
-		--disable-profile
-		--disable-maintainer-flags
-		--disable-gcov
-		--disable-cex100-backend
-		--disable-egl-backend
-		--disable-quartz-backend
-		--disable-wayland-backend
-		--disable-win32-backend
-		--disable-tslib-input
-		--disable-evdev-input
-		$(usex debug --enable-debug=yes --enable-debug=minimum)
-		$(use_enable gtk gdk-backend)
-		$(use_enable introspection)
-		$(use_enable doc docs)
-		$(use_enable test conformance)
-		$(use_enable test gdk-pixbuf)"
-
 	# We only need conformance tests, the rest are useless for us
 	sed -e 's/^\(SUBDIRS =\).*/\1/g' \
 		-i tests/Makefile.am || die "am tests sed failed"
@@ -96,6 +69,35 @@ src_prepare() {
 		-i tests/Makefile.in || die "in tests sed failed"
 
 	gnome2_src_prepare
+}
+
+src_configure() {
+	DOCS="README NEWS ChangeLog*"
+
+	# XXX: Conformance test suite (and clutter itself) does not work under Xvfb
+	# (GLX error blabla)
+	# XXX: Profiling, coverage disabled for now
+	# XXX: What about cex100/egl/osx/wayland/win32 backends?
+	# XXX: evdev/tslib input seem to be experimental?
+	gnome2_src_configure \
+		--enable-xinput \
+		--enable-x11-backend=yes \
+		--disable-profile \
+		--disable-maintainer-flags \
+		--disable-gcov \
+		--disable-cex100-backend \
+		--disable-egl-backend \
+		--disable-quartz-backend \
+		--disable-wayland-backend \
+		--disable-win32-backend \
+		--disable-tslib-input \
+		--disable-evdev-input \
+		$(usex debug --enable-debug=yes --enable-debug=minimum) \
+		$(use_enable doc docs) \
+		$(use_enable gtk gdk-backend) \
+		$(use_enable introspection) \
+		$(use_enable test conformance) \
+		$(use_enable test gdk-pixbuf)
 }
 
 src_compile() {
