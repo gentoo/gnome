@@ -40,7 +40,6 @@ DEPEND="${RDEPEND}
 
 RESTRICT="test" # Need network #424719
 
-
 src_prepare() {
 	gnome2_src_prepare
 
