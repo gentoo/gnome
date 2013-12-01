@@ -30,7 +30,7 @@ RDEPEND="${COMMON_DEPEND}
 		app-misc/tracker[gstreamer]
 		app-misc/tracker[xine]
 	)
-	dev-python/pycairo[${PYTHON_USEDEP}]
+	dev-python/pygobject:3[cairo,${PYTHON_USEDEP}]
 	dev-python/dbus-python[${PYTHON_USEDEP}]
 	media-libs/gstreamer:1.0[introspection]
 	media-libs/gst-plugins-base:1.0[introspection]
