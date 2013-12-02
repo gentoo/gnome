@@ -106,6 +106,8 @@ src_prepare() {
 
 	if ! use test ; then
 		# don't waste time building tests
+		strip_builddir SRC_SUBDIRS testsuite Makefile.am
+		strip_builddir SRC_SUBDIRS testsuite Makefile.in
 		strip_builddir SRC_SUBDIRS tests Makefile.am
 		strip_builddir SRC_SUBDIRS tests Makefile.in
 	fi

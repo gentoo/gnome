@@ -121,6 +121,7 @@ src_prepare() {
 	if ! use test ; then
 		# don't waste time building tests
 		strip_builddir SRC_SUBDIRS tests Makefile.am
+		[[ ${PV} != 9999 ]] && strip_builddir SRC_SUBDIRS testsuite Makefile.in
 		[[ ${PV} != 9999 ]] && strip_builddir SRC_SUBDIRS tests Makefile.in
 	fi
 
