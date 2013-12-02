@@ -8,9 +8,6 @@ GNOME2_LA_PUNT="yes"
 PYTHON_COMPAT=( python2_{6,7} )
 
 inherit autotools eutils gnome2 multilib pax-utils python-r1 systemd
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Provides core UI functions for the GNOME 3 desktop"
 HOMEPAGE="http://live.gnome.org/GnomeShell"
@@ -19,11 +16,7 @@ LICENSE="GPL-2+ LGPL-2+"
 SLOT="0"
 IUSE="+bluetooth +i18n +networkmanager -openrc-force"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ppc ~ppc64 ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ppc ~ppc64 ~x86"
 
 # libXfixes-5.0 needed for pointer barriers
 # FIXME:
@@ -139,7 +132,7 @@ src_prepare() {
 
 	epatch_user
 
-	[[ ${PV} != 9999 ]] && eautoreconf
+	eautoreconf
 	gnome2_src_prepare
 }
 
