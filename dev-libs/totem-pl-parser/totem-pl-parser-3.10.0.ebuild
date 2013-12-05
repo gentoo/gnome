@@ -43,7 +43,7 @@ src_prepare() {
 	# 3rd test fails on upgrade, not once installed
 	sed -e 's:\(g_test_add_func.*/parser/resolution.*\):/*\1*/:' \
 		-e 's:\(g_test_add_func.*/parser/parsing/itms_link.*\):/*\1*/:' \
-		-e 's:\(g_test_add_func.*/parser/parsability.*\)/*\1/:'\
+		-e 's:\(g_test_add_func.*/parser/parsability.*\):/*\1/:'\
 		-i plparse/tests/parser.c || die "sed failed"
 
 	gnome2_src_prepare
