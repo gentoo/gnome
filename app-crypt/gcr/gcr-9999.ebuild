@@ -63,6 +63,7 @@ src_prepare() {
 		-e 's/CFLAGS="$CFLAGS -O0"//' \
 		-i configure.ac configure || die
 
+	use vala && vala_src_prepare
 	gnome2_src_prepare
 }
 
