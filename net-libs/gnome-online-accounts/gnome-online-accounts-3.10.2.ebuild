@@ -6,9 +6,6 @@ EAPI="5"
 GCONF_DEBUG="yes"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="GNOME framework for accessing online accounts"
 HOMEPAGE="https://wiki.gnome.org/GnomeOnlineAccounts"
@@ -16,12 +13,7 @@ HOMEPAGE="https://wiki.gnome.org/GnomeOnlineAccounts"
 LICENSE="LGPL-2+"
 SLOT="0/1"
 IUSE="gnome +introspection kerberos telepathy"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 # pango used in goaeditablelabel
 # libsoup used in goaoauthprovider
@@ -59,11 +51,6 @@ DEPEND="${RDEPEND}
 
 # Due to sub-configure
 QA_CONFIGURE_OPTIONS=".*"
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.3 )"
-fi
 
 src_configure() {
 	# TODO: Give users a way to set the G/Y!/FB/Twitter/Windows Live secrets
