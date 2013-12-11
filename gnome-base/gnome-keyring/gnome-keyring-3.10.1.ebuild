@@ -26,14 +26,13 @@ RDEPEND="
 	pam? ( virtual/pam )
 "
 DEPEND="${RDEPEND}
+	app-text/docbook-xml-dtd:4.3
+	dev-libs/libxslt
 	>=dev-util/intltool-0.35
 	sys-devel/gettext
 	virtual/pkgconfig
 "
 PDEPEND=">=gnome-base/libgnome-keyring-3.1.92"
-# eautoreconf needs:
-#	>=dev-util/gtk-doc-am-1.9
-# gtk-doc-am is not needed otherwise (no gtk-docs are installed)
 
 src_prepare() {
 	# Disable stupid CFLAGS
@@ -63,6 +62,7 @@ src_configure() {
 		$(use_enable pam) \
 		$(use_with pam pam-dir $(getpam_mod_dir)) \
 		$(use_enable selinux) \
+		--enable-doc \
 		--enable-ssh-agent \
 		--enable-gpg-agent
 }
