@@ -150,7 +150,7 @@ gnome2_src_configure() {
 	# Remember to drop 'doc' USE flag from your package if it was only used to
 	# rebuild docs.
 	# Preserve old behavior for older EAPI.
-	if grep -q "enable-gtk-doc" ${ECONF_SOURCE:-.}/configure ; then
+	if grep -q "enable-gtk-doc" "${ECONF_SOURCE:-.}"/configure ; then
 		if has ${EAPI:-0} 0 1 2 3 4 && in_iuse doc ; then
 			G2CONF="$(use_enable doc gtk-doc) ${G2CONF}"
 		else
@@ -160,30 +160,35 @@ gnome2_src_configure() {
 
 	# Pass --disable-maintainer-mode when needed
 	if grep -q "^[[:space:]]*AM_MAINTAINER_MODE(\[enable\])" \
-		${ECONF_SOURCE:-.}/configure.*; then
+		"${ECONF_SOURCE:-.}"/configure.*; then
 		G2CONF="--disable-maintainer-mode ${G2CONF}"
 	fi
 
 	# Pass --disable-scrollkeeper when possible
-	if grep -q "disable-scrollkeeper" ${ECONF_SOURCE:-.}/configure; then
+	if grep -q "disable-scrollkeeper" "${ECONF_SOURCE:-.}"/configure; then
 		G2CONF="--disable-scrollkeeper ${G2CONF}"
 	fi
 
 	# Pass --disable-silent-rules when possible (not needed for eapi5), bug #429308
 	if has ${EAPI:-0} 0 1 2 3 4; then
-		if grep -q "disable-silent-rules" ${ECONF_SOURCE:-.}/configure; then
+		if grep -q "disable-silent-rules" "${ECONF_SOURCE:-.}"/configure; then
 			G2CONF="--disable-silent-rules ${G2CONF}"
 		fi
 	fi
 
 	# Pass --disable-schemas-install when possible
-	if grep -q "disable-schemas-install" ${ECONF_SOURCE:-.}/configure; then
+	if grep -q "disable-schemas-install" "${ECONF_SOURCE:-.}"/configure; then
 		G2CONF="--disable-schemas-install ${G2CONF}"
 	fi
 
 	# Pass --disable-schemas-compile when possible
-	if grep -q "disable-schemas-compile" ${ECONF_SOURCE:-.}/configure; then
+	if grep -q "disable-schemas-compile" "${ECONF_SOURCE:-.}"/configure; then
 		G2CONF="--disable-schemas-compile ${G2CONF}"
+	fi
+
+	# Pass --enable-compile-warnings=minimum as we don't want -Werror* flags, bug #471336
+	if grep -q "enable-compile-warnings" "${ECONF_SOURCE:-.}"/configure; then
+		G2CONF="--enable-compile-warnings=minimum ${G2CONF}"
 	fi
 
 	# Avoid sandbox violations caused by gnome-vfs (bug #128289 and #345659)
@@ -231,17 +236,7 @@ gnome2_src_install() {
 			dodoc ${DOCS} || die "dodoc failed"
 		fi
 	else
-		if ! declare -p DOCS >/dev/null 2>&1 ; then
-			local d
-			for d in README* ChangeLog AUTHORS NEWS TODO CHANGES THANKS BUGS \
-					FAQ CREDITS CHANGELOG ; do
-				[[ -s "${d}" ]] && dodoc "${d}"
-			done
-		elif declare -p DOCS | grep -q '^declare -a' ; then
-			dodoc "${DOCS[@]}"
-		else
-			dodoc ${DOCS}
-		fi
+		einstalldocs
 	fi
 
 	# Do not keep /var/lib/scrollkeeper because:
@@ -281,6 +276,7 @@ gnome2_pkg_preinst() {
 	gnome2_icon_savelist
 	gnome2_schemas_savelist
 	gnome2_scrollkeeper_savelist
+	gnome2_gdk_pixbuf_savelist
 }
 
 # @FUNCTION: gnome2_pkg_postinst
@@ -294,6 +290,7 @@ gnome2_pkg_postinst() {
 	gnome2_icon_cache_update
 	gnome2_schemas_update
 	gnome2_scrollkeeper_update
+	gnome2_gdk_pixbuf_update
 
 	# This should only be in the overlay
 	ewarn "**************************************************************"
