@@ -10,9 +10,6 @@ VALA_USE_DEPEND="vapigen"
 PYTHON_COMPAT=( python{2_6,2_7} )
 
 inherit gnome2 python-any-r1 vala
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Compatibility library for accessing secrets"
 HOMEPAGE="http://live.gnome.org/GnomeKeyring"
@@ -21,12 +18,7 @@ LICENSE="LGPL-2+ GPL-2+" # tests are GPL-2
 SLOT="0"
 IUSE="debug +introspection test vala"
 REQUIRED_USE="vala? ( introspection )"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~sparc-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~sparc-solaris"
 
 RDEPEND="
 	>=sys-apps/dbus-1
@@ -41,11 +33,6 @@ DEPEND="${RDEPEND}
 	test? ( ${PYTHON_DEPS} )
 	vala? ( $(vala_depend) )
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.9 )"
-fi
 
 src_prepare() {
 	use vala && vala_src_prepare
