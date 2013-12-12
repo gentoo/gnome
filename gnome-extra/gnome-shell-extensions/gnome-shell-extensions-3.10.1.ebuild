@@ -5,10 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="no"
 
-inherit eutils gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+inherit eutils gnome2 readme.gentoo
 
 DESCRIPTION="JavaScript extensions for GNOME Shell"
 HOMEPAGE="http://live.gnome.org/GnomeShell/Extensions"
@@ -16,11 +13,7 @@ HOMEPAGE="http://live.gnome.org/GnomeShell/Extensions"
 LICENSE="GPL-2"
 SLOT="0"
 IUSE="examples"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64 ~x86"
-fi
+KEYWORDS="~amd64 ~x86"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.26:2
