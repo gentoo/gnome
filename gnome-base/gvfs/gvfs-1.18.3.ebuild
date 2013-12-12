@@ -7,9 +7,6 @@ GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
 inherit autotools bash-completion-r1 eutils gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Virtual filesystem implementation for gio"
 HOMEPAGE="https://git.gnome.org/browse/gvfs"
@@ -23,15 +20,8 @@ REQUIRED_USE="
 	udisks? ( udev )
 	systemd? ( udisks )
 "
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~sparc-solaris ~x86-solaris"
 
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-	DOCS=""
-	IUSE="${IUSE} doc"
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~sparc-solaris ~x86-solaris"
-	DOCS="AUTHORS ChangeLog NEWS MAINTAINERS README TODO" # ChangeLog.pre-1.2 README.commits
-fi
 
 # Can use libgphoto-2.5.0 as well. Automagic detection.
 RDEPEND="
@@ -85,19 +75,20 @@ DEPEND="${RDEPEND}
 # libgcrypt.m4, provided by libgcrypt, needed for eautoreconf, bug #399043
 # test dependencies needed per https://bugzilla.gnome.org/700162
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1 )"
-fi
+# Tests with multiple failures, this is being handled upstream at:
+# https://bugzilla.gnome.org/700162
+RESTRICT="test"
 
 src_prepare() {
+	DOCS="AUTHORS ChangeLog NEWS MAINTAINERS README TODO" # ChangeLog.pre-1.2 README.commits
+
 	if ! use udev; then
 		sed -e 's/gvfsd-burn/ /' \
 			-e 's/burn.mount.in/ /' \
 			-e 's/burn.mount/ /' \
 			-i daemon/Makefile.am || die
 
-		[[ ${PV} = 9999 ]] || eautoreconf
+		eautoreconf
 	fi
 
 	gnome2_src_prepare
