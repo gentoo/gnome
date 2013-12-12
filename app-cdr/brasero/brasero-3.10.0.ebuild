@@ -7,9 +7,6 @@ GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="CD/DVD burning application for the GNOME desktop"
 HOMEPAGE="http://projects.gnome.org/brasero/"
@@ -17,12 +14,7 @@ HOMEPAGE="http://projects.gnome.org/brasero/"
 LICENSE="GPL-2+ CC-BY-SA-3.0"
 SLOT="0/3.1" # subslot is 3.suffix of libbrasero-burn3
 IUSE="+css +introspection +libburn mp3 nautilus packagekit playlist test tracker"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.29.14:2
@@ -73,18 +65,7 @@ DEPEND="${COMMON_DEPEND}
 
 PDEPEND="gnome-base/gvfs"
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools
-		gnome-base/gnome-common
-		doc? ( >=dev-util/gtk-doc-1.12 )"
-fi
-
 src_configure() {
-	local myconf=""
-
-	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
-
 	DOCS="AUTHORS ChangeLog MAINTAINERS NEWS README"
 	gnome2_src_configure \
 		--disable-caches \
@@ -97,5 +78,5 @@ src_configure() {
 		$(use_enable nautilus) \
 		$(use_enable playlist) \
 		$(use_enable tracker search) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
