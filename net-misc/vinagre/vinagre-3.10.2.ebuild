@@ -51,6 +51,7 @@ src_prepare() {
 }
 
 src_configure() {
+	DOCS="AUTHORS ChangeLog ChangeLog.pre-git NEWS README"
 	gnome2_src_configure \
 		$(use_with avahi) \
 		$(use_enable rdp) \
@@ -58,12 +59,4 @@ src_configure() {
 		$(use_enable spice) \
 		$(use_with telepathy) \
 		ITSTOOL=$(type -P true)
-}
-
-src_install() {
-	DOCS="AUTHORS ChangeLog ChangeLog.pre-git NEWS README"
-	gnome2_src_install
-
-	# Remove its own installation of DOCS that go to $PN instead of $P and aren't ecompressed
-	rm -r "${ED}"/usr/share/doc/vinagre || die
 }
