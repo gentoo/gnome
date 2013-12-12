@@ -72,7 +72,7 @@ COMMON_DEPEND="
 	ssl? (
 		>=dev-libs/nspr-4.6.1:=
 		>=dev-libs/nss-3.11:= )
-	weather? ( >=dev-libs/libgweather-3.5.0:2= )
+	weather? ( >=dev-libs/libgweather-3.8:2= )
 "
 DEPEND="${COMMON_DEPEND}
 	app-text/docbook-xml-dtd:4.1.2
