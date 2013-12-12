@@ -1,6 +1,6 @@
 # Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-accessibility/orca/orca-3.8.2.ebuild,v 1.1 2013/08/02 20:49:29 eva Exp $
+# $Header: $
 
 EAPI="5"
 GCONF_DEBUG="no"
@@ -40,7 +40,7 @@ RDEPEND="${COMMON_DEPEND}
 	x11-libs/pango[introspection]
 "
 DEPEND="${COMMON_DEPEND}
-	>=dev-util/intltool-0.40
+	>=dev-util/intltool-0.50
 	virtual/pkgconfig
 "
 #	app-text/yelp-tools
