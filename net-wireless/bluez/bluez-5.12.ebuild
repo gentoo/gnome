@@ -12,7 +12,7 @@ HOMEPAGE="http://www.bluez.org"
 SRC_URI="mirror://kernel/linux/bluetooth/${P}.tar.xz"
 
 LICENSE="GPL-2+ LGPL-2.1+"
-SLOT="0"
+SLOT="0/3"
 KEYWORDS="~amd64"
 IUSE="cups debug obex readline selinux systemd test"
 REQUIRED_USE="test? ( ${PYTHON_REQUIRED_USE} )"
@@ -80,7 +80,8 @@ src_configure() {
 		--enable-obex \
 		--enable-client \
 		$(use_enable systemd) \
-		$(systemd_with_unitdir)
+		$(systemd_with_unitdir) \
+		--enable-sixaxis
 }
 
 src_install() {
@@ -103,7 +104,6 @@ src_install() {
 	doins src/main.conf
 	doins src/bluetooth.conf
 
-	# FIXME: dependent on systemd while nothing seems really tied to it
 	insinto /usr/share/dbus-1/system-services
 	doins src/org.bluez.service
 
@@ -111,15 +111,13 @@ src_install() {
 	newinitd "${FILESDIR}"/rfcomm-init.d rfcomm
 	newconfd "${FILESDIR}"/rfcomm-conf.d rfcomm
 
-	udev_newrules tools/hid2hci.rules 97-bluetooth-hid2hci.rules
-
 	readme.gentoo_create_doc
 }
 
 pkg_postinst() {
 	readme.gentoo_print_elog
 
-	udevadm control --reload-rules
+	udev_reload
 
 	has_version net-dialup/ppp || elog "To use dial up networking you must install net-dialup/ppp."
 
