@@ -22,7 +22,6 @@ REQUIRED_USE="
 "
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~sparc-solaris ~x86-solaris"
 
-
 # Can use libgphoto-2.5.0 as well. Automagic detection.
 RDEPEND="
 	>=dev-libs/glib-2.37:2
