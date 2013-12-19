@@ -15,7 +15,7 @@ HOMEPAGE="https://help.gnome.org/users/gnome-system-monitor/"
 
 LICENSE="GPL-2"
 SLOT="0"
-IUSE="systemd"
+IUSE="systemd +X"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
