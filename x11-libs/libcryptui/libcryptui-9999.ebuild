@@ -17,7 +17,7 @@ LICENSE="GPL-2+ LGPL-2.1+ FDL-1.1"
 SLOT="0"
 IUSE="+introspection libnotify"
 if [[ ${PV} = 9999 ]]; then
-	IUSE="doc"
+	IUSE="${IUSE} doc"
 	KEYWORDS=""
 else
 	KEYWORDS="~amd64 ~x86 ~x86-fbsd"
