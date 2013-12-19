@@ -53,13 +53,13 @@ DEPEND="${COMMON_DEPEND}
 
 src_prepare() {
 	# Do not build examples
-    sed -e "s/^\(SUBDIRS +=.*\)examples\(.*\)$/\1\2/" \
+	sed -e "s/^\(SUBDIRS +=.*\)examples\(.*\)$/\1\2/" \
 		-i Makefile.am Makefile.in || die
 
 	if ! use test ; then
 		# For some reason the configure switch will not completely disable
 		# tests being built
-    	sed -e "s/^\(SUBDIRS =.*\)test-fixtures\(.*\)$/\1\2/" \
+		sed -e "s/^\(SUBDIRS =.*\)test-fixtures\(.*\)$/\1\2/" \
     		-e "s/^\(SUBDIRS +=.*\)tests\(.*\)$/\1\2/" \
     		-e "s/^\(.*am__append.* \)tests\(.*\)$/\1\2/" \
 			-i Makefile.am Makefile.in || die
