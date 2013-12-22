@@ -1,8 +1,8 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="4"
+EAPI="5"
 # debug only changes CFLAGS
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
@@ -46,7 +46,6 @@ RDEPEND=">=x11-libs/gtk+-2.24:2
 	xinerama? ( x11-libs/libXinerama )
 	!x11-misc/expocity"
 DEPEND="${RDEPEND}
-	>=app-text/gnome-doc-utils-0.8
 	sys-devel/gettext
 	>=dev-util/intltool-0.35
 	virtual/pkgconfig
@@ -55,26 +54,34 @@ DEPEND="${RDEPEND}
 	x11-proto/xextproto
 	x11-proto/xproto"
 
-pkg_setup() {
-	DOCS="AUTHORS ChangeLog HACKING NEWS README *.txt doc/*.txt"
-	G2CONF="${G2CONF}
-		--disable-static
-		--enable-canberra
-		--enable-compositor
-		--enable-render
-		--enable-shape
-		--enable-sm
-		--enable-startup-notification
-		--enable-xsync
-		$(use_enable xinerama)"
-}
-
 src_prepare() {
-	gnome2_src_prepare
-
 	# WIFEXITED and friends are defined in sys/wait.h
 	# Fixes a build failure on BSD.
 	# https://bugs.gentoo.org/show_bug.cgi?id=309443
 	# https://bugzilla.gnome.org/show_bug.cgi?id=605460
 	epatch "${FILESDIR}/${PN}-2.28.1-wif_macros.patch"
+
+	gnome2_src_prepare
+}
+
+src_configure() {
+	local myconf=""
+
+	if [[ ${PV} != 9999 ]]; then
+		myconf="${myconf} ITSTOOL=$(type -P true)"
+	fi
+
+	DOCS="AUTHORS ChangeLog HACKING NEWS README *.txt doc/*.txt"
+	gnome2_src_configure \
+		--disable-static \
+		--enable-canberra \
+		--enable-compositor \
+		--enable-render \
+		--enable-shape \
+		--enable-sm \
+		--enable-startup-notification \
+		--enable-xsync \
+		--enable-themes-documentation \
+		$(use_enable xinerama) \
+		${myconf}
 }
