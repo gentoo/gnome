@@ -1,8 +1,8 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/gnome-extra/evolution-exchange/evolution-exchange-3.2.3.ebuild,v 1.1 2012/01/20 23:28:07 tetromino Exp $
+# $Header: $
 
-EAPI="4"
+EAPI="5"
 GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
@@ -16,9 +16,10 @@ HOMEPAGE="http://projects.gnome.org/evolution/"
 LICENSE="GPL-2"
 
 SLOT="2.0"
-IUSE="debug doc static"
+IUSE="debug static"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
+	IUSE="${IUSE} doc"
 else
 	KEYWORDS="~amd64 ~x86"
 fi
@@ -33,19 +34,25 @@ RDEPEND="
 	dev-libs/libxml2:2
 	net-libs/libsoup:2.4
 	>=net-nds/openldap-2.1.30-r2
-	virtual/krb5"
-
+	virtual/krb5
+"
 DEPEND="${RDEPEND}
+	>=dev-util/gtk-doc-am-1.9
 	>=dev-util/intltool-0.40
 	virtual/pkgconfig
-	doc? ( >=dev-util/gtk-doc-1.9 )"
+"
 
-pkg_setup() {
-	G2CONF="${G2CONF}
-		--with-krb5=${EPREFIX}/usr
-		--with-openldap
-		--disable-static
-		$(use_enable debug e2k-debug)
-		$(use_with static static-ldap)"
+if [[ ${PV} = 9999 ]]; then
+	DEPEND="${DEPEND}
+		doc? ( >=dev-util/gtk-doc-1.9 )"
+fi
+
+src_configure() {
 	DOCS="AUTHORS ChangeLog NEWS README"
+	gnome2_src_configure \
+		--with-krb5="${EPREFIX}"/usr \
+		--with-openldap \
+		--disable-static \
+		$(use_enable debug e2k-debug) \
+		$(use_with static static-ldap)
 }
