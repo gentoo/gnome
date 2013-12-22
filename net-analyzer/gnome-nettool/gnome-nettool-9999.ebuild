@@ -1,8 +1,8 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/net-analyzer/gnome-nettool/gnome-nettool-2.32.0.ebuild,v 1.1 2010/10/22 21:31:14 eva Exp $
+# $Header: $
 
-EAPI="3"
+EAPI="5"
 GCONF_DEBUG="yes"
 
 inherit eutils gnome2
@@ -10,8 +10,8 @@ if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
-DESCRIPTION="Collection of network tools"
-HOMEPAGE="http://www.gnome.org/projects/gnome-network/"
+DESCRIPTION="Graphical front-ends to various networking command-line"
+HOMEPAGE="https://git.gnome.org/browse/gnome-nettool/"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -23,31 +23,31 @@ else
 fi
 
 COMMON_DEPEND="
-	>=dev-libs/glib-2.25.10
+	>=dev-libs/glib-2.25.10:2
+	gnome-base/libgtop:2
+	x11-libs/cairo
+	x11-libs/gdk-pixbuf:2
 	>=x11-libs/gtk+-2.90.4:3
-	gnome-base/libgtop:2"
+	x11-libs/pango
+"
 RDEPEND="${COMMON_DEPEND}
-	|| ( net-analyzer/traceroute sys-freebsd/freebsd-usbin )
+	|| (
+		net-misc/iputils
+		net-analyzer/tcptraceroute
+		net-analyzer/traceroute
+		sys-freebsd/freebsd-usbin )
+	net-analyzer/nmap
 	net-dns/bind-tools
 	userland_GNU? ( net-misc/netkit-fingerd net-misc/whois )
-	userland_BSD? ( net-misc/bsdwhois )"
-
-# Gilles Dartiguelongue <eva@gentoo.org> (12 Apr 2008)
-# Mask gnome-system-tools 2.14 because it is starting to cause more headache
-# to keep it than to mask it.
-# Support is autodetected at runtime anyway.
-# app-admin/gnome-system-tools
-
+	userland_BSD? ( net-misc/bsdwhois )
+"
 DEPEND="${COMMON_DEPEND}
+	app-text/yelp-tools
 	>=dev-util/intltool-0.40
 	virtual/pkgconfig
-	app-text/gnome-doc-utils
-	sys-devel/gettext"
+	sys-devel/gettext
+"
 
-pkg_setup() {
-	DOCS="AUTHORS ChangeLog NEWS README TODO"
-	G2CONF="${G2CONF}
-		$(use_enable debug)
-		--disable-schemas-compile
-		--disable-scrollkeeper"
+src_configure() {
+	gnome2_src_configure $(use_enable debug)
 }
