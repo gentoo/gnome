@@ -1,18 +1,18 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/dev-libs/gmime/gmime-2.4.25.ebuild,v 1.1 2011/06/11 15:17:27 pacho Exp $
+# $Header: $
 
-EAPI="4"
+EAPI="5"
 GCONF_DEBUG="no"
-GNOME2_LA_PUNT="yes"
+VALA_USE_DEPEND="vapigen"
 
-inherit gnome2 eutils mono libtool
+inherit eutils mono-env gnome2 vala
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
 DESCRIPTION="Utilities for creating and parsing messages using MIME"
-HOMEPAGE="http://spruce.sourceforge.net/gmime/"
+HOMEPAGE="http://spruce.sourceforge.net/gmime/ http://developer.gnome.org/gmime/stable/"
 
 SLOT="2.6"
 LICENSE="LGPL-2.1"
@@ -21,54 +21,51 @@ if [[ ${PV} = 9999 ]]; then
 else
 	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos ~x86-solaris"
 fi
-IUSE="doc mono static-libs"
+IUSE="doc mono static-libs vala"
 
-RDEPEND=">=dev-libs/glib-2.18:2
-	>=app-crypt/gpgme-1.1.6
+RDEPEND="
+	>=dev-libs/glib-2.18:2
 	sys-libs/zlib
+	>=app-crypt/gpgme-1.1.6
 	mono? (
 		dev-lang/mono
-		>=dev-dotnet/glib-sharp-2.4.0:2 )"
+		>=dev-dotnet/glib-sharp-2.4.0:2 )
+"
 DEPEND="${RDEPEND}
+	>=dev-util/gtk-doc-am-1.8
 	virtual/pkgconfig
-	doc? (
-		>=dev-util/gtk-doc-1.8
-		app-text/docbook-sgml-utils )
-	mono? ( dev-dotnet/gtk-sharp-gapi:2 )"
+	doc? ( app-text/docbook-sgml-utils )
+	mono? ( dev-dotnet/gtk-sharp-gapi:2 )
+	vala? (
+		$(vala_depend)
+		>=dev-libs/gobject-introspection-1.30.0 )
+"
+
+if [[ ${PV} = 9999 ]]; then
+	DEPEND="${DEPEND}
+		doc? ( >=dev-util/gtk-doc-1.8 )"
+fi
 
 pkg_setup() {
-	DOCS="AUTHORS ChangeLog NEWS PORTING README TODO"
-	G2CONF="${G2CONF}
-		$(use_enable mono)
-		$(use_enable static-libs static)
-		--enable-cryptography"
+	use mono && mono-env_pkg_setup
 }
 
 src_prepare() {
+	use vala && vala_src_prepare
 	gnome2_src_prepare
+}
 
-	if use doc ; then
-		# db2html should be docbook2html
-		sed -i -e 's:db2html:docbook2html:' \
-			configure.ac configure || die "sed failed (1)"
-		sed -i -e 's:db2html:docbook2html -o gmime-tut:g' \
-			docs/tutorial/Makefile.* || die "sed failed (2)"
-		# Fix doc targets (bug #97154)
-		sed -i -e 's!\<\(tmpl-build.stamp\): !\1 $(srcdir)/tmpl/*.sgml: !' \
-			gtk-doc.make docs/reference/Makefile.in || die "sed failed (3)"
-	fi
-
-	# Use correct libdir for mono assembly
-	sed -i -e 's:^libdir.*:libdir=@libdir@:' \
-		   -e 's:^prefix=:exec_prefix=:' \
-		   -e 's:prefix)/lib:libdir):' \
-		mono/gmime-sharp.pc.in mono/Makefile.{am,in} || die "sed failed (4)"
-
-	elibtoolize
+src_configure() {
+	gnome2_src_configure \
+		--enable-cryptography \
+		--disable-strict-parser \
+		$(use_enable mono) \
+		$(use_enable static-libs static) \
+		$(use_enable vala)
 }
 
 src_compile() {
-	MONO_PATH="${S}" emake
+	MONO_PATH="${S}" gnome2_src_compile
 	if use doc; then
 		emake -C docs/tutorial html
 	fi
@@ -79,15 +76,7 @@ src_install() {
 		gnome2_src_install
 
 	if use doc ; then
-		# we don't use docinto/dodoc, because we don't want html doc gzipped
-		insinto /usr/share/doc/${PF}/tutorial
-		doins docs/tutorial/html/*
+		docinto tutorial
+		dodoc docs/tutorial/html/*
 	fi
-
-	dodoc $DOCS
-
-	# rename these two, so they don't conflict with app-arch/sharutils
-	# (bug #70392)	Ticho, 2004-11-10
-	mv "${ED}/usr/bin/uuencode" "${ED}/usr/bin/gmime-uuencode-${SLOT}"
-	mv "${ED}/usr/bin/uudecode" "${ED}/usr/bin/gmime-uudecode-${SLOT}"
 }
