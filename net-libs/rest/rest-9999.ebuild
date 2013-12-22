@@ -1,4 +1,4 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -21,7 +21,7 @@ if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha amd64 ~ppc ~ppc64 x86"
+	KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc x86"
 fi
 
 # Coverage testing should not be enabled
@@ -45,13 +45,12 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 src_configure() {
-	G2CONF="${G2CONF}
-		--disable-static
-		--disable-gcov
-		--with-ca-certificates=${EPREFIX}/etc/ssl/certs/ca-certificates.crt
-		$(use_with gnome)
-		$(use_enable introspection)"
-	gnome2_src_configure
+	gnome2_src_configure \
+		--disable-static \
+		--disable-gcov \
+		--with-ca-certificates="${EPREFIX}"/etc/ssl/certs/ca-certificates.crt \
+		$(use_with gnome) \
+		$(use_enable introspection)
 }
 
 src_test() {
