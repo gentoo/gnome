@@ -1,10 +1,12 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/x11-libs/colord-gtk/colord-gtk-0.1.22.ebuild,v 1.1 2012/08/10 19:03:00 tetromino Exp $
+# $Header: $
 
-EAPI="4"
+EAPI="5"
+VALA_MIN_API_VERSION="0.14"
+VALA_USE_DEPEND="vapigen"
 
-inherit autotools eutils
+inherit eutils vala
 if [[ ${PV} = 9999 ]]; then
 	GCONF_DEBUG="no"
 	inherit gnome2-live # need all the hacks from gnome2-live_src_prepare
@@ -18,26 +20,29 @@ else
 	SRC_URI="http://www.freedesktop.org/software/colord/releases/${P}.tar.xz"
 fi
 
-LICENSE="LGPL-3"
-SLOT="0"
+LICENSE="LGPL-3+"
+SLOT="0/1" # subslot = libcolord-gtk soname version
+IUSE="doc +introspection vala"
+REQUIRED_USE="vala? ( introspection )"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~mips ~ppc ~ppc64 ~x86 ~x86-fbsd"
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 fi
-IUSE="doc +introspection vala"
-REQUIRED_USE="vala? ( introspection )"
 
-COMMON_DEPEND=">=dev-libs/glib-2.28:2
-	>=media-libs/lcms-2.2:2
+COMMON_DEPEND="
+	>=dev-libs/glib-2.28:2
+	>=media-libs/lcms-2.2:2=
 	x11-libs/gdk-pixbuf:2[introspection?]
 	x11-libs/gtk+:3[X(+),introspection?]
-	x11-misc/colord[introspection?,vala?]
+	x11-misc/colord:=[introspection?,vala?]
 	introspection? ( >=dev-libs/gobject-introspection-0.9.8 )"
 # ${PN} was part of x11-misc/colord until 0.1.22
 RDEPEND="${COMMON_DEPEND}
-	!<x11-misc/colord-0.1.22"
+	!<x11-misc/colord-0.1.27
+"
 DEPEND="${COMMON_DEPEND}
+	app-arch/xz-utils
 	dev-libs/libxslt
 	>=dev-util/intltool-0.35
 	>=sys-devel/gettext-0.17
@@ -46,14 +51,13 @@ DEPEND="${COMMON_DEPEND}
 		app-text/docbook-xml-dtd:4.1.2
 		>=dev-util/gtk-doc-1.9
 	)
-	vala? ( dev-lang/vala:0.14[vapigen] )"
+	vala? ( $(vala_depend) )
+"
 
 src_prepare() {
-	epatch "${FILESDIR}/${PN}-0.1.22-automagic-vala.patch"
+	use vala && vala_src_prepare
 	if [[ ${PV} = 9999 ]]; then
 		gnome2_src_prepare
-	else
-		eautoreconf
 	fi
 }
 
@@ -62,11 +66,10 @@ src_configure() {
 		--disable-static \
 		$(use_enable doc gtk-doc) \
 		$(use_enable introspection) \
-		$(use_enable vala) \
-		VAPIGEN=$(type -P vapigen-0.14)
+		$(use_enable vala)
 }
 
 src_install() {
 	default
-	prune_libtool_files
+	prune_libtool_files --modules
 }
