@@ -5,7 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="no"
 
-inherit eutils gnome2
+inherit gnome2
 
 DESCRIPTION="A document manager application for GNOME"
 HOMEPAGE="https://wiki.gnome.org/Design/Apps/Documents"
@@ -13,7 +13,7 @@ HOMEPAGE="https://wiki.gnome.org/Design/Apps/Documents"
 LICENSE="GPL-2+"
 SLOT="0"
 IUSE=""
-KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
+KEYWORDS="~amd64"
 
 # Need gdk-pixbuf-2.25 for gdk_pixbuf_get_pixels_with_length
 COMMON_DEPEND="

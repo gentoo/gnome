@@ -19,7 +19,7 @@ IUSE=""
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
+	KEYWORDS="~amd64"
 fi
 
 # Need gdk-pixbuf-2.25 for gdk_pixbuf_get_pixels_with_length
