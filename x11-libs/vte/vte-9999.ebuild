@@ -1,30 +1,31 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="4"
+EAPI="5"
 GCONF_DEBUG="yes"
-GNOME2_LA_PUNT="yes"
 
 inherit eutils gnome2
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
-DESCRIPTION="GNOME terminal widget"
-HOMEPAGE="https://live.gnome.org/VTE"
+DESCRIPTION="Library providing a virtual terminal emulator widget"
+HOMEPAGE="https://wiki.gnome.org/action/show/Apps/Terminal/VTE"
 
 LICENSE="LGPL-2+"
 SLOT="2.90"
-IUSE="debug doc glade +introspection"
+IUSE="debug glade +introspection"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
+	IUSE="${IUSE} doc"
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~x64-solaris ~x86-solaris"
+	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~x64-solaris ~x86-solaris"
 fi
 
 PDEPEND="x11-libs/gnome-pty-helper"
-RDEPEND=">=dev-libs/glib-2.31.13:2
+RDEPEND="
+	>=dev-libs/glib-2.31.13:2
 	>=x11-libs/gtk+-3.1.9:3[introspection?]
 	>=x11-libs/pango-1.22.0
 
@@ -33,33 +34,19 @@ RDEPEND=">=dev-libs/glib-2.31.13:2
 	x11-libs/libXft
 
 	glade? ( >=dev-util/glade-3.9:3.10 )
-	introspection? ( >=dev-libs/gobject-introspection-0.9.0 )"
+	introspection? ( >=dev-libs/gobject-introspection-0.9.0 )
+"
 DEPEND="${RDEPEND}
+	>=dev-util/gtk-doc-am-1.13
 	>=dev-util/intltool-0.35
 	sys-devel/gettext
 	virtual/pkgconfig
-	doc? ( >=dev-util/gtk-doc-1.13 )"
+"
 
-pkg_setup() {
-	# Python bindings are via gobject-introspection
-	# Ex: from gi.repository import Vte
-	# Do not disable gnome-pty-helper, bug #401389
-	G2CONF="${G2CONF}
-		--disable-deprecation
-		--disable-static
-		$(use_enable debug)
-		$(use_enable glade glade-catalogue)
-		$(use_enable introspection)"
-
-	if [[ ${CHOST} == *-interix* ]]; then
-		G2CONF="${G2CONF} --disable-Bsymbolic"
-
-		# interix stropts.h is empty...
-		export ac_cv_header_stropts_h=no
-	fi
-
-	DOCS="AUTHORS ChangeLog HACKING NEWS README"
-}
+if [[ ${PV} = 9999 ]]; then
+	DEPEND="${DEPEND}
+		doc? ( >=dev-util/gtk-doc-1.13 )"
+fi
 
 src_prepare() {
 	# https://bugzilla.gnome.org/show_bug.cgi?id=663779
@@ -68,7 +55,30 @@ src_prepare() {
 	gnome2_src_prepare
 }
 
+src_configure() {
+	local myconf=""
+
+	if [[ ${CHOST} == *-interix* ]]; then
+		myconf="${myconf} --disable-Bsymbolic"
+
+		# interix stropts.h is empty...
+		export ac_cv_header_stropts_h=no
+	fi
+
+	# Python bindings are via gobject-introspection
+	# Ex: from gi.repository import Vte
+	# Do not disable gnome-pty-helper, bug #401389
+	gnome2_src_configure \
+		--disable-deprecation \
+		--disable-static \
+		$(use_enable debug) \
+		$(use_enable glade glade-catalogue) \
+		$(use_enable introspection) \
+		${myconf}
+}
+
 src_install() {
+	DOCS="AUTHORS ChangeLog HACKING NEWS README"
 	gnome2_src_install
 	rm -v "${ED}usr/libexec/gnome-pty-helper" || die
 }
