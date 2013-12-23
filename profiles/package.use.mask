@@ -6,10 +6,3 @@
 # gjs: tests fail and support for it was purely and simply removed in master/1.9
 # python2_6: unit tests fail for this abi, must report usptream
 dev-libs/libpeas gjs python_targets_python2_6
-
-# Gilles Dartiguelongue <eva@gentoo.org> (29 Nov 2013)
-# Gstreamer support fails to build due to libtool shortcomings when using
-# an intermediate library as a dependency of another libtool target dependency.
-# Since this is new and unused yet, keep it masked for now and check
-# with upstream if there is something that can be done to fix the issue.
-media-libs/cogl gstreamer
