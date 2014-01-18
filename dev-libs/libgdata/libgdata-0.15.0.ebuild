@@ -1,13 +1,13 @@
 # Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/dev-libs/libgdata/libgdata-0.14.0.ebuild,v 1.3 2013/12/08 18:01:35 pacho Exp $
 
 EAPI="5"
 GCONF_DEBUG="yes"
 VALA_MIN_API_VERSION="0.20"
 VALA_USE_DEPEND="vapigen"
 
-inherit gnome2 vala
+inherit autotools eutils gnome2 vala
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -28,8 +28,11 @@ REQUIRED_IUSE="vala? ( introspection )"
 
 # gtk+ is needed for gdk
 # configure checks for gtk:3, but only uses it for demos which are not installed
+# tests require libuhttpmock (not in portage)
+RESTRICT="test"
 RDEPEND="
 	>=dev-libs/glib-2.31:2
+	>=dev-libs/json-glib-0.15
 	>=dev-libs/libxml2-2:2
 	>=net-libs/liboauth-0.9.4
 	>=net-libs/libsoup-2.42.0:2.4[introspection?]
@@ -54,9 +57,11 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 src_prepare() {
+	epatch "${FILESDIR}/disable-uhttpmock.patch"
+	eautoreconf
 	# Disable tests requiring network access, bug #307725
 	sed -e '/^TEST_PROGS = / s:\(.*\):TEST_PROGS = general perf calendar client-login-authorizer contacts documents oauth1-authorizer picasaweb youtube \nOLD_\1:' \
-		-i gdata/tests/Makefile.am || die "network test disable failed"
+		-i gdata/tests/Makefile.in || die "network test disable failed"
 
 	vala_src_prepare
 	gnome2_src_prepare
@@ -69,7 +74,8 @@ src_configure() {
 		$(use_enable gnome goa) \
 		$(use_enable introspection) \
 		$(use_enable vala) \
-		$(use_enable static-libs static)
+		$(use_enable static-libs static) \
+		--disable-tests
 }
 
 src_test() {
