@@ -17,7 +17,7 @@ HOMEPAGE="https://live.gnome.org/Evolution http://projects.gnome.org/evolution/"
 # Note: explicitly "|| ( LGPL-2 LGPL-3 )", not "LGPL-2+".
 LICENSE="|| ( LGPL-2 LGPL-3 ) CC-BY-SA-3.0 FDL-1.3+ OPENLDAP"
 SLOT="2.0"
-IUSE="+bogofilter crypt highlight kerberos ldap map spamassassin spell ssl +weather"
+IUSE="+bogofilter crypt highlight ldap map spamassassin spell ssl +weather"
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
@@ -46,7 +46,7 @@ COMMON_DEPEND="
 	dev-libs/atk
 	>=dev-libs/dbus-glib-0.6
 	>=dev-libs/libxml2-2.7.3:2
-	>=net-libs/libsoup-gnome-2.42:2.4
+	>=net-libs/libsoup-2.42:2.4
 	>=x11-misc/shared-mime-info-0.22
 	>=x11-themes/gnome-icon-theme-2.30.2.1
 	>=dev-libs/libgdata-0.10:=
@@ -66,7 +66,6 @@ COMMON_DEPEND="
 		>=sci-geosciences/geocode-glib-3.10.0
 		x11-libs/mx:1.0 )
 	spell? ( app-text/gtkspell:3 )
-	kerberos? ( virtual/krb5:= )
 	ldap? ( >=net-nds/openldap-2:= )
 	ssl? (
 		>=dev-libs/nspr-4.6.1:=
@@ -139,7 +138,6 @@ src_configure() {
 		$(use_enable spell gtkspell) \
 		$(use_enable ssl nss) \
 		$(use_enable ssl smime) \
-		$(use_with kerberos krb5 "${EPREFIX}"/usr) \
 		$(use_with ldap openldap) \
 		$(usex ssl --enable-nss=yes "--without-nspr-libs
 			--without-nspr-includes
