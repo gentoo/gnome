@@ -1,9 +1,10 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="4"
+EAPI=5
 
+inherit eutils
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live # to avoid duplicating hacks from gnome2-live_src_prepare
 fi
@@ -21,30 +22,24 @@ SLOT="0"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~amd64 ~hppa ~x86"
+	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~arm-linux ~x86-linux"
 fi
-IUSE="debug doc"
+IUSE="+asn1 debug +trust"
+REQUIRED_USE="trust? ( asn1 )"
 
-RDEPEND=""
+RDEPEND="asn1? ( >=dev-libs/libtasn1-2.14 )"
 DEPEND="${RDEPEND}
-	sys-devel/gettext
 	virtual/pkgconfig
-	doc? (
-		app-text/docbook-xml-dtd:4.1.2
-		>=dev-util/gtk-doc-1.15
-	)
 "
-
-DOCS=(AUTHORS ChangeLog NEWS README)
 
 src_configure() {
 	econf \
-		--disable-maintainer-mode \
-		--with-system-config="${EPREFIX}/etc/pkcs11" \
+		$(use_enable trust trust-module) \
 		$(use_enable debug) \
-		$(use_enable doc gtk-doc)
+		$(use_with asn1 libtasn1)
 }
 
 src_install() {
 	default
+	prune_libtool_files --modules
 }
