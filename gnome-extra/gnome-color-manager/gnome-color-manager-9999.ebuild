@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -65,14 +65,17 @@ fi
 RESTRICT="test"
 
 src_configure() {
+	local myconf=""
+	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
+
 	# Always enable tests since they are check_PROGRAMS anyway
-	[[ ${PV} != 9999 ]] && G2CONF="${G2CONF} ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		--disable-static \
 		--enable-tests \
 		$(use_enable clutter) \
 		$(use_enable packagekit) \
-		$(use_enable raw exiv)
+		$(use_enable raw exiv) \
+		${myconf}
 }
 
 pkg_postinst() {
