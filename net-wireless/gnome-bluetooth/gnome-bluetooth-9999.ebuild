@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -24,13 +24,13 @@ else
 fi
 
 COMMON_DEPEND="
-	>=dev-libs/glib-2.36:2
+	>=dev-libs/glib-2.37.3:2
 	>=x11-libs/gtk+-2.91.3:3[introspection?]
 	virtual/udev
 	introspection? ( >=dev-libs/gobject-introspection-0.9.5 )
 "
 RDEPEND="${COMMON_DEPEND}
-	>=net-wireless/bluez-4.34
+	>=net-wireless/bluez-5
 	app-mobilephone/obexd
 	x11-themes/gnome-icon-theme-symbolic
 "
