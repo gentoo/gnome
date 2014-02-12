@@ -1,4 +1,4 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -19,13 +19,14 @@ SLOT="0"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 fi
 IUSE="flac test vorbis"
 
 COMMON_DEPEND="
+	app-text/iso-codes
 	>=dev-libs/glib-2.32:2
-	>=x11-libs/gtk+-2.90:3
+	>=x11-libs/gtk+-3.2:3
 	media-libs/libcanberra[gtk3]
 	>=app-cdr/brasero-2.90
 	>=gnome-base/gconf-2:2
