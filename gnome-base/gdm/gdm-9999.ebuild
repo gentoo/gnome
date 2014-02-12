@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -61,7 +61,7 @@ COMMON_DEPEND="
 	systemd? ( >=sys-apps/systemd-186[pam] )
 	!systemd? (
 		>=x11-base/xorg-server-1.14.3-r1
-		sys-auth/consolekit
+		>=sys-auth/consolekit-0.4.5_p20120320-r2
 		!<sys-apps/openrc-0.12
 	)
 	sys-auth/pambase[systemd?]
@@ -177,6 +177,7 @@ src_configure() {
 		--enable-authentication-scheme=pam \
 		--with-default-pam-config=exherbo \
 		--with-at-spi-registryd-directory="${EPREFIX}"/usr/libexec \
+		--with-consolekit-directory=${EPREFIX}/usr/lib/ConsoleKit \
 		--with-initial-vt=7 \
 		--without-xevie \
 		$(use_with audit libaudit) \
