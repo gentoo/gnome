@@ -1,10 +1,9 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
 EAPI="5"
 GCONF_DEBUG="no"
-GNOME2_LA_PUNT="yes"
 
 inherit gnome2
 if [[ ${PV} = 9999 ]]; then
@@ -21,7 +20,7 @@ if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
 else
-	KEYWORDS="~amd64 ~x86"
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 fi
 
 RDEPEND="
@@ -48,15 +47,14 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 src_configure() {
-	G2CONF="${G2CONF}
-		--enable-compile-warnings=minimum
-		--disable-static
-		$(use_enable introspection)"
-	gnome2_src_configure
+	gnome2_src_configure \
+		--enable-compile-warnings=minimum \
+		--disable-static \
+		$(use_enable introspection)
 }
 
 src_install() {
 	gnome2_src_install
 	# Drop self-installed documentation
-	rm -r "${ED}"/usr/share/doc/libzapojit/ || die
+	rm -r "${ED}"/usr/share/doc/${PN}/ || die
 }
