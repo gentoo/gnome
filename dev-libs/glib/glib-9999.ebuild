@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -23,7 +23,7 @@ if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux"
 fi
 
 # FIXME: want libselinux[${MULTILIB_USEDEP}] - bug #480960
@@ -154,7 +154,7 @@ src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.34.0-testsuite-skip-thread4.patch"
 
 	# gdbus-codegen is a separate package
-	epatch "${FILESDIR}/${PN}-2.35.x-external-gdbus-codegen.patch"
+	epatch "${FILESDIR}/${PN}-2.37.x-external-gdbus-codegen.patch"
 
 	# do not allow libgobject to unload; bug #405173, https://bugzilla.gnome.org/show_bug.cgi?id=707298
 	epatch "${FILESDIR}/${PN}-2.36.4-znodelete.patch"
@@ -281,13 +281,6 @@ multilib_src_test() {
 }
 
 pkg_postinst() {
-	# Inform users about possible breakage when updating glib and not dbus-glib, bug #297483
-	# TODO: add a subslotted virtual to trigger this automatically
-	if has_version dev-libs/dbus-glib; then
-		ewarn "If you experience a breakage after updating dev-libs/glib try"
-		ewarn "rebuilding dev-libs/dbus-glib"
-	fi
-
 	if has_version '<x11-libs/gtk+-3.0.12:3'; then
 		# To have a clear upgrade path for gtk+-3.0.x users, have to resort to
 		# a warning instead of a blocker
