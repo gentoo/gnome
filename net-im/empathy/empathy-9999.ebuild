@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -63,7 +63,7 @@ COMMON_DEPEND="
 	x11-libs/libX11
 
 	geoloc? (
-		>=app-misc/geoclue-1.99.3
+		>=app-misc/geoclue-1.99.3:2.0
 		>=sci-geosciences/geocode-glib-3.10 )
 	gnome-online-accounts? ( >=net-libs/gnome-online-accounts-3.5.1 )
 	map? (
