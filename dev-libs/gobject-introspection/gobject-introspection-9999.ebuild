@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -35,6 +35,7 @@ RDEPEND="
 	doctool? ( dev-python/mako )
 	virtual/libffi:=
 	!<dev-lang/vala-0.20.0
+	${PYTHON_DEPS}
 "
 # Wants real bison, not virtual/yacc
 DEPEND="${RDEPEND}
@@ -56,7 +57,7 @@ pkg_setup() {
 	python-single-r1_pkg_setup
 }
 
-src_configure(){
+src_configure() {
 	if ! has_version "x11-libs/cairo[glib]"; then
 		# Bug #391213: enable cairo-gobject support even if it's not installed
 		# We only PDEPEND on cairo to avoid circular dependencies
