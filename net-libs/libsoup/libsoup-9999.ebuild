@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -13,7 +13,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="An HTTP library implementation in C"
-HOMEPAGE="http://live.gnome.org/LibSoup"
+HOMEPAGE="https://wiki.gnome.org/LibSoup"
 
 LICENSE="LGPL-2+"
 SLOT="2.4"
