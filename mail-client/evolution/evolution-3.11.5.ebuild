@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -12,7 +12,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="Integrated mail, addressbook and calendaring functionality"
-HOMEPAGE="https://live.gnome.org/Evolution http://projects.gnome.org/evolution/"
+HOMEPAGE="https://wiki.gnome.org/Apps/Evolution"
 
 # Note: explicitly "|| ( LGPL-2 LGPL-3 )", not "LGPL-2+".
 LICENSE="|| ( LGPL-2 LGPL-3 ) CC-BY-SA-3.0 FDL-1.3+ OPENLDAP"
@@ -59,7 +59,7 @@ COMMON_DEPEND="
 		( >=app-crypt/gnupg-2.0.1-r2 ${PINENTRY_DEPEND} )
 		=app-crypt/gnupg-1.4* ) )
 	map? (
-		>=app-misc/geoclue-0.12.0
+		>=app-misc/geoclue-0.12.0:0
 		>=media-libs/libchamplain-0.12:0.12[gtk]
 		>=media-libs/clutter-1.0.0:1.0
 		>=media-libs/clutter-gtk-0.90:1.0
