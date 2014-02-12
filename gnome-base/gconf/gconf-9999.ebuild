@@ -1,11 +1,13 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="4"
+EAPI="5"
 GCONF_DEBUG="yes"
 GNOME_ORG_MODULE="GConf"
 GNOME2_LA_PUNT="yes"
+PYTHON_COMPAT=( python2_{6,7} )
+PYTHON_REQ_USE="xml"
 
 inherit eutils gnome2
 if [[ ${PV} = 9999 ]]; then
@@ -13,71 +15,86 @@ if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
-DESCRIPTION="Gnome Configuration System and Daemon"
+DESCRIPTION="GNOME configuration system and daemon"
 HOMEPAGE="http://projects.gnome.org/gconf/"
 
-LICENSE="LGPL-2"
+LICENSE="LGPL-2+"
 SLOT="2"
+IUSE="debug gtk +introspection ldap orbit policykit"
+REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
+	IUSE="${IUSE} doc"
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd"
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~arm-linux ~x86-linux"
 fi
-IUSE="debug doc +introspection ldap orbit policykit"
 
-RDEPEND=">=dev-libs/glib-2.31:2
-	>=x11-libs/gtk+-2.90:3
-	>=dev-libs/dbus-glib-0.74
-	>=sys-apps/dbus-1
+RDEPEND="
+	${PYTHON_DEPS}
+	>=dev-libs/glib-2.31:2
+	>=dev-libs/dbus-glib-0.74:=
+	>=sys-apps/dbus-1:=
 	>=dev-libs/libxml2-2:2
-	introspection? ( >=dev-libs/gobject-introspection-0.9.5 )
-	ldap? ( net-nds/openldap )
+	gtk? ( >=x11-libs/gtk+-2.90:3 )
+	introspection? ( >=dev-libs/gobject-introspection-0.9.5:= )
+	ldap? ( net-nds/openldap:= )
 	orbit? ( >=gnome-base/orbit-2.4:2 )
-	policykit? ( sys-auth/polkit )"
+	policykit? ( sys-auth/polkit:= )
+"
 DEPEND="${RDEPEND}
 	dev-libs/libxslt
+	dev-util/gtk-doc-am
 	>=dev-util/intltool-0.35
 	virtual/pkgconfig
-	doc? ( >=dev-util/gtk-doc-1 )"
+"
+
+if [[ ${PV} = 9999 ]]; then
+	DEPEND="${DEPEND}
+		doc? ( >=dev-util/gtk-doc-1 )
+	"
+fi
 
 pkg_setup() {
-	DOCS="AUTHORS ChangeLog NEWS README TODO"
-	G2CONF="${G2CONF}
-		--enable-gtk
-		--disable-static
-		--enable-gsettings-backend
-		--with-gtk=3.0
-		$(use_enable introspection)
-		$(use_with ldap openldap)
-		$(use_enable orbit)
-		$(use_enable policykit defaults-service)
-		ORBIT_IDL=$(type -P orbit-idl-2)"
-		# Need host's IDL compiler for cross or native build, bug #262747
 	kill_gconf
 }
 
 src_prepare() {
-	gnome2_src_prepare
-
 	# Do not start gconfd when installing schemas, fix bug #238276, upstream #631983
 	epatch "${FILESDIR}/${PN}-2.24.0-no-gconfd.patch"
 
 	# Do not crash in gconf_entry_set_value() when entry pointer is NULL, upstream #631985
 	epatch "${FILESDIR}/${PN}-2.28.0-entry-set-value-sigsegv.patch"
+
+	gnome2_src_prepare
+}
+
+src_configure() {
+	# Need host's IDL compiler for cross or native build, bug #262747
+	gnome2_src_configure \
+		--disable-static \
+		--enable-gsettings-backend \
+		$(use_enable gtk) \
+		$(usex gtk --with-gtk=3.0 "") \
+		$(use_enable introspection) \
+		$(use_with ldap openldap) \
+		$(use_enable orbit) \
+		$(use_enable policykit defaults-service) \
+		ORBIT_IDL=$(type -P orbit-idl-2)
 }
 
 src_install() {
 	gnome2_src_install
+	python_replicate_script "${ED}"/usr/bin/gsettings-schema-convert || die
 
 	keepdir /etc/gconf/gconf.xml.mandatory
 	keepdir /etc/gconf/gconf.xml.defaults
 	# Make sure this directory exists, bug #268070, upstream #572027
 	keepdir /etc/gconf/gconf.xml.system
 
-	echo 'CONFIG_PROTECT_MASK="/etc/gconf"' > 50gconf
+	echo "CONFIG_PROTECT_MASK=\"/etc/gconf\"" > 50gconf
 	echo 'GSETTINGS_BACKEND="gconf"' >> 50gconf
-	doenvd 50gconf || die "doenv failed"
-	dodir /root/.gconfd || die
+	doenvd 50gconf
+	dodir /root/.gconfd
 }
 
 pkg_preinst() {
@@ -89,10 +106,10 @@ pkg_postinst() {
 
 	# change the permissions to avoid some gconf bugs
 	einfo "changing permissions for gconf dirs"
-	find  /etc/gconf/ -type d -exec chmod ugo+rx "{}" \;
+	find  "${EPREFIX}"/etc/gconf/ -type d -exec chmod ugo+rx "{}" \;
 
 	einfo "changing permissions for gconf files"
-	find  /etc/gconf/ -type f -exec chmod ugo+r "{}" \;
+	find  "${EPREFIX}"/etc/gconf/ -type f -exec chmod ugo+r "{}" \;
 
 	if ! use orbit; then
 		ewarn "You are using dbus for GConf's IPC. If you are upgrading from"
@@ -106,9 +123,9 @@ pkg_postinst() {
 
 kill_gconf() {
 	# This function will kill all running gconfd-2 that could be causing troubles
-	if [ -x /usr/bin/gconftool-2 ]
+	if [ -x "${EPREFIX}"/usr/bin/gconftool-2 ]
 	then
-		/usr/bin/gconftool-2 --shutdown
+		"${EPREFIX}"/usr/bin/gconftool-2 --shutdown
 	fi
 
 	return 0
