@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -56,6 +56,7 @@ COMMON_DEPEND="
 	xps? ( >=app-text/libgxps-0.2.1:= )
 "
 RDEPEND="${COMMON_DEPEND}
+	gnome-base/librsvg
 	|| (
 		>=x11-themes/gnome-icon-theme-2.17.1
 		>=x11-themes/hicolor-icon-theme-0.10 )
@@ -67,7 +68,8 @@ DEPEND="${COMMON_DEPEND}
 	sys-devel/gettext
 	>=dev-util/gtk-doc-am-1.13
 	>=dev-util/intltool-0.35
-	virtual/pkgconfig"
+	virtual/pkgconfig
+"
 
 if [[ ${PV} = 9999 ]]; then
 	DEPEND="${DEPEND}
