@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -13,7 +13,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="Disk usage browser for GNOME"
-HOMEPAGE="https://live.gnome.org/Baobab"
+HOMEPAGE="https://wiki.gnome.org/Apps/Baobab"
 
 LICENSE="GPL-2+ FDL-1.1+"
 SLOT="0"
@@ -30,6 +30,7 @@ COMMON_DEPEND="
 "
 RDEPEND="${COMMON_DEPEND}
 	gnome-base/gsettings-desktop-schemas
+	x11-themes/gnome-icon-theme-extras
 	!<gnome-extra/gnome-utils-3.4
 "
 # ${PN} was part of gnome-utils before 3.4
