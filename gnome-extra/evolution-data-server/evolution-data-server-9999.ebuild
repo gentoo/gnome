@@ -33,7 +33,7 @@ fi
 
 RDEPEND="
 	>=app-crypt/gcr-3.4
-	>=app-crypt/libsecret-0.5
+	>=app-crypt/libsecret-0.5[crypt]
 	>=dev-db/sqlite-3.5:=
 	>=dev-libs/glib-2.36:2
 	>=dev-libs/libgdata-0.10:=
@@ -71,8 +71,11 @@ DEPEND="${RDEPEND}
 # eautoreconf needs:
 #	>=gnome-base/gnome-common-2
 
-[[ ${PV} = 9999 ]] && DEPEND="${DEPEND}
-	doc? ( >=dev-util/gtk-doc-1.14 )"
+if [[ ${PV} = 9999 ]]; then
+	DEPEND="${DEPEND}
+		doc? ( >=dev-util/gtk-doc-1.14 )
+	"
+fi
 
 pkg_setup() {
 	python-any-r1_pkg_setup
