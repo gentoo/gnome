@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -63,9 +63,9 @@ DEPEND="${RDEPEND}
 
 src_prepare() {
 	# We only need conformance tests, the rest are useless for us
-	sed -e 's/^\(SUBDIRS =\).*/\1/g' \
+	sed -e 's/^\(SUBDIRS =\).*/\1 accessibility data conform/g' \
 		-i tests/Makefile.am || die "am tests sed failed"
-	sed -e 's/^\(SUBDIRS =\)[^\]*/\1/g' \
+	sed -e 's/^\(SUBDIRS =\)[^\]*/\1  accessibility data conform/g' \
 		-i tests/Makefile.in || die "in tests sed failed"
 
 	gnome2_src_prepare
