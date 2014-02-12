@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -120,8 +120,9 @@ src_prepare() {
 
 	if ! use test ; then
 		# don't waste time building tests
+		strip_builddir SRC_SUBDIRS testsuite Makefile.am
+		[[ ${PV} != 9999 ]] &&  strip_builddir SRC_SUBDIRS testsuite Makefile.in
 		strip_builddir SRC_SUBDIRS tests Makefile.am
-		[[ ${PV} != 9999 ]] && strip_builddir SRC_SUBDIRS testsuite Makefile.in
 		[[ ${PV} != 9999 ]] && strip_builddir SRC_SUBDIRS tests Makefile.in
 	fi
 
@@ -129,6 +130,8 @@ src_prepare() {
 		# don't waste time building demos
 		strip_builddir SRC_SUBDIRS demos Makefile.am
 		[[ ${PV} != 9999 ]] && strip_builddir SRC_SUBDIRS demos Makefile.in
+		strip_builddir SRC_SUBDIRS examples Makefile.am
+		[[ ${PV} != 9999 ]] && strip_builddir SRC_SUBDIRS examples Makefile.in
 	fi
 
 	[[ ${PV} = 9999 ]] && gnome2_src_prepare
