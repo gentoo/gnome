@@ -1,4 +1,4 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -12,33 +12,36 @@ if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
-DESCRIPTION="Clutter-GTK - GTK+3 Integration library for Clutter"
+DESCRIPTION="Library for embedding a Clutter canvas (stage) in GTK+"
+HOMEPAGE="http://live.gnome.org/Clutter"
 
 SLOT="1.0"
-IUSE="doc examples +introspection"
+IUSE="examples +introspection"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
+	IUSE="${IUSE} doc"
 else
-	KEYWORDS="~alpha ~amd64 ~mips ~ppc ~ppc64 ~x86"
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
 fi
 
 # XXX: Needs gtk with X support (!directfb)
 RDEPEND="
-	>=x11-libs/gtk+-3.2.0:3[introspection?]
-	>=media-libs/clutter-1.9.16:1.0=[introspection?]
+	>=x11-libs/gtk+-3.6.0:3[introspection?]
+	>=media-libs/clutter-1.13.7:1.0=[introspection?]
 	media-libs/cogl:1.0=[introspection?]
-	introspection? ( >=dev-libs/gobject-introspection-0.9.12 )"
+	introspection? ( >=dev-libs/gobject-introspection-0.9.12 )
+"
 DEPEND="${RDEPEND}
 	dev-util/gtk-doc-am
 	>=sys-devel/gettext-0.18
-	virtual/pkgconfig"
+	virtual/pkgconfig
+"
 
-src_prepare() {
+src_configure() {
 	DOCS="NEWS README"
 	EXAMPLES="examples/{*.c,redhand.png}"
-	G2CONF="${G2CONF}
-		--disable-maintainer-flags
-		--enable-deprecated
-		$(use_enable introspection)"
-	gnome2_src_prepare
+	gnome2_src_configure \
+		--disable-maintainer-flags \
+		--enable-deprecated \
+		$(use_enable introspection)
 }
