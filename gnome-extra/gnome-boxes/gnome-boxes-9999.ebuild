@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -13,7 +13,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="Simple GNOME 3 application to access remote or virtual systems"
-HOMEPAGE="https://live.gnome.org/Design/Apps/Boxes"
+HOMEPAGE="https://wiki.gnome.org/Design/Apps/Boxes"
 
 LICENSE="LGPL-2"
 SLOT="0"
