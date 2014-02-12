@@ -24,10 +24,13 @@ else
 	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux"
 fi
 
+# x11-libs/libSM is needed until upstream #719808 is solved either
+# making the dep unneeded or fixing their configure
 # Only libX11 is optional right now
 RDEPEND="
 	>=dev-libs/glib-2.28:2
 	>=sys-apps/dbus-1
+	x11-libs/libSM
 	x11-libs/libXi
 	x11-libs/libXtst
 	introspection? ( >=dev-libs/gobject-introspection-0.9.6 )
