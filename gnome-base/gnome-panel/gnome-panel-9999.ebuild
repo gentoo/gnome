@@ -1,4 +1,4 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -12,7 +12,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="The GNOME panel"
-HOMEPAGE="http://www.gnome.org/"
+HOMEPAGE="https://git.gnome.org/browse/gnome-panel"
 
 LICENSE="GPL-2+ FDL-1.1+ LGPL-2+"
 SLOT="0"
@@ -25,7 +25,8 @@ else
 	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~x86-solaris"
 fi
 
-RDEPEND=">=dev-libs/glib-2.31.14:2
+RDEPEND="
+	>=dev-libs/glib-2.31.14:2
 	>=dev-libs/libgweather-3.5.1:2=
 	dev-libs/libxml2:2
 	>=gnome-base/dconf-0.13.4
@@ -67,18 +68,26 @@ if [[ ${PV} = 9999 ]]; then
 		doc? ( >=dev-util/gtk-doc-1 )"
 fi
 
+src_prepare() {
+	# Launch nautilus-classic, upstream bug #709016
+	sed -i '/RequiredComponents/ s|$|nautilus-classic;|' data/gnome-flashback.session.desktop.in || die
+	gnome2_src_prepare
+}
+
 src_configure() {
+	DOCS="AUTHORS ChangeLog HACKING NEWS README"
+
+	local myconf=""
+	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
 	# XXX: Make presence/telepathy-glib support optional?
 	#      We can do that if we intend to support fallback-only as a setup
-	G2CONF="${G2CONF}
-		--disable-deprecation-flags
-		--disable-static
-		--with-in-process-applets=clock,notification-area,wncklet
-		--enable-telepathy-glib
-		$(use_enable networkmanager network-manager)
-		$(use_enable introspection)
-		$(use_enable eds)"
-	[[ ${PV} != 9999 ]] && G2CONF="${G2CONF} ITSTOOL=$(type -P true)"
-	DOCS="AUTHORS ChangeLog HACKING NEWS README"
-	gnome2_src_configure
+	gnome2_src_configure \
+		--disable-deprecation-flags \
+		--disable-static \
+		--with-in-process-applets=clock,notification-area,wncklet \
+		--enable-telepathy-glib \
+		$(use_enable networkmanager network-manager) \
+		$(use_enable introspection) \
+		$(use_enable eds) \
+		${myconf}
 }
