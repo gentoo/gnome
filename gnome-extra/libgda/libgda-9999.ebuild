@@ -1,4 +1,4 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -14,17 +14,21 @@ if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
-DESCRIPTION="Gnome database access library"
+DESCRIPTION="GNOME database access library"
 HOMEPAGE="http://www.gnome-db.org/"
 LICENSE="GPL-2+ LGPL-2+"
 
-IUSE="berkdb bindist canvas firebird gnome-keyring gtk graphviz http +introspection json ldap mdb mysql oci8 postgres reports sourceview ssl vala"
-REQUIRED_USE="canvas? ( gtk )
+IUSE="berkdb bindist canvas firebird gtk graphviz http +introspection json ldap libsecret mdb mysql oci8 postgres reports sourceview ssl vala"
+REQUIRED_USE="
+	reports? ( ${PYTHON_REQUIRED_USE} )
+	canvas? ( gtk )
 	firebird? ( !bindist )
 	graphviz? ( gtk )
 	sourceview? ( gtk )
-	vala? ( introspection )"
+	vala? ( introspection )
+"
 # firebird license is not GPL compatible
+
 SLOT="5/4" # subslot = libgda-5.0 soname version
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
@@ -48,11 +52,11 @@ RDEPEND="
 		sourceview? ( x11-libs/gtksourceview:3.0 )
 		graphviz? ( media-gfx/graphviz )
 	)
-	gnome-keyring? ( app-crypt/libsecret )
 	http? ( >=net-libs/libsoup-2.24:2.4 )
 	introspection? ( >=dev-libs/gobject-introspection-1.30 )
 	json?     ( dev-libs/json-glib )
 	ldap?     ( net-nds/openldap:= )
+	libsecret? ( app-crypt/libsecret )
 	mdb?      ( >app-office/mdbtools-0.5:= )
 	mysql?    ( virtual/mysql:= )
 	postgres? ( dev-db/postgresql-base:= )
@@ -80,43 +84,10 @@ fi
 
 pkg_setup() {
 	java-pkg-opt-2_pkg_setup
-	python_set_active_version 2
-	python_pkg_setup
+	use reports && python-single-r1_pkg_setup
 }
 
 src_prepare() {
-	G2CONF="${G2CONF}
-		--disable-static
-		--enable-system-sqlite
-		$(use_with berkdb bdb /usr)
-		$(use_with canvas goocanvas)
-		$(use_with firebird firebird /usr)
-		$(use_with gnome-keyring)
-		$(use_with graphviz)
-		$(use_with gtk ui)
-		$(use_with http libsoup)
-		$(use_enable introspection)
-		$(use_with java java $JAVA_HOME)
-		$(use_enable json)
-		$(use_with ldap)
-		$(use_with mdb mdb /usr)
-		$(use_with mysql mysql /usr)
-		$(use_with postgres postgres /usr)
-		$(use_enable ssl crypto)
-		$(use_with sourceview gtksourceview)
-		--disable-default-binary
-		$(use_enable vala)"
-
-	if use bindist; then
-		# firebird license is not GPL compatible
-		G2CONF="${G2CONF} --without-firebird"
-	else
-		G2CONF="${G2CONF} $(use_with firebird firebird /usr)"
-	fi
-
-	use berkdb && append-cppflags "-I$(db_includedir)"
-	use oci8 || G2CONF="${G2CONF} --without-oracle"
-
 	use reports ||
 		sed -e '/SUBDIRS =/ s/trml2html//' \
 			-e '/SUBDIRS =/ s/trml2pdf//' \
@@ -148,6 +119,40 @@ src_prepare() {
 	gnome2_src_prepare
 	java-pkg-opt-2_src_prepare
 	use vala && vala_src_prepare
+}
+
+src_configure() {
+	use berkdb && append-cppflags "-I$(db_includedir)"
+
+	gnome2_src_configure \
+		--with-help \
+		--disable-static \
+		--enable-system-sqlite \
+		$(use_with berkdb bdb /usr) \
+		$(use_with canvas goocanvas) \
+		$(use_with firebird firebird /usr) \
+		$(use_with graphviz) \
+		$(use_with gtk ui) \
+		$(use_with http libsoup) \
+		$(use_enable introspection) \
+		"$(use_with java java $JAVA_HOME)" \
+		$(use_enable json) \
+		$(use_with ldap) \
+		$(use_with libsecret) \
+		$(use_with mdb mdb /usr) \
+		$(use_with mysql mysql /usr) \
+		$(use_with oci8 oracle) \
+		$(use_with postgres postgres /usr) \
+		$(use_enable ssl crypto) \
+		$(use_with sourceview gtksourceview) \
+		--disable-default-binary \
+		--disable-vala
+	# vala bindings fail to build
+}
+
+pkg_preinst() {
+	gnome2_pkg_preinst
+	java-pkg-opt-2_pkg_preinst
 }
 
 src_install() {
