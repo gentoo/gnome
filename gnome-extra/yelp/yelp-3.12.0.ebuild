@@ -6,9 +6,6 @@ EAPI="5"
 GCONF_DEBUG="yes"
 
 inherit autotools eutils gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Help browser for GNOME"
 HOMEPAGE="https://wiki.gnome.org/Apps/Yelp"
@@ -16,11 +13,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Yelp"
 LICENSE="GPL-2+"
 SLOT="0"
 IUSE=""
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
 
 RDEPEND="
 	app-arch/bzip2:=
@@ -29,7 +22,7 @@ RDEPEND="
 	>=dev-libs/glib-2.25.11:2
 	>=dev-libs/libxml2-2.6.5:2
 	>=dev-libs/libxslt-1.1.4
-	>=gnome-extra/yelp-xsl-${PV}
+	>=gnome-extra/yelp-xsl-3.6.1
 	>=net-libs/webkit-gtk-1.3.10:3
 	>=x11-libs/gtk+-3.8:3
 	x11-themes/gnome-icon-theme-symbolic
@@ -44,29 +37,18 @@ DEPEND="${RDEPEND}
 # If eautoreconf:
 #	gnome-base/gnome-common
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools
-		dev-util/itstool
-		gnome-base/gnome-common"
-fi
-
 src_prepare() {
 	# Fix compatibility with Gentoo's sys-apps/man
 	# https://bugzilla.gnome.org/show_bug.cgi?id=648854
 	epatch "${FILESDIR}/${PN}-3.0.3-man-compatibility.patch"
-
-	[[ ${PV} != 9999 ]] && eautoreconf
-
+	eautoreconf
 	gnome2_src_prepare
 }
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		--disable-static \
 		--enable-bz2 \
 		--enable-lzma \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
