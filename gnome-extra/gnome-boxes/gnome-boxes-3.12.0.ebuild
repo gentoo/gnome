@@ -8,21 +8,16 @@ VALA_USE_DEPEND="vapigen"
 VALA_MIN_API_VERSION="0.24"
 
 inherit linux-info gnome2 vala
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Simple GNOME 3 application to access remote or virtual systems"
 HOMEPAGE="https://wiki.gnome.org/Design/Apps/Boxes"
 
 LICENSE="LGPL-2"
 SLOT="0"
-IUSE="bindist smartcard usbredir"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64" # qemu-kvm[spice] is 64bit-only
-fi
+
+# We force 'bindist' due licenses from gnome-boxes-nonfree
+IUSE="smartcard usbredir" #bindist
+KEYWORDS="~amd64" # qemu-kvm[spice] is 64bit-only
 
 # NOTE: sys-fs/* stuff is called via exec()
 # FIXME: ovirt is not available in tree
@@ -47,8 +42,9 @@ RDEPEND="
 	sys-fs/fuseiso
 	sys-fs/mtools
 	>=virtual/udev-165[gudev]
-	!bindist? ( gnome-extra/gnome-boxes-nonfree )
 "
+#	!bindist? ( gnome-extra/gnome-boxes-nonfree )
+
 DEPEND="${RDEPEND}
 	app-text/yelp-tools
 	dev-util/desktop-file-utils
@@ -56,16 +52,6 @@ DEPEND="${RDEPEND}
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		$(vala_depend)
-		sys-libs/libosinfo[introspection,vala]
-		app-emulation/libvirt-glib[introspection,vala]
-		net-libs/gtk-vnc[introspection,vala]
-		net-misc/spice-gtk[introspection,vala]
-		net-libs/rest:0.7[introspection]"
-fi
 
 pkg_pretend() {
 	linux_config_exists
@@ -79,7 +65,7 @@ pkg_pretend() {
 src_prepare() {
 	# Do not change CFLAGS, wondering about VALA ones but appears to be
 	# needed as noted in configure comments below
-	sed 's/CFLAGS="$CFLAGS -O0 -ggdb3"//' -i configure.ac || die
+	sed 's/CFLAGS="$CFLAGS -O0 -ggdb3"//' -i configure{.ac,} || die
 
 	vala_src_prepare
 	gnome2_src_prepare
