@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -6,20 +6,13 @@ EAPI="5"
 GCONF_DEBUG="no"
 
 inherit gnome2 readme.gentoo
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Desktop note-taking application"
 HOMEPAGE="https://wiki.gnome.org/Apps/Gnote"
 
 LICENSE="GPL-3+ FDL-1.1"
 SLOT="0"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64 ~x86"
-fi
+KEYWORDS="~amd64 ~x86"
 IUSE="debug +X"
 
 # Automagic glib-2.32 dep
@@ -45,10 +38,6 @@ DEPEND="${DEPEND}
 	>=dev-util/intltool-0.35.0
 	virtual/pkgconfig
 "
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools"
-fi
 
 src_prepare() {
 	# Do not alter CFLAGS
@@ -66,13 +55,11 @@ src_prepare() {
 }
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		--disable-static \
 		$(use_enable debug) \
 		$(use_with X x11-support) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
 
 src_install() {
