@@ -6,20 +6,13 @@ EAPI="5"
 GCONF_DEBUG="yes"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="CD ripper for GNOME"
 HOMEPAGE="http://www.burtonini.com/blog/computers/sound-juicer/"
 
 LICENSE="GPL-2+"
 SLOT="0"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 IUSE="flac test vorbis"
 
 COMMON_DEPEND="
@@ -51,11 +44,6 @@ DEPEND="${COMMON_DEPEND}
 	test? ( ~app-text/docbook-xml-dtd-4.3 )
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools"
-fi
-
 src_prepare() {
 	gnome2_src_prepare
 
@@ -65,6 +53,10 @@ src_prepare() {
 	# /dev/card*/dri
 	sed -e "s|\(gstinspect=\).*|\1$(type -P true)|" \
 		-i configure || die
+}
+
+src_configure() {
+	gnome2_src_configure ITSTOOLS="$(type -P true)"
 }
 
 pkg_postinst() {
