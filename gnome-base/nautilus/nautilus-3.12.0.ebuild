@@ -7,9 +7,6 @@ GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes" # Needed with USE 'sendto'
 
 inherit eutils gnome2 readme.gentoo virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="A file manager for the GNOME desktop"
 HOMEPAGE="http://live.gnome.org/Nautilus"
@@ -19,12 +16,7 @@ SLOT="0"
 
 # profiling?
 IUSE="debug exif gnome +introspection packagekit +previewer sendto tracker xmp"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux"
 
 # FIXME: tests fails under Xvfb, but pass when building manually
 # "FAIL: check failed in nautilus-file.c, line 8307"
@@ -80,11 +72,6 @@ PDEPEND="
 	>=gnome-base/gvfs-1.14[gtk]
 "
 # Need gvfs[gtk] for recent:/// support
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.4 )"
-fi
 
 src_prepare() {
 	if use previewer; then
