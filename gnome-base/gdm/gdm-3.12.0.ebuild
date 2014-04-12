@@ -6,9 +6,6 @@ EAPI="5"
 GNOME2_LA_PUNT="yes"
 
 inherit autotools eutils gnome2 pam readme.gentoo systemd user
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="GNOME Display Manager for managing graphical display servers and user logins"
 HOMEPAGE="https://wiki.gnome.org/GDM"
@@ -25,12 +22,7 @@ LICENSE="
 SLOT="0"
 IUSE="accessibility audit branding fprint +introspection ipv6 plymouth selinux smartcard +systemd tcpd test wayland xinerama"
 REQUIRED_USE="wayland? ( systemd )"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86"
-fi
-
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86"
 
 # NOTE: x11-base/xorg-server dep is for X_SERVER_PATH etc, bug #295686
 # nspr used by smartcard extension
@@ -105,11 +97,6 @@ DEPEND="${COMMON_DEPEND}
 	xinerama? ( x11-proto/xineramaproto )
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools"
-fi
-
 DOC_CONTENTS="
 	To make GDM start at boot, run:\n
 	# systemctl enable gdm.service\n
@@ -152,18 +139,13 @@ src_prepare() {
 	# Show logo when branding is enabled
 	use branding && epatch "${FILESDIR}/${PN}-3.8.4-logo.patch"
 
-	if [[ ${PV} != 9999 ]]; then
-		eautoreconf
-	fi
+	eautoreconf
 
 	gnome2_src_prepare
 }
 
 src_configure() {
-	local myconf=""
-
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
-
+	local myconf
 	# PAM is the only auth scheme supported
 	# even though configure lists shadow and crypt
 	# they don't have any corresponding code.
@@ -181,7 +163,7 @@ src_configure() {
 		--enable-authentication-scheme=pam \
 		--with-default-pam-config=exherbo \
 		--with-at-spi-registryd-directory="${EPREFIX}"/usr/libexec \
-		--with-consolekit-directory=${EPREFIX}/usr/lib/ConsoleKit \
+		--with-consolekit-directory="${EPREFIX}"/usr/lib/ConsoleKit \
 		--with-initial-vt=7 \
 		--without-xevie \
 		$(use_with audit libaudit) \
@@ -195,6 +177,7 @@ src_configure() {
 		$(use_with tcpd tcp-wrappers) \
 		$(use_enable wayland wayland-support) \
 		$(use_with xinerama) \
+		ITSTOOL=$(type -P true) \
 		${myconf}
 }
 
