@@ -6,9 +6,6 @@ EAPI="5"
 GCONF_DEBUG="no"
 
 inherit gnome2 pax-utils virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Javascript bindings for GNOME"
 HOMEPAGE="http://live.gnome.org/Gjs"
@@ -16,11 +13,7 @@ HOMEPAGE="http://live.gnome.org/Gjs"
 LICENSE="MIT || ( MPL-1.1 LGPL-2+ GPL-2+ )"
 SLOT="0"
 IUSE="+cairo examples gtk test"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 RDEPEND="
 	>=dev-libs/glib-2.36:2
@@ -33,10 +26,14 @@ RDEPEND="
 	gtk? ( x11-libs/gtk+:3 )
 "
 DEPEND="${RDEPEND}
+	gnome-base/gnome-common
 	sys-devel/gettext
 	virtual/pkgconfig
 	test? ( sys-apps/dbus )
 "
+
+# Large amount of tests are broken even in master.
+RESTRICT="test"
 
 src_configure() {
 	# FIXME: add systemtap/dtrace support, like in glib:2
