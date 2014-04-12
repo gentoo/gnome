@@ -51,7 +51,7 @@ DEPEND="${RDEPEND}
 	app-text/docbook-xml-dtd:4.1.2
 	>=dev-libs/libxslt-1.0
 	>=sys-devel/gettext-0.11
-	>=dev-util/gtk-doc-am-1.15
+	>=dev-util/gtk-doc-am-1.20
 	systemtap? ( >=dev-util/systemtap-1.3 )
 	test? (
 		sys-devel/gdb
@@ -75,7 +75,7 @@ if [[ ${PV} = 9999 ]]; then
 		${PYTHON_DEPS}
 		doc? (
 			>=dev-util/gdbus-codegen-${PV}[${PYTHON_USEDEP}]
-			>=dev-util/gtk-doc-1.15 )
+			>=dev-util/gtk-doc-1.20 )
 	"
 fi
 
@@ -154,7 +154,7 @@ src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.34.0-testsuite-skip-thread4.patch"
 
 	# gdbus-codegen is a separate package
-	epatch "${FILESDIR}/${PN}-2.37.x-external-gdbus-codegen.patch"
+	epatch "${FILESDIR}/${PN}-2.40.0-external-gdbus-codegen.patch"
 
 	# do not allow libgobject to unload; bug #405173, https://bugzilla.gnome.org/show_bug.cgi?id=707298
 	epatch "${FILESDIR}/${PN}-2.36.4-znodelete.patch"
