@@ -7,9 +7,6 @@ GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
 inherit eutils gnome2 pax-utils versionator virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="GNOME webbrowser based on Webkit"
 HOMEPAGE="http://projects.gnome.org/epiphany/"
@@ -18,11 +15,7 @@ HOMEPAGE="http://projects.gnome.org/epiphany/"
 LICENSE="GPL-2"
 SLOT="0"
 IUSE="+jit +nss test"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 COMMON_DEPEND="
 	>=app-crypt/gcr-3.5.5
@@ -60,23 +53,18 @@ DEPEND="${COMMON_DEPEND}
 	sys-devel/gettext
 	virtual/pkgconfig
 "
-if [[ ${PV} == 9999 ]]; then
-	DEPEND="${DEPEND} app-text/yelp-tools"
-fi
 
 # Tests refuse to run with the gsettings trick for some reason
 RESTRICT="test"
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		--enable-shared \
 		--disable-static \
 		--with-distributor-name=Gentoo \
 		$(use_enable nss) \
 		$(use_enable test tests) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
 
 src_compile() {
