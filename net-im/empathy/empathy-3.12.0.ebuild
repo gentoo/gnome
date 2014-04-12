@@ -8,9 +8,6 @@ GNOME2_LA_PUNT="yes"
 PYTHON_COMPAT=( python2_{6,7} python3_{2,3} )
 
 inherit gnome2 python-any-r1 virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Telepathy instant messaging and video/audio call client for GNOME"
 HOMEPAGE="https://wiki.gnome.org/Empathy"
@@ -18,13 +15,9 @@ HOMEPAGE="https://wiki.gnome.org/Empathy"
 LICENSE="GPL-2 CC-BY-SA-3.0 FDL-1.3 LGPL-2.1"
 SLOT="0"
 
-# sendto: support from building nautilus sendto plugins from it was dropped in 3.7
 IUSE="debug +geoloc gnome gnome-online-accounts +map spell test +v4l"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-linux"
-fi
+
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-linux"
 
 # False positives caused by nested configure scripts
 QA_CONFIGURE_OPTIONS=".*"
@@ -104,14 +97,11 @@ pkg_setup() {
 }
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} = 9999 ]] || myconf="${myconf} ITSTOOL=$(type -P true)"
 	DOCS="CONTRIBUTORS AUTHORS ChangeLog NEWS README"
 	gnome2_src_configure \
 		--disable-Werror \
 		--disable-coding-style-checks \
 		--disable-static \
-		--disable-nautilus-sendto
 		--disable-ubuntu-online-accounts \
 		--enable-gst-1.0 \
 		$(use_enable debug) \
@@ -122,7 +112,7 @@ src_configure() {
 		$(use_enable spell) \
 		$(use_enable v4l gudev) \
 		$(use_with v4l cheese) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
 
 src_test() {
