@@ -7,9 +7,6 @@ GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="The Eye of GNOME image viewer"
 HOMEPAGE="http://projects.gnome.org/eog/"
@@ -17,12 +14,7 @@ HOMEPAGE="http://projects.gnome.org/eog/"
 LICENSE="GPL-2+"
 SLOT="1"
 IUSE="+exif +introspection +jpeg lcms +svg tiff xmp"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 
 REQUIRED_USE="exif? ( jpeg )"
 
@@ -53,15 +45,7 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools
-		doc? ( >=dev-util/gtk-doc-1.10 )"
-fi
-
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	DOCS="AUTHORS ChangeLog HACKING MAINTAINERS NEWS README THANKS TODO"
 	gnome2_src_configure \
 		$(use_enable introspection) \
@@ -70,5 +54,5 @@ src_configure() {
 		$(use_with lcms cms) \
 		$(use_with xmp) \
 		$(use_with svg librsvg) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
