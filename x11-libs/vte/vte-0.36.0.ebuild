@@ -6,9 +6,6 @@ EAPI="5"
 GCONF_DEBUG="yes"
 
 inherit eutils gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Library providing a virtual terminal emulator widget"
 HOMEPAGE="https://wiki.gnome.org/action/show/Apps/Terminal/VTE"
@@ -16,14 +13,9 @@ HOMEPAGE="https://wiki.gnome.org/action/show/Apps/Terminal/VTE"
 LICENSE="LGPL-2+"
 SLOT="2.90"
 IUSE="debug glade +introspection"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-	IUSE="${IUSE} doc"
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~x64-solaris ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~x64-solaris ~x86-solaris"
 
-PDEPEND="x11-libs/gnome-pty-helper"
+PDEPEND="=x11-libs/gnome-pty-helper-${PV}"
 RDEPEND="
 	>=dev-libs/glib-2.31.13:2
 	>=x11-libs/gtk+-3.1.9:3[introspection?]
@@ -42,11 +34,6 @@ DEPEND="${RDEPEND}
 	sys-devel/gettext
 	virtual/pkgconfig
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.13 )"
-fi
 
 src_prepare() {
 	# https://bugzilla.gnome.org/show_bug.cgi?id=663779
@@ -73,8 +60,7 @@ src_configure() {
 		--disable-static \
 		$(use_enable debug) \
 		$(use_enable glade glade-catalogue) \
-		$(use_enable introspection) \
-		${myconf}
+		$(use_enable introspection)
 }
 
 src_install() {
