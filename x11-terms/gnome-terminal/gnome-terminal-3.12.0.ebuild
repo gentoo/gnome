@@ -7,21 +7,14 @@ GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
 inherit gnome2 readme.gentoo
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="The Gnome Terminal"
 HOMEPAGE="https://help.gnome.org/users/gnome-terminal/"
 
 LICENSE="GPL-3+"
 SLOT="0"
-IUSE="+nautilus"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux"
-fi
+IUSE="+gnome-shell +nautilus"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux"
 
 # FIXME: automagic dependency on gtk+[X]
 RDEPEND="
@@ -39,30 +32,18 @@ RDEPEND="
 "
 # gtk+:2 needed for gtk-builder-convert, bug 356239
 DEPEND="${RDEPEND}
+	app-text/yelp-tools
 	|| ( dev-util/gtk-builder-convert <=x11-libs/gtk+-2.24.10:2 )
 	>=dev-util/intltool-0.50
 	sys-devel/gettext
 	virtual/pkgconfig
 "
-if [[ ${PV} == 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools"
-fi
 
 DOC_CONTENTS="To get previous working directory inherited in new opened
 	tab you will need to add the following line to your ~/.bashrc:\n
 	. /etc/profile.d/vte.sh"
 
 src_configure() {
-	local myconf=""
-
-	if [[ ${PV} = 9999 ]]; then
-		myconf="${myconf}
-			ITSTOOL=$(type -P true)
-			XMLLINT=$(type -P true)
-		"
-	fi
-
 	# FIXME: leave smclient configure unset until it accepts values from the
 	# switch and not from GDK_TARGET, bug #363033
 	gnome2_src_configure \
@@ -71,7 +52,9 @@ src_configure() {
 		$(use_enable gnome-shell search-provider) \
 		$(use_with nautilus nautilus-extension) \
 		APPDATA_VALIDATE=$(type -P true) \
-		${myconf}
+		# Docs are broken in this release.
+		#ITSTOOL=$(type -P true) \
+		#XMLLINT=$(type -P true)
 }
 
 src_install() {
