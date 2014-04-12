@@ -29,7 +29,7 @@ COMMON_DEPEND="
 	>=x11-themes/gtk-engines-2.15.3:2
 	gtk? (
 		>=x11-libs/gtk+-2.24.15:2
-		>=x11-libs/gtk+-3.9.12:3 )
+		>=x11-libs/gtk+-3.12:3 )
 "
 DEPEND="${COMMON_DEPEND}
 	>=dev-util/intltool-0.40
