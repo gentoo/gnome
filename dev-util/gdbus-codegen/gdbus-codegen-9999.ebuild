@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -23,7 +23,7 @@ SLOT="0"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
 fi
 IUSE=""
 
@@ -39,7 +39,7 @@ DEPEND="${RDEPEND}
 PDEPEND=">=dev-libs/glib-${PV}:2"
 
 src_prepare() {
-	epatch "${FILESDIR}/${PN}-2.36.0-sitedir.patch"
+	epatch "${FILESDIR}/${PN}-2.40.0-sitedir.patch"
 
 	# Leave shebang alone
 	sed -e 's:#!@PYTHON@:#!/usr/bin/env python:' \
