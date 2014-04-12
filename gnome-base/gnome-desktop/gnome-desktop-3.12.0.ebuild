@@ -6,9 +6,6 @@ EAPI="5"
 GCONF_DEBUG="yes"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit git-2 gnome2-live
-fi
 
 DESCRIPTION="Libraries for the gnome desktop that are not part of the UI"
 HOMEPAGE="https://git.gnome.org/browse/gnome-desktop"
@@ -16,12 +13,7 @@ HOMEPAGE="https://git.gnome.org/browse/gnome-desktop"
 LICENSE="GPL-2+ FDL-1.1+ LGPL-2+"
 SLOT="3/10" # subslot = libgnome-desktop-3 soname version
 IUSE="+introspection"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~x86-solaris"
 
 # cairo[X] needed for gnome-bg
 COMMON_DEPEND="
@@ -50,47 +42,11 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.4 )
-		app-text/yelp-tools"
-fi
-
 # Includes X11/Xatom.h in libgnome-desktop/gnome-bg.c which comes from xproto
 # Includes X11/extensions/Xrandr.h that includes randr.h from randrproto (and
 # eventually libXrandr shouldn't RDEPEND on randrproto)
 
-src_unpack() {
-	gnome2_src_unpack
-
-	if [[ ${PV} = 9999 ]]; then
-		# pnp.ids are only provided with the gnome-desktop tarball;
-		# for the live version, we have to get them from hwdata git
-		unset gnome_desktop_LIVE_BRANCH
-		unset gnome_destkop_LIVE_COMMIT
-		unset gnome_desktop_LIVE_REPO
-		unset EGIT_BRANCH
-		unset EGIT_COMMIT
-		unset EGIT_DIR
-		unset EGIT_MASTER
-		EGIT_PROJECT="gnome-desktop_hwdata"
-		EGIT_REPO_URI="git://git.fedorahosted.org/hwdata.git"
-		EGIT_SOURCEDIR="${WORKDIR}/hwdata"
-		git-2_src_unpack
-		ln -sf "${WORKDIR}/hwdata/pnp.ids" "${S}/libgnome-desktop/" ||
-			die "ln -sf failed"
-	fi
-}
-
 src_configure() {
-	local myconf=""
-
-	if [[ ${PV} = 9999 ]]; then
-		myconf="${myconf} $(use_enable doc gtk-doc)"
-	else
-		myconf="${myconf} ITSTOOL=$(type -P true)"
-	fi
-
 	DOCS="AUTHORS ChangeLog HACKING NEWS README"
 	# Note: do *not* use "--with-pnp-ids-path" argument. Otherwise, the pnp.ids
 	# file (needed by other packages such as >=gnome-settings-daemon-3.1.2)
@@ -100,5 +56,5 @@ src_configure() {
 		--with-gnome-distributor=Gentoo \
 		--enable-desktop-docs \
 		$(use_enable introspection) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
