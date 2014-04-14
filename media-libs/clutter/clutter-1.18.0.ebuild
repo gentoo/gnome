@@ -8,20 +8,13 @@ CLUTTER_LA_PUNT="yes"
 # Inherit gnome2 after clutter to download sources from gnome.org
 # since clutter-project.org doesn't provide .xz tarballs
 inherit clutter gnome2 virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Clutter is a library for creating graphical user interfaces"
 
 LICENSE="LGPL-2.1+ FDL-1.1+"
 SLOT="1.0"
 IUSE="debug doc gtk +introspection test" # evdev tslib
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
 
 # NOTE: glx flavour uses libdrm + >=mesa-7.3
 # XXX: uprof needed for profiling
