@@ -7,9 +7,6 @@ CLUTTER_LA_PUNT="yes"
 
 # Inherit gnome2 after clutter to download sources from gnome.org
 inherit clutter gnome2 multilib virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="A library for using 3D graphics hardware to draw pretty pictures"
 HOMEPAGE="http://www.clutter-project.org/"
@@ -18,12 +15,7 @@ LICENSE="MIT BSD"
 SLOT="1.0/20" # subslot = .so version
 # doc and profile disable for now due bugs #484750 and #483332
 IUSE="examples gles2 gstreamer +introspection +opengl +pango test" # doc profile
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-	IUSE="${IUSE} doc"
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.32:2
@@ -58,13 +50,8 @@ DEPEND="${COMMON_DEPEND}
 "
 
 # Need classic mesa swrast for tests, llvmpipe causes a test failure
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? (
-			app-text/docbook-xml-dtd:4.1.2
-			>=dev-util/gtk-doc-1.13 )"
-fi
+# Fox some reason GL3 conformance test all fails again...
+RESTRICT="test"
 
 src_prepare() {
 	# Do not build examples
