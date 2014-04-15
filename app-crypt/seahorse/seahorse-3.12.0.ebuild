@@ -57,7 +57,6 @@ src_configure() {
 		--enable-pgp \
 		--enable-ssh \
 		--enable-pkcs11 \
-		--disable-static \
 		--enable-hkp \
 		$(use_enable avahi sharing) \
 		$(use_enable debug) \
