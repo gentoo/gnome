@@ -7,9 +7,6 @@ GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
 inherit gnome2 virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Helper library for RESTful services"
 HOMEPAGE="http://live.gnome.org/Librest"
@@ -17,12 +14,7 @@ HOMEPAGE="http://live.gnome.org/Librest"
 LICENSE="LGPL-2.1"
 SLOT="0.7"
 IUSE="+gnome +introspection test"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 # Coverage testing should not be enabled
 RDEPEND="app-misc/ca-certificates
@@ -38,11 +30,6 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	test? ( sys-apps/dbus )
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.13 )"
-fi
 
 src_configure() {
 	gnome2_src_configure \
