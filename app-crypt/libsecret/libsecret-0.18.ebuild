@@ -8,9 +8,6 @@ VALA_MIN_API_VERSION=0.18
 VALA_USE_DEPEND=vapigen
 
 inherit gnome2 python-any-r1 vala virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="GObject library for accessing the freedesktop.org Secret Service API"
 HOMEPAGE="https://live.gnome.org/Libsecret"
@@ -19,12 +16,7 @@ LICENSE="LGPL-2.1+ Apache-2.0" # Apache-2.0 license is used for tests only
 SLOT="0"
 IUSE="+crypt debug +introspection test vala"
 REQUIRED_USE="vala? ( introspection )"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.38:2
@@ -52,22 +44,13 @@ DEPEND="${COMMON_DEPEND}
 	vala? ( $(vala_depend) )
 "
 
-# Required while regenerating from *.vala *.vapi
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		$(vala_depend)
-		doc? ( >=dev-util/gtk-doc-1.9 )"
-fi
-
 src_prepare() {
 	# FIXME: disable failing test
 	sed -e '/test_get_sync);/d' \
 		-e '/test_get_async);/d' \
 		-i "${S}"/libsecret/test-service.c || die
 
-	if use vala || [[ ${PV} = 9999 ]]; then
-		vala_src_prepare
-	fi
+	use vala && vala_src_prepare
 	gnome2_src_prepare
 }
 
