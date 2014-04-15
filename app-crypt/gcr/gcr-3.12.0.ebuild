@@ -9,9 +9,6 @@ VALA_USE_DEPEND="vapigen"
 PYTHON_COMPAT=( python2_7 )
 
 inherit gnome2 python-any-r1 vala virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Libraries for cryptographic UIs and accessing PKCS#11 modules"
 HOMEPAGE="https://developer.gnome.org/gcr/"
@@ -20,12 +17,7 @@ LICENSE="GPL-2+ LGPL-2+"
 SLOT="0/1" # subslot = suffix of libgcr-3
 IUSE="debug gtk +introspection vala"
 REQUIRED_USE="vala? ( introspection )"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~sparc-solaris ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~sparc-solaris ~x86-solaris"
 
 COMMON_DEPEND="
 	>=app-crypt/gnupg-2
@@ -54,11 +46,6 @@ DEPEND="${COMMON_DEPEND}
 "
 # eautoreconf needs:
 #	dev-libs/gobject-introspection-common
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.9 )"
-fi
 
 pkg_setup() {
 	python-any-r1_pkg_setup
