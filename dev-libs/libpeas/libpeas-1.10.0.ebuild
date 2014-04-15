@@ -8,23 +8,15 @@ GNOME2_LA_PUNT="yes"
 PYTHON_COMPAT=( python{2_6,2_7,3_2,3_3} )
 
 inherit eutils gnome2 multilib python-r1 virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="A GObject plugins library"
 HOMEPAGE="http://developer.gnome.org/libpeas/stable/"
 
 LICENSE="LGPL-2+"
 SLOT="0"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux"
 IUSE="+gtk glade +python seed"
 REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux"
-fi
 
 RDEPEND="
 	>=dev-libs/glib-2.32:2
@@ -41,10 +33,6 @@ DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.40
 	virtual/pkgconfig
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND} doc? ( >=dev-util/gtk-doc-1.11 )"
-fi
 
 if_use_python_python_foreach_impl() {
 	if use python; then
