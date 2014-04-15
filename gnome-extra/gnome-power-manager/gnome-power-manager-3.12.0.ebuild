@@ -19,7 +19,7 @@ COMMON_DEPEND="
 	>=dev-libs/glib-2.36:2
 	>=x11-libs/gtk+-3.3.8:3
 	>=x11-libs/cairo-1
-	>=sys-power/upower-0.9.1
+	>=sys-power/upower-0.99
 "
 RDEPEND="${COMMON_DEPEND}
 	x11-themes/gnome-icon-theme-symbolic
