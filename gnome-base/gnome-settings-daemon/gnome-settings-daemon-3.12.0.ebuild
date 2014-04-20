@@ -1,6 +1,6 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/gnome-base/gnome-settings-daemon/gnome-settings-daemon-3.10.2.ebuild,v 1.5 2014/03/09 11:58:52 pacho Exp $
+# $Header: $
 
 EAPI="5"
 GCONF_DEBUG="no"
@@ -18,7 +18,7 @@ REQUIRED_USE="
 	packagekit? ( udev )
 	smartcard? ( udev )
 "
-KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.37.7:2
@@ -31,7 +31,7 @@ COMMON_DEPEND="
 	>=media-libs/lcms-2.2:2
 	media-libs/libcanberra[gtk3]
 	>=media-sound/pulseaudio-2
-	>=sys-power/upower-0.99.0
+	>=sys-power/upower-0.99
 	x11-libs/cairo
 	x11-libs/gdk-pixbuf:2
 	>=x11-libs/libnotify-0.7.3:=
@@ -42,6 +42,7 @@ COMMON_DEPEND="
 	x11-libs/libXfixes
 	x11-libs/libXtst
 	x11-libs/libXxf86misc
+	x11-misc/xkeyboard-config
 
 	>=app-misc/geoclue-2.1.2:2.0
 	>=dev-libs/libgweather-3.9.5:2
