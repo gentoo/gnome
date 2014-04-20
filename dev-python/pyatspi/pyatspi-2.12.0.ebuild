@@ -7,10 +7,6 @@ GCONF_DEBUG="no"
 PYTHON_COMPAT=( python{2_7,3_2,3_3} )
 
 inherit eutils gnome2 python-r1
-if [[ ${PV} = 9999 ]]; then
-	GNOME_LIVE_MODULE="pyatspi2"
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Python binding to at-spi library"
 HOMEPAGE="http://live.gnome.org/Accessibility"
@@ -18,16 +14,12 @@ HOMEPAGE="http://live.gnome.org/Accessibility"
 # Note: only some of the tests are GPL-licensed, everything else is LGPL
 LICENSE="LGPL-2 GPL-2+"
 SLOT="0"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 IUSE="" # test
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 # test suite is obsolete (at-spi-1.x era) and unpassable
-RESTRICT="test"
+#RESTRICT="test"
 
 COMMON_DEPEND="
 	>=dev-libs/atk-2.11.2
