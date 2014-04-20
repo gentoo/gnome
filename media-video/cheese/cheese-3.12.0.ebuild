@@ -67,6 +67,7 @@ src_prepare() {
 	    -e 's|\(g_test_add_func.*video_path.*;\)|/*\1*/|' \
 		-i "${S}"/tests/test-libcheese.c || die
 
+	vala_src_prepare
 	gnome2_src_prepare
 }
 
