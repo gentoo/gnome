@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -33,7 +33,6 @@ COMMON_DEPEND="
 	>=dev-libs/json-glib-0.10
 	>=dev-libs/dbus-glib-0.76
 	>=gnome-base/gnome-desktop-3.9.91:3=
-	>=sys-power/upower-0.9.0
 	elibc_FreeBSD? ( dev-libs/libexecinfo )
 
 	virtual/opengl
@@ -50,6 +49,7 @@ COMMON_DEPEND="
 	x11-apps/xdpyinfo
 
 	gconf? ( >=gnome-base/gconf-2:2 )
+	systemd? ( >=sys-apps/systemd-183:0= )
 "
 # Pure-runtime deps from the session files should *NOT* be added here
 # Otherwise, things like gdm pull in gnome-shell
@@ -60,12 +60,12 @@ RDEPEND="${COMMON_DEPEND}
 	>=gnome-base/gsettings-desktop-schemas-0.1.7
 	>=x11-themes/gnome-themes-standard-2.91.92
 	sys-apps/dbus[X]
-	systemd? ( >=sys-apps/systemd-183 )
 	!systemd? ( sys-auth/consolekit )
 "
 DEPEND="${COMMON_DEPEND}
 	>=dev-lang/perl-5
 	>=sys-devel/gettext-0.10.40
+	dev-libs/libxslt
 	>=dev-util/intltool-0.40.6
 	virtual/pkgconfig
 	!<gnome-base/gdm-2.20.4
@@ -76,25 +76,22 @@ DEPEND="${COMMON_DEPEND}
 # gnome-common needed for eautoreconf
 # gnome-base/gdm does not provide gnome.desktop anymore
 
-src_prepare() {
-	# Allow people to configure startup apps, bug #464968, upstream bug #663767
-	sed -i -e '/NoDisplay/d' data/gnome-session-properties.desktop.in.in || die
-
-	# Blacklist nv25 (from 'master')
-	epatch "${FILESDIR}"/${PN}-3.8.4-blacklist-nv25.patch
-
-	gnome2_src_prepare
-}
-
 src_configure() {
+	# 1. Avoid automagic on old upower releases
+	# 2. xsltproc is always checked due to man configure
+	#    switch, even if USE=-doc
 	gnome2_src_configure \
 		--disable-deprecation-flags \
-		--docdir="${EPREFIX}/usr/share/doc/${PF}" \
+		--docdir="${EPREFIX}"/usr/share/doc/${PF} \
 		--enable-session-selector \
 		$(use_enable doc docbook-docs) \
 		$(use_enable gconf) \
 		$(use_enable ipv6) \
-		$(use_enable systemd)
+		$(use_enable systemd) \
+		UPOWER_CFLAGS="" \
+		UPOWER_LIBS=""
+		# gnome-session-selector pre-generated man page is missing
+		#$(usex !doc XSLTPROC=$(type -P true))
 }
 
 src_install() {

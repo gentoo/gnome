@@ -1,6 +1,6 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/gnome-base/gnome-session/gnome-session-3.10.1.ebuild,v 1.6 2014/03/29 21:00:14 tetromino Exp $
+# $Header: $
 
 EAPI="5"
 GCONF_DEBUG="yes"
@@ -12,7 +12,7 @@ HOMEPAGE="https://git.gnome.org/browse/gnome-session"
 
 LICENSE="GPL-2 LGPL-2 FDL-1.1"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
 IUSE="doc elibc_FreeBSD gconf ipv6 systemd"
 
 # x11-misc/xdg-user-dirs{,-gtk} are needed to create the various XDG_*_DIRs, and
@@ -58,6 +58,7 @@ RDEPEND="${COMMON_DEPEND}
 DEPEND="${COMMON_DEPEND}
 	>=dev-lang/perl-5
 	>=sys-devel/gettext-0.10.40
+	dev-libs/libxslt
 	>=dev-util/intltool-0.40.6
 	virtual/pkgconfig
 	!<gnome-base/gdm-2.20.4
@@ -69,14 +70,21 @@ DEPEND="${COMMON_DEPEND}
 # gnome-base/gdm does not provide gnome.desktop anymore
 
 src_configure() {
+	# 1. Avoid automagic on old upower releases
+	# 2. xsltproc is always checked due to man configure
+	#    switch, even if USE=-doc
 	gnome2_src_configure \
 		--disable-deprecation-flags \
-		--docdir="${EPREFIX}/usr/share/doc/${PF}" \
+		--docdir="${EPREFIX}"/usr/share/doc/${PF} \
 		--enable-session-selector \
 		$(use_enable doc docbook-docs) \
 		$(use_enable gconf) \
 		$(use_enable ipv6) \
-		$(use_enable systemd)
+		$(use_enable systemd) \
+		UPOWER_CFLAGS="" \
+		UPOWER_LIBS=""
+		# gnome-session-selector pre-generated man page is missing
+		#$(usex !doc XSLTPROC=$(type -P true))
 }
 
 src_install() {
