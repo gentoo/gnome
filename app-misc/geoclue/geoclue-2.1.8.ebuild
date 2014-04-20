@@ -3,6 +3,7 @@
 # $Header: $
 
 EAPI="5"
+GCONF_DEBUG="no"
 
 inherit gnome2 systemd user versionator
 
@@ -14,7 +15,7 @@ SRC_URI="http://www.freedesktop.org/software/${PN}/releases/${MY_PV}/${P}.tar.xz
 LICENSE="LGPL-2"
 SLOT="2.0"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd"
-IUSE="+modemmanager +networkmanager server"
+IUSE="+modemmanager +networkmanager"
 
 RDEPEND="
 	>=dev-libs/glib-2.34:2
@@ -23,8 +24,7 @@ RDEPEND="
 	net-libs/libsoup:2.4
 	sys-apps/dbus
 	modemmanager? ( >=net-misc/modemmanager-1 )
-	networkmanager? ( >=net-misc/networkmanager-0.9.9 )
-	server? ( >=dev-libs/geoip-1.5.1 )
+	networkmanager? ( >=net-misc/networkmanager-0.9.8 )
 	!<sci-geosciences/geocode-glib-3.10.0
 "
 DEPEND="${RDEPEND}
@@ -42,8 +42,7 @@ src_configure() {
 		--with-dbus-service-user=geoclue \
 		$(use_enable modemmanager 3g-source) \
 		$(use_enable modemmanager modem-gps-source) \
-		$(use_enable networkmanager wifi-source) \
-		$(use_enable server geoip-server) \
+		$(use_enable networkmanager network-manager) \
 		$(systemd_with_unitdir)
 }
 
