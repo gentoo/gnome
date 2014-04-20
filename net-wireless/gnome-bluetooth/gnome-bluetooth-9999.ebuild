@@ -14,7 +14,7 @@ DESCRIPTION="Bluetooth graphical utilities integrated with GNOME"
 HOMEPAGE="https://wiki.gnome.org/GnomeBluetooth"
 
 LICENSE="GPL-2+ LGPL-2.1+ FDL-1.1+"
-SLOT="2/12" # subslot = libgnome-bluetooth soname version
+SLOT="2/13" # subslot = libgnome-bluetooth soname version
 IUSE="+introspection"
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
@@ -25,13 +25,12 @@ fi
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.37.3:2
-	>=x11-libs/gtk+-2.91.3:3[introspection?]
+	>=x11-libs/gtk+-3.11.2:3[introspection?]
 	virtual/udev
 	introspection? ( >=dev-libs/gobject-introspection-0.9.5 )
 "
 RDEPEND="${COMMON_DEPEND}
 	>=net-wireless/bluez-5
-	app-mobilephone/obexd
 	x11-themes/gnome-icon-theme-symbolic
 "
 DEPEND="${COMMON_DEPEND}
@@ -41,9 +40,8 @@ DEPEND="${COMMON_DEPEND}
 	dev-util/gdbus-codegen
 	>=dev-util/gtk-doc-am-1.9
 	>=dev-util/intltool-0.40.0
+	virtual/libudev
 	virtual/pkgconfig
-	x11-libs/libX11
-	x11-libs/libXi
 	x11-proto/xproto
 "
 # eautoreconf needs:

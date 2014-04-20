@@ -1,6 +1,6 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/net-wireless/gnome-bluetooth/gnome-bluetooth-3.10.0.ebuild,v 1.6 2014/03/30 08:40:14 pacho Exp $
+# $Header: $
 
 EAPI="5"
 GCONF_DEBUG="yes"
@@ -11,9 +11,9 @@ DESCRIPTION="Bluetooth graphical utilities integrated with GNOME"
 HOMEPAGE="https://wiki.gnome.org/GnomeBluetooth"
 
 LICENSE="GPL-2+ LGPL-2.1+ FDL-1.1+"
-SLOT="2/12" # subslot = libgnome-bluetooth soname version
+SLOT="2/13" # subslot = libgnome-bluetooth soname version
 IUSE="+introspection"
-KEYWORDS="amd64 ~arm ~ppc ~ppc64 x86"
+KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.37.3:2
@@ -32,9 +32,8 @@ DEPEND="${COMMON_DEPEND}
 	dev-util/gdbus-codegen
 	>=dev-util/gtk-doc-am-1.9
 	>=dev-util/intltool-0.40.0
+	virtual/libudev
 	virtual/pkgconfig
-	x11-libs/libX11
-	x11-libs/libXi
 	x11-proto/xproto
 "
 # eautoreconf needs:
