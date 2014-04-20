@@ -16,7 +16,7 @@ HOMEPAGE="https://git.gnome.org/browse/gnome-control-center/"
 
 LICENSE="GPL-2+"
 SLOT="2"
-IUSE="+bluetooth +colord +cups +gnome-online-accounts +i18n input_devices_wacom kerberos +socialweb v4l"
+IUSE="+bluetooth +colord +cups +gnome-online-accounts +i18n input_devices_wacom kerberos v4l"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
@@ -38,11 +38,11 @@ QA_CONFIGURE_OPTIONS=".*"
 #        networkmanager is not optional
 
 COMMON_DEPEND="
-	>=dev-libs/glib-2.37.2:2
+	>=dev-libs/glib-2.39.91:2
 	>=x11-libs/gdk-pixbuf-2.23.0:2
-	>=x11-libs/gtk+-3.9.12:3
+	>=x11-libs/gtk+-3.11.1:3
 	>=gnome-base/gsettings-desktop-schemas-3.9.91
-	>=gnome-base/gnome-desktop-3.9.90:3=
+	>=gnome-base/gnome-desktop-3.11.3:3=
 	>=gnome-base/gnome-settings-daemon-3.8.3[colord?,policykit]
 	>=gnome-base/libgnomekbd-2.91.91
 
@@ -51,11 +51,12 @@ COMMON_DEPEND="
 	gnome-base/gnome-menus:3
 	gnome-base/libgtop:2
 	media-libs/fontconfig
+	>=media-libs/grilo-0.2.6:0.2
 
 	>=media-libs/libcanberra-0.13[gtk3]
 	>=media-sound/pulseaudio-2[glib]
 	>=sys-auth/polkit-0.97
-	>=sys-power/upower-0.9.1
+	>=sys-power/upower-0.99
 	>=x11-libs/libnotify-0.7.3:0=
 
 	>=gnome-extra/nm-applet-0.9.7.995
@@ -68,7 +69,7 @@ COMMON_DEPEND="
 	x11-libs/libXxf86misc
 	>=x11-libs/libXi-1.2
 
-	bluetooth? ( >=net-wireless/gnome-bluetooth-3.9.3:= )
+	bluetooth? ( >=net-wireless/gnome-bluetooth-3.11.1:= )
 	colord? (
 		net-libs/libsoup:2.4
 		>=x11-misc/colord-0.1.34 )
@@ -78,7 +79,6 @@ COMMON_DEPEND="
 	gnome-online-accounts? ( >=net-libs/gnome-online-accounts-3.9.90 )
 	i18n? ( >=app-i18n/ibus-1.5.2 )
 	kerberos? ( app-crypt/mit-krb5 )
-	socialweb? ( net-libs/libsocialweb )
 	v4l? (
 		media-libs/gstreamer:1.0
 		media-libs/clutter-gtk:1.0
@@ -137,7 +137,7 @@ src_prepare() {
 
 	# Make some panels and dependencies optional; requires eautoreconf
 	# https://bugzilla.gnome.org/686840, 697478, 700145
-	epatch "${FILESDIR}"/${PN}-3.10.2-optional.patch
+	epatch "${FILESDIR}"/${PN}-3.12.0-optional.patch
 
 	# Fix some absolute paths to be appropriate for Gentoo
 	epatch "${FILESDIR}"/${PN}-3.10.2-gentoo-paths.patch
@@ -176,7 +176,6 @@ src_configure() {
 		$(use_enable gnome-online-accounts goa) \
 		$(use_enable i18n ibus) \
 		$(use_enable kerberos) \
-		$(use_with socialweb libsocialweb) \
 		$(use_with v4l cheese) \
 		$(use_enable input_devices_wacom wacom)
 }

@@ -1,6 +1,6 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/gnome-base/gnome-control-center/gnome-control-center-3.10.3.ebuild,v 1.3 2014/03/09 11:58:09 pacho Exp $
+# $Header: $
 
 EAPI="5"
 GCONF_DEBUG="yes"
@@ -14,7 +14,7 @@ HOMEPAGE="https://git.gnome.org/browse/gnome-control-center/"
 LICENSE="GPL-2+"
 SLOT="2"
 IUSE="+bluetooth +colord +cups +gnome-online-accounts +i18n input_devices_wacom kerberos v4l"
-KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
 
 # False positives caused by nested configure scripts
 QA_CONFIGURE_OPTIONS=".*"
@@ -41,13 +41,14 @@ COMMON_DEPEND="
 	gnome-base/gnome-menus:3
 	gnome-base/libgtop:2
 	media-libs/fontconfig
+	>=media-libs/grilo-0.2.6:0.2
 
 	>=media-libs/libcanberra-0.13[gtk3]
 	>=media-sound/pulseaudio-2[glib]
 	>=sys-auth/polkit-0.97
-	>=sys-power/upower-0.99.0
+	>=sys-power/upower-0.99
 	>=x11-libs/libnotify-0.7.3:0=
-	>=media-libs/grilo-0.2.6:0.2
+
 	>=gnome-extra/nm-applet-0.9.7.995
 	>=net-misc/networkmanager-0.9.8[modemmanager]
 	>=net-misc/modemmanager-0.7.990
@@ -58,7 +59,7 @@ COMMON_DEPEND="
 	x11-libs/libXxf86misc
 	>=x11-libs/libXi-1.2
 
-	bluetooth? ( >=net-wireless/gnome-bluetooth-3.11.3:= )
+	bluetooth? ( >=net-wireless/gnome-bluetooth-3.11.1:= )
 	colord? (
 		net-libs/libsoup:2.4
 		>=x11-misc/colord-0.1.34 )
