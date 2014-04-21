@@ -110,8 +110,6 @@ src_prepare() {
 	# Reason?
 	ELTCONF="--reverse-deps"
 
-	DOCS="AUTHORS ChangeLog* HACKING MAINTAINERS NEWS* README"
-
 	#eautoreconf # See https://bugzilla.gnome.org/701904
 
 	gnome2_src_prepare
@@ -148,6 +146,7 @@ src_configure() {
 }
 
 src_install() {
+	DOCS="AUTHORS ChangeLog* HACKING MAINTAINERS NEWS* README"
 	gnome2_src_install
 	readme.gentoo_create_doc
 }
