@@ -1,11 +1,11 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
 EAPI="5"
 GCONF_DEBUG="no"
 # python3 not really supported, bug #478678
-PYTHON_COMPAT=( python2_7 pypy2_0 )
+PYTHON_COMPAT=( python2_7 pypy pypy2_0 )
 VALA_MIN_API_VERSION="0.18"
 VALA_USE_DEPEND="vapigen"
 
@@ -60,7 +60,6 @@ RDEPEND="
 "
 DEPEND="${RDEPEND}
 	${PYTHON_DEPS}
-	dev-util/fix-la-relink-command
 	dev-util/gperf
 	>=dev-util/gtk-doc-am-1.14
 	>=dev-util/intltool-0.35.5
@@ -83,11 +82,11 @@ pkg_setup() {
 
 src_prepare() {
 	use vala && vala_src_prepare
-	gnome2_src_prepare
 
-	# /usr/include/db.h is always db-1 on FreeBSD
-	# so include the right dir in CPPFLAGS
-	append-cppflags "-I$(db_includedir)"
+	# Fix relink issues in src_install
+	ELTCONF="--reverse-deps"
+
+	gnome2_src_prepare
 
 	# FIXME: Fix compilation flags crazyness
 	sed 's/^\(AM_CFLAGS="\)$WARNING_FLAGS/\1/' \
@@ -95,6 +94,10 @@ src_prepare() {
 }
 
 src_configure() {
+	# /usr/include/db.h is always db-1 on FreeBSD
+	# so include the right dir in CPPFLAGS
+	append-cppflags "-I$(db_includedir)"
+
 	# phonenumber does not exist in tree
 	gnome2_src_configure \
 		$(use_enable api-doc-extras gtk-doc) \
@@ -117,12 +120,6 @@ src_configure() {
 }
 
 src_install() {
-	# Prevent this evolution-data-server from linking to libs in the installed
-	# evolution-data-server libraries by adding -L arguments for build dirs to
-	# every .la file's relink_command field, forcing libtool to look there
-	# first during relinking. This will mangle the .la files installed by
-	# make install, but we don't care because we will be punting them anyway.
-	fix-la-relink-command . || die "fix-la-relink-command failed"
 	gnome2_src_install
 
 	if use ldap; then
