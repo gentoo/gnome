@@ -38,3 +38,7 @@ DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.50.1
 	virtual/pkgconfig
 "
+
+src_configure() {
+	gnome2_src_configure ITSTOOL=$(type -P true)
+}
