@@ -6,20 +6,13 @@ EAPI="5"
 GCONF_DEBUG="no"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="A quick previewer for Nautilus, the GNOME file manager"
 HOMEPAGE="http://git.gnome.org/browse/sushi"
 
 LICENSE="GPL-2+"
 SLOT="0"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 IUSE="office"
 
 # Optional app-office/unoconv support (OOo to pdf)
