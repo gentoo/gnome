@@ -6,18 +6,13 @@ EAPI="5"
 GCONF_DEBUG="no"
 
 inherit gnome2
-[[ ${PV} = 9999 ]] && inherit gnome2-live
 
 DESCRIPTION="Lightweight HTML rendering/printing/editing engine"
 HOMEPAGE="http://projects.gnome.org/evolution/"
 
 LICENSE="GPL-2+ LGPL-2+"
 SLOT="4.0"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~ia64-linux ~x86-linux"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~ia64-linux ~x86-linux"
 IUSE=""
 
 # orbit is referenced in configure, but is not used anywhere else
@@ -43,10 +38,9 @@ src_prepare() {
 	ELTCONF="--reverse-deps"
 
 	# Regenerate marshallers for <glib-2.31 compatibility
-	if [[ ${PV} != 9999 ]]; then
-		rm -v components/editor/gtkhtml-spell-marshal.{c,h} \
-			components/editor/gtkhtml-editor-marshal.{c,h} || die
-	fi
+	rm -v components/editor/gtkhtml-spell-marshal.{c,h} \
+		components/editor/gtkhtml-editor-marshal.{c,h} || die
+
 	gnome2_src_prepare
 }
 
