@@ -31,8 +31,6 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 "
 
-#RESTRICT="test" # upstream #727707
-
 src_configure() {
 	gnome2_src_configure \
 		ITSTOOL=$(type -P true) \
