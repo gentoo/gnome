@@ -6,7 +6,7 @@ EAPI="5"
 GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
-inherit eutils gnome2 pax-utils versionator virtualx
+inherit autotools eutils gnome2 pax-utils versionator virtualx
 
 DESCRIPTION="GNOME webbrowser based on Webkit"
 HOMEPAGE="http://projects.gnome.org/epiphany/"
@@ -56,6 +56,14 @@ DEPEND="${COMMON_DEPEND}
 
 # Tests refuse to run with the gsettings trick for some reason
 RESTRICT="test"
+
+src_prepare() {
+	# Fix missing symbol in webextensio.so
+	epatch "${FILESDIR}"/${P}-missing-symbol.patch
+
+	eautoreconf
+	gnome2_src_prepare
+}
 
 src_configure() {
 	gnome2_src_configure \
