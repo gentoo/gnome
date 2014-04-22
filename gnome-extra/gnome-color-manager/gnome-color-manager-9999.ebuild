@@ -5,7 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="no"
 
-inherit gnome2
+inherit gnome2 virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -54,9 +54,6 @@ if [[ ${PV} = 9999 ]]; then
 		app-text/yelp-tools"
 fi
 
-# FIXME: run test-suite with files on live file-system
-RESTRICT="test"
-
 src_configure() {
 	local myconf=""
 	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
@@ -68,6 +65,10 @@ src_configure() {
 		$(use_enable packagekit) \
 		$(use_enable raw exiv) \
 		${myconf}
+}
+
+src_test() {
+	Xemake check
 }
 
 pkg_postinst() {

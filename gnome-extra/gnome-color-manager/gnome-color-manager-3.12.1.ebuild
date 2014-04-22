@@ -5,7 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="no"
 
-inherit gnome2
+inherit gnome2 virtualx
 
 DESCRIPTION="Color profile manager for the GNOME desktop"
 HOMEPAGE="http://projects.gnome.org/gnome-color-manager/"
@@ -42,9 +42,6 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 "
 
-# FIXME: run test-suite with files on live file-system
-RESTRICT="test"
-
 src_configure() {
 	# Always enable tests since they are check_PROGRAMS anyway
 	gnome2_src_configure \
@@ -53,6 +50,10 @@ src_configure() {
 		$(use_enable packagekit) \
 		$(use_enable raw exiv) \
 		ITSTOOL=$(type -P true)
+}
+
+src_test() {
+	Xemake check
 }
 
 pkg_postinst() {
