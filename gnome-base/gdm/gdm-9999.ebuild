@@ -181,7 +181,7 @@ src_configure() {
 		--enable-authentication-scheme=pam \
 		--with-default-pam-config=exherbo \
 		--with-at-spi-registryd-directory="${EPREFIX}"/usr/libexec \
-		--with-consolekit-directory=${EPREFIX}/usr/lib/ConsoleKit \
+		--with-consolekit-directory="${EPREFIX}"/usr/lib/ConsoleKit \
 		--with-initial-vt=7 \
 		--without-xevie \
 		$(use_with audit libaudit) \
