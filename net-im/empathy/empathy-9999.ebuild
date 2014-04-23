@@ -111,7 +111,6 @@ src_configure() {
 		--disable-Werror \
 		--disable-coding-style-checks \
 		--disable-static \
-		--disable-nautilus-sendto
 		--disable-ubuntu-online-accounts \
 		--enable-gst-1.0 \
 		$(use_enable debug) \
