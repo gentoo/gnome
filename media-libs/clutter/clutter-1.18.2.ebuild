@@ -24,7 +24,7 @@ RDEPEND="
 	>=dev-libs/glib-2.37.3:2
 	>=dev-libs/atk-2.5.3[introspection?]
 	>=dev-libs/json-glib-0.12[introspection?]
-	>=media-libs/cogl-1.17.3:1.0=[introspection?,pango]
+	>=media-libs/cogl-1.17.5:1.0=[introspection?,pango]
 	media-libs/fontconfig
 	>=x11-libs/cairo-1.12:=[glib]
 	>=x11-libs/pango-1.30[introspection?]
@@ -46,7 +46,7 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	>=sys-devel/gettext-0.17
 	doc? (
-		>=dev-util/gtk-doc-1.15
+		>=dev-util/gtk-doc-1.20
 		>=app-text/docbook-sgml-utils-0.6.14[jadetex]
 		dev-libs/libxslt )
 	test? ( x11-libs/gdk-pixbuf )"
