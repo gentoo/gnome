@@ -18,8 +18,8 @@ IUSE=""
 
 RDEPEND="
 	dev-libs/glib:2
-	>=media-libs/clutter-1:1.0
-	>=media-libs/clutter-gtk-0.91.6:1.0
+	>=media-libs/clutter-1.14:1.0
+	>=media-libs/clutter-gtk-1.4:1.0
 	>=x11-libs/gtk+-3.10:3
 "
 DEPEND="${RDEPEND}
