@@ -6,7 +6,7 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
-inherit gnome2 virtualx
+inherit autotools eutils gnome2 virtualx
 
 DESCRIPTION="Network-related giomodules for glib"
 HOMEPAGE="http://git.gnome.org/browse/glib-networking/"
@@ -34,6 +34,13 @@ DEPEND="${RDEPEND}
 	test? ( sys-apps/dbus[X] )
 "
 # eautoreconf needs >=sys-devel/autoconf-2.65:2.5
+
+src_prepare() {
+	epatch "${FILESDIR}"/${P}-unittests.patch
+	eautoreconf
+	gnome2_src_prepare
+}
+
 
 src_configure() {
 	gnome2_src_configure \
