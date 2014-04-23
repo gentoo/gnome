@@ -62,7 +62,7 @@ DEPEND="${COMMON_DEPEND}
 "
 
 src_prepare() {
-	# Looks like a regression from a underlying library
+	# Looks like a regression from an underlying library
 	sed -e 's|\(g_test_add_func.*photo_path.*;\)|/*\1*/|' \
 	    -e 's|\(g_test_add_func.*video_path.*;\)|/*\1*/|' \
 		-i "${S}"/tests/test-libcheese.c || die
