@@ -100,7 +100,6 @@ src_configure() {
 		--enable-pdf \
 		--enable-comics \
 		--enable-thumbnailer \
-		--with-smclient=xsmp \
 		--with-platform=gnome \
 		--enable-dbus \
 		$(use_enable djvu) \
