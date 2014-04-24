@@ -1,11 +1,35 @@
+From a485992913ec84a4c558cad535dd8a2ab14b0c19 Mon Sep 17 00:00:00 2001
+From: Alexandre Rostovtsev <tetromino@gentoo.org>
+Date: Fri, 25 Apr 2014 22:17:24 +0200
+Subject: [PATCH 1/2] Make bluetooth/colord/goa/kerberos/wacom optional
+
+Upstream is not interested in any part of this patch:
+
+https://bugzilla.gnome.org/show_bug.cgi?id=686840
+https://bugzilla.gnome.org/show_bug.cgi?id=697478
+https://bugzilla.gnome.org/show_bug.cgi?id=700145
+
+Dropped mm from this revision of the patch since it appears more
+complicated than ever to split it from the network panel.
+
+Signed-Off: Gilles Dartiguelongue <eva@gentoo.org>
+---
+ configure.ac                            | 146 ++++++++++++++++++++++++++------
+ panels/Makefile.am                      |  10 ++-
+ panels/user-accounts/um-realm-manager.c |   9 ++
+ shell/Makefile.am                       |  10 ++-
+ shell/cc-panel-loader.c                 |   8 ++
+ 5 files changed, 153 insertions(+), 30 deletions(-)
+
 diff --git a/configure.ac b/configure.ac
-index 4100481..f5f5d02 100644
+index 511f78d..f82108e 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -140,13 +140,58 @@ PKG_CHECK_MODULES(MOUSE_PANEL, $COMMON_MODULES xi >= 1.2
+@@ -139,14 +139,58 @@ PKG_CHECK_MODULES(MOUSE_PANEL, $COMMON_MODULES xi >= 1.2
+                   gnome-settings-daemon >= $GSD_REQUIRED_VERSION x11)
  PKG_CHECK_MODULES(NETWORK_PANEL, $COMMON_MODULES gmodule-2.0)
  PKG_CHECK_MODULES(NOTIFICATIONS_PANEL, $COMMON_MODULES libgnome-menu-3.0)
- PKG_CHECK_MODULES(ONLINE_ACCOUNTS_PANEL, $COMMON_MODULES goa-1.0 goa-backend-1.0 >= $GOA_REQUIRED_VERSION)
+-PKG_CHECK_MODULES(ONLINE_ACCOUNTS_PANEL, $COMMON_MODULES goa-1.0 goa-backend-1.0 >= $GOA_REQUIRED_VERSION)
 +
 +build_online_accounts=false
 +AC_ARG_ENABLE(goa,
@@ -66,7 +90,7 @@ index 4100481..f5f5d02 100644
  PKG_CHECK_MODULES(PRINTERS_PANEL, $COMMON_MODULES
                    polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION)
  PKG_CHECK_MODULES(PRIVACY_PANEL, $COMMON_MODULES)
-@@ -206,8 +251,25 @@ fi
+@@ -206,8 +250,25 @@ fi
  AM_CONDITIONAL(HAVE_NM_UNSTABLE, [test x$nm_unstable = xyes])
  
  # Check for gnome-bluetooth
@@ -85,7 +109,7 @@ index 4100481..f5f5d02 100644
 +
 +if test x$WANT_BLUETOOTH = xyes; then
 +       # Check for gnome-bluetooth
-+       PKG_CHECK_MODULES(BLUETOOTH, $COMMON_MODULES gnome-bluetooth-1.0 >= 3.9.3,
++       PKG_CHECK_MODULES(BLUETOOTH, $COMMON_MODULES gnome-bluetooth-1.0 >= 3.11.1,
 +               [have_bluetooth=yes], have_bluetooth=no)
 +       have_bluetooth=yes
 +fi
@@ -94,7 +118,7 @@ index 4100481..f5f5d02 100644
  if test "x$have_bluetooth" = xyes ; then
  	AC_DEFINE(BUILD_BLUETOOTH, 1, [Define to 1 to build the Bluetooth panel])
  fi
-@@ -292,15 +354,26 @@ case $host_os in
+@@ -292,15 +353,27 @@ case $host_os in
      if test "$host_cpu" = s390 -o "$host_cpu" = s390x; then
        have_wacom=no
      else
@@ -103,8 +127,10 @@ index 4100481..f5f5d02 100644
 -                        xi >= 1.2 x11 libwacom >= $LIBWACOM_REQUIRED_VERSION
 -                        gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION
 -                        clutter-gtk-1.0
--                        clutter-1.0 >= $CLUTTER_REQUIRED_VERSION, [have_wacom=yes], [have_wacom=no])
--      if test x${have_wacom} = xyes; then
+-                        clutter-1.0 >= $CLUTTER_REQUIRED_VERSION)
+-      have_wacom=yes
+-      AC_DEFINE(BUILD_WACOM, 1, [Define to 1 to build the Wacom panel])
+-      AC_DEFINE(HAVE_WACOM, 1, [Define to 1 is Wacom is supportted])
 +      AC_ARG_ENABLE(wacom,
 +                    AC_HELP_STRING([--disable-wacom],
 +                                   [disable wacom management panel]),
@@ -122,13 +148,14 @@ index 4100481..f5f5d02 100644
 +                          gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION
 +                          clutter-gtk-1.0
 +                          clutter-1.0 >= $CLUTTER_REQUIRED_VERSION)
-         AC_DEFINE(BUILD_WACOM, 1, [Define to 1 to build the Wacom panel])
-         AC_DEFINE(HAVE_WACOM, 1, [Define to 1 is Wacom is supportted])
 +        have_wacom=yes
-       fi
++        AC_DEFINE(BUILD_WACOM, 1, [Define to 1 to build the Wacom panel])
++        AC_DEFINE(HAVE_WACOM, 1, [Define to 1 is Wacom is supportted])
++      fi
      fi
      ;;
-@@ -311,16 +384,22 @@ esac
+   *)
+@@ -310,16 +383,22 @@ esac
  AM_CONDITIONAL(BUILD_WACOM, [test x${have_wacom} = xyes])
  
  # Kerberos kerberos support
@@ -160,7 +187,7 @@ index 4100481..f5f5d02 100644
  AC_SUBST(KRB5_CFLAGS)
  AC_SUBST(KRB5_LIBS)
  
-@@ -539,6 +618,11 @@ if test "x$have_bluetooth" = "xyes"; then
+@@ -538,6 +617,11 @@ if test "x$have_bluetooth" = "xyes"; then
  else
  	AC_MSG_NOTICE([   Bluetooth panel disabled])
  fi
@@ -172,7 +199,7 @@ index 4100481..f5f5d02 100644
  if test "x$enable_cups" = "xyes"; then
  	AC_MSG_NOTICE([** CUPS (Printers panel)])
  else
-@@ -549,6 +633,16 @@ if test "x$have_cheese" = "xyes"; then
+@@ -548,6 +632,16 @@ if test "x$have_cheese" = "xyes"; then
  else
  	AC_MSG_NOTICE([   Users panel webcam support disabled])
  fi
@@ -351,3 +378,6 @@ index 26576dc..8a92f95 100644
    PANEL_TYPE("power",            cc_power_panel_get_type        ),
  #ifdef BUILD_PRINTERS
    PANEL_TYPE("printers",         cc_printers_panel_get_type     ),
+-- 
+1.9.0
+
