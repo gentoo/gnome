@@ -16,7 +16,7 @@ HOMEPAGE="https://help.gnome.org/users/gnome-terminal/"
 
 LICENSE="GPL-3+"
 SLOT="0"
-IUSE="+nautilus"
+IUSE="+gnome-shell +nautilus"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
@@ -56,7 +56,7 @@ DOC_CONTENTS="To get previous working directory inherited in new opened
 src_configure() {
 	local myconf=""
 
-	if [[ ${PV} = 9999 ]]; then
+	if [[ ${PV} != 9999 ]]; then
 		myconf="${myconf}
 			ITSTOOL=$(type -P true)
 			XMLLINT=$(type -P true)

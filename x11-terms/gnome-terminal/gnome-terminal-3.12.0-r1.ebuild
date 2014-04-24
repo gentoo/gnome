@@ -33,6 +33,7 @@ RDEPEND="
 # gtk+:2 needed for gtk-builder-convert, bug 356239
 DEPEND="${RDEPEND}
 	app-text/yelp-tools
+	dev-util/appdata-tools
 	|| ( dev-util/gtk-builder-convert <=x11-libs/gtk+-2.24.10:2 )
 	>=dev-util/intltool-0.50
 	sys-devel/gettext
@@ -43,6 +44,18 @@ DOC_CONTENTS="To get previous working directory inherited in new opened
 	tab you will need to add the following line to your ~/.bashrc:\n
 	. /etc/profile.d/vte.sh"
 
+src_prepare() {
+	epatch \
+		"${FILESDIR}"/${P}-appmenu-parameter.patch \
+		"${FILESDIR}"/${P}-remove-set-title-feature-0.patch \
+		"${FILESDIR}"/${P}-remove-set-title-feature-1.patch \
+		"${FILESDIR}"/${P}-remove-set-title-feature-2.patch \
+		"${FILESDIR}"/${P}-remove-set-title-feature-3.patch \
+		"${FILESDIR}"/${P}-fallback-title-1.patch \
+		"${FILESDIR}"/${P}-fallback-title-2.patch
+
+	gnome2_src_prepare
+}
 src_configure() {
 	# FIXME: leave smclient configure unset until it accepts values from the
 	# switch and not from GDK_TARGET, bug #363033
@@ -51,7 +64,6 @@ src_configure() {
 		--enable-migration \
 		$(use_enable gnome-shell search-provider) \
 		$(use_with nautilus nautilus-extension) \
-		APPDATA_VALIDATE=$(type -P true) \
 		# Docs are broken in this release.
 		#ITSTOOL=$(type -P true) \
 		#XMLLINT=$(type -P true)
