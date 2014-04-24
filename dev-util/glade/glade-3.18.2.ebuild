@@ -23,7 +23,7 @@ RDEPEND="
 	>=dev-libs/libxml2-2.4.0:2
 	x11-libs/cairo:=
 	x11-libs/gdk-pixbuf:2[introspection?]
-	>=x11-libs/gtk+-3.11:3[introspection?]
+	>=x11-libs/gtk+-3.12:3[introspection?]
 	x11-libs/pango[introspection?]
 	introspection? ( >=dev-libs/gobject-introspection-1.32 )
 	python? (
