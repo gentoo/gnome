@@ -25,7 +25,7 @@ COMMON_DEPEND="
 
 	>=x11-libs/gtk+-3.3.8:3
 	>=x11-libs/vte-0.25.1:2.90
-	>=x11-misc/colord-0.1.34
+	>=x11-misc/colord-0.1.34:0=
 	>=x11-libs/colord-gtk-0.1.20
 
 	packagekit? ( app-admin/packagekit-base )
