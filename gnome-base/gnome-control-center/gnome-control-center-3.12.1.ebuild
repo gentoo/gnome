@@ -62,7 +62,7 @@ COMMON_DEPEND="
 	bluetooth? ( >=net-wireless/gnome-bluetooth-3.11.1:= )
 	colord? (
 		net-libs/libsoup:2.4
-		>=x11-misc/colord-0.1.34 )
+		>=x11-misc/colord-0.1.34:0= )
 	cups? (
 		>=net-print/cups-1.4[dbus]
 		|| ( >=net-fs/samba-3.6.14-r1[smbclient] >=net-fs/samba-4.0.0[client] ) )

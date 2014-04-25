@@ -72,7 +72,7 @@ COMMON_DEPEND="
 	bluetooth? ( >=net-wireless/gnome-bluetooth-3.11.1:= )
 	colord? (
 		net-libs/libsoup:2.4
-		>=x11-misc/colord-0.1.34 )
+		>=x11-misc/colord-0.1.34:0= )
 	cups? (
 		>=net-print/cups-1.4[dbus]
 		|| ( >=net-fs/samba-3.6.14-r1[smbclient] >=net-fs/samba-4.0.0[client] ) )
@@ -137,7 +137,7 @@ src_prepare() {
 
 	# Make some panels and dependencies optional; requires eautoreconf
 	# https://bugzilla.gnome.org/686840, 697478, 700145
-	epatch "${FILESDIR}"/${PN}-3.12.0-optional.patch
+	epatch "${FILESDIR}"/${PN}-3.12.1-optional.patch
 
 	# Fix some absolute paths to be appropriate for Gentoo
 	epatch "${FILESDIR}"/${PN}-3.10.2-gentoo-paths.patch
