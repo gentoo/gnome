@@ -2,6 +2,10 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
+# Gilles Dartiguelongue <eva@gentoo.org> (26 Apr 2014)
+# Gnome 3.12 requires upower-0.99 but this is not ported yet
+net-im/telepathy-mission-control upower
+
 # Gilles Dartiguelongue <eva@gentoo.org> (25 Nov 2013)
 # gjs: tests fail and support for it was purely and simply removed in master/1.9
 # python2_6: unit tests fail for this abi, must report usptream
