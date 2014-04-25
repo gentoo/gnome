@@ -49,7 +49,7 @@ COMMON_DEPEND="
 	cloudprint? (
 		>=net-libs/rest-0.7
 		>=dev-libs/json-glib-1.0 )
-	colord? ( >=x11-misc/colord-0.1.9 )
+	colord? ( >=x11-misc/colord-0.1.9:0= )
 	cups? ( >=net-print/cups-1.2 )
 	introspection? ( >=dev-libs/gobject-introspection-1.39 )
 	wayland? (
