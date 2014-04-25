@@ -1,4 +1,4 @@
-From f8711d536d9605d3d9c773ccbba039a7828e026a Mon Sep 17 00:00:00 2001
+From 63db817bac0382f3f43947b8233bf4585ede0e0b Mon Sep 17 00:00:00 2001
 From: Priit Laes <plaes@plaes.org>
 Date: Tue, 20 Dec 2011 15:42:44 +0200
 Subject: [PATCH] Split support for libsoup-gnome
@@ -8,12 +8,12 @@ https://bugzilla.gnome.org/show_bug.cgi?id=595065
 Original patch by Romain Perier.
 ---
  Makefile.am         | 12 +++++++++--
- configure.ac        | 34 +++++++++++++++++++-----------
+ configure.ac        | 35 ++++++++++++++++++++-----------
  libsoup/Makefile.am | 60 +++++++++++++++++++++++++++++++++++++++--------------
- 3 files changed, 76 insertions(+), 30 deletions(-)
+ 3 files changed, 77 insertions(+), 30 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index 66992d9..046f945 100644
+index c8fa95c..fc09778 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -1,7 +1,11 @@
@@ -29,7 +29,7 @@ index 66992d9..046f945 100644
  
  EXTRA_DIST =				\
  	data/effective_tld_names.dat	\
-@@ -16,7 +20,11 @@ DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-introspection
+@@ -18,7 +22,11 @@ DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --enable-introspection
  
  pkgconfigdir = $(libdir)/pkgconfig
  
@@ -43,10 +43,10 @@ index 66992d9..046f945 100644
  if BUILD_LIBSOUP_GNOME
  pkgconfig_DATA += libsoup-gnome-2.4.pc
 diff --git a/configure.ac b/configure.ac
-index 4db8cd2..c1b17f4 100644
+index 96bb378..0153f10 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -77,20 +77,26 @@ LT_INIT([win32-dll])
+@@ -77,23 +77,30 @@ LT_INIT([win32-dll])
  dnl ***********************
  dnl *** Checks for glib ***
  dnl ***********************
@@ -56,36 +56,40 @@ index 4db8cd2..c1b17f4 100644
 +   AS_HELP_STRING([--with-libsoup-system], [Use libsoup system library to build(default=no)]),
 +   [with_libsoup_system=$withval], [with_libsoup_system=no])
 +if test "$with_libsoup_system" = "no"; then
-+    GLIB_REQUIRED=2.36.0
++    GLIB_REQUIRED=2.38.0
 +    AM_PATH_GLIB_2_0($GLIB_REQUIRED,,,gobject gio)
 +    if test "$GLIB_LIBS" = ""; then
-+        AC_MSG_ERROR(GLIB $GLIB_REQUIRED or later is required to build libsoup)
++       AC_MSG_ERROR(GLIB $GLIB_REQUIRED or later is required to build libsoup)
 +    fi
-+    GLIB_CFLAGS="$GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_36"
-+    GLIB_MAKEFILE='$(top_srcdir)/Makefile.glib'
-+    AC_SUBST(GLIB_MAKEFILE)
++    GLIB_CFLAGS="$GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_38"
  
--GLIB_REQUIRED=2.36.0
+-GLIB_REQUIRED=2.38.0
 -AM_PATH_GLIB_2_0($GLIB_REQUIRED,,,gobject gio)
 -if test "$GLIB_LIBS" = ""; then
 -   AC_MSG_ERROR(GLIB $GLIB_REQUIRED or later is required to build libsoup)
+-fi
+-GLIB_CFLAGS="$GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_38"
++    GLIB_MAKEFILE='$(top_srcdir)/Makefile.glib'
++    AC_SUBST(GLIB_MAKEFILE)
+ 
+-GLIB_MAKEFILE='$(top_srcdir)/Makefile.glib'
+-AC_SUBST(GLIB_MAKEFILE)
 +    PKG_CHECK_MODULES(XML, libxml-2.0)
 +    AC_SUBST(XML_CFLAGS)
 +    AC_SUBST(XML_LIBS)
- fi
--GLIB_CFLAGS="$GLIB_CFLAGS -DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_36"
--
--GLIB_MAKEFILE='$(top_srcdir)/Makefile.glib'
--AC_SUBST(GLIB_MAKEFILE)
--
++fi
++AM_CONDITIONAL(BUILD_LIBSOUP, test $with_libsoup_system = no)
+ 
+ GLIB_TESTS
+ 
 -PKG_CHECK_MODULES(XML, libxml-2.0)
 -AC_SUBST(XML_CFLAGS)
 -AC_SUBST(XML_LIBS)
-+AM_CONDITIONAL(BUILD_LIBSOUP, test $with_libsoup_system = no)
- 
+-
  PKG_CHECK_MODULES(SQLITE, sqlite3)
  AC_SUBST(SQLITE_CFLAGS)
-@@ -139,6 +145,10 @@ AM_CONDITIONAL(BUILD_LIBSOUP_GNOME, test $with_gnome != no)
+ AC_SUBST(SQLITE_LIBS)
+@@ -141,6 +148,10 @@ AM_CONDITIONAL(BUILD_LIBSOUP_GNOME, test $with_gnome != no)
  
  if test $with_gnome != no; then
  	AC_DEFINE(HAVE_GNOME, 1, [Defined if GNOME support is enabled])
@@ -250,5 +254,5 @@ index 60920bd..26c5616 100644
  
  endif
 -- 
-1.8.3.2
+1.9.0
 
