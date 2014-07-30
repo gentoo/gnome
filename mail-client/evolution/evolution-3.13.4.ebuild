@@ -32,6 +32,7 @@ PINENTRY_DEPEND="|| ( app-crypt/pinentry[gtk] app-crypt/pinentry-qt app-crypt/pi
 # glade-3 support is for maintainers only per configure.ac
 # pst is not mature enough and changes API/ABI frequently
 # google tasks requires >=libgdata-0.15.1
+# gnome-desktop support is optional with --enable-gnome-desktop
 COMMON_DEPEND="
 	>=app-crypt/gcr-3.4
 	>=app-text/enchant-1.1.7
