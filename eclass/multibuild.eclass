@@ -46,6 +46,10 @@ if [[ ! ${_MULTIBUILD} ]]; then
 # @DESCRIPTION:
 # The current variant which the function was executed for.
 #
+# If nested multibuilds are used, this value can be an array. In that
+# case, the first element will name the deepest multibuild, and the next
+# elements will go outwards.
+#
 # Example value:
 # @CODE
 # python2_6
@@ -58,6 +62,10 @@ if [[ ! ${_MULTIBUILD} ]]; then
 # contains the complete selection tree.
 #
 # It can be used to create variant-unique directories and files.
+#
+# If nested multibuilds are used, this value can be an array. In that
+# case, the first element will name the deepest multibuild, and the next
+# elements will go outwards.
 #
 # Example value:
 # @CODE
@@ -72,6 +80,10 @@ if [[ ! ${_MULTIBUILD} ]]; then
 # multibuild_foreach_variant() sets BUILD_DIR locally
 # to variant-specific build directories based on the initial value
 # of BUILD_DIR.
+#
+# If nested multibuilds are used, this value can be an array. In that
+# case, the first element will name the deepest multibuild, and the next
+# elements will go outwards.
 #
 # Example value:
 # @CODE
@@ -108,9 +120,9 @@ multibuild_foreach_variant() {
 	debug-print "${FUNCNAME}: initial build_dir = ${bdir}"
 
 	for v in "${MULTIBUILD_VARIANTS[@]}"; do
-		local MULTIBUILD_VARIANT=${v}
-		local MULTIBUILD_ID=${prev_id}${v}
-		local BUILD_DIR=${bdir%%/}-${v}
+		local MULTIBUILD_VARIANT=( "${v}" "${MULTIBUILD_VARIANT[@]}" )
+		local MULTIBUILD_ID=( "${prev_id}${v}" "${MULTIBUILD_ID[@]}" )
+		local BUILD_DIR=( "${bdir%%/}-${v}" "${BUILD_DIR[@]}" )
 
 		_multibuild_run() {
 			# find the first non-private command
