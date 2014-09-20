@@ -17,9 +17,10 @@ IUSE=""
 
 RDEPEND="
 	>=app-misc/tracker-1:=
-	>=dev-libs/glib-2.35.1:2
+	>=dev-libs/glib-2.39.3:2
 	gnome-base/gnome-desktop:3=
 	>=gnome-base/librsvg-2.26.0
+	>=dev-libs/libgdata-0.15.2
 	media-libs/babl
 	>=media-libs/gegl-0.2
 	>=media-libs/grilo-0.2.6:0.2
@@ -31,7 +32,7 @@ RDEPEND="
 	>=net-libs/libgfbgraph-0.2.1:0.2
 	x11-libs/cairo
 	x11-libs/gdk-pixbuf:2
-	>=x11-libs/gtk+-3.11.5:3
+	>=x11-libs/gtk+-3.13.2:3
 "
 DEPEND="${RDEPEND}
 	dev-util/desktop-file-utils
