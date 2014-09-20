@@ -20,7 +20,7 @@ RDEPEND="
 	>=dev-libs/glib-2.39:2
 	>=x11-libs/gtk+-3.12:3
 	>=media-libs/libcanberra-0.30
-	>=dev-libs/libgweather-3.9.91:=
+	>=dev-libs/libgweather-3.13.91:=
 	>=gnome-base/gnome-desktop-3.7.90:=
 	>=sci-geosciences/geocode-glib-0.99.4
 	>=app-misc/geoclue-1.99.3:2.0
