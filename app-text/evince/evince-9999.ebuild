@@ -12,17 +12,17 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="Simple document viewer for GNOME"
-HOMEPAGE="http://www.gnome.org/projects/evince/"
+HOMEPAGE="https://wiki.gnome.org/Apps/Evince"
 
 LICENSE="GPL-2+ CC-BY-SA-3.0"
 # subslot = evd3.(suffix of libevdocument3)-evv3.(suffix of libevview3)
 SLOT="0/evd3.4-evv3.3"
-IUSE="debug djvu dvi +introspection libsecret nautilus +postscript t1lib tiff xps"
+IUSE="debug djvu dvi gnome +introspection libsecret nautilus +postscript t1lib tiff xps"
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~x64-solaris"
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~x64-solaris"
 fi
 
 # Since 2.26.2, can handle poppler without cairo support. Make it optional ?
@@ -36,7 +36,7 @@ COMMON_DEPEND="
 	>=dev-libs/libxml2-2.5:2
 	sys-libs/zlib:=
 	x11-libs/gdk-pixbuf:2
-	>=x11-libs/gtk+-3.8:3[introspection?]
+	>=x11-libs/gtk+-3.12:3[introspection?]
 	gnome-base/gsettings-desktop-schemas
 	>=x11-libs/cairo-1.10:=
 	>=app-text/poppler-0.24:=[cairo]
@@ -45,6 +45,7 @@ COMMON_DEPEND="
 		virtual/tex-base
 		dev-libs/kpathsea:=
 		t1lib? ( >=media-libs/t1lib-5:= ) )
+	gnome? ( gnome-base/gnome-desktop:3 )
 	introspection? ( >=dev-libs/gobject-introspection-1 )
 	libsecret? ( >=app-crypt/libsecret-0.5 )
 	nautilus? ( >=gnome-base/nautilus-2.91.4[introspection?] )
@@ -55,6 +56,7 @@ COMMON_DEPEND="
 RDEPEND="${COMMON_DEPEND}
 	gnome-base/librsvg
 	|| (
+		>=x11-themes/adwaita-icon-theme-2.17.1
 		>=x11-themes/gnome-icon-theme-2.17.1
 		>=x11-themes/hicolor-icon-theme-0.10 )
 	x11-themes/gnome-icon-theme-symbolic
@@ -81,13 +83,10 @@ ELTCONF="--portage"
 RESTRICT="test"
 
 src_prepare() {
-	# ???
-	ELTCONF="--portage"
-
 	gnome2_src_prepare
 
-	# Do not depend on gnome-icon-theme, bug #326855, #391859
-	sed -e 's/gnome-icon-theme >= $GNOME_ICON_THEME_REQUIRED//g' \
+	# Do not depend on adwaita-icon-theme, bug #326855, #391859
+	sed -e 's/adwaita-icon-theme >= $ADWAITA_ICON_THEME_REQUIRED//g' \
 		-i configure || die "sed failed"
 }
 
@@ -102,9 +101,11 @@ src_configure() {
 		--enable-thumbnailer \
 		--with-platform=gnome \
 		--enable-dbus \
+		--enable-browser-plugin \
 		$(use_enable djvu) \
 		$(use_enable dvi) \
 		$(use_with libsecret keyring) \
+		$(use_enable gnome libgnome-desktop) \
 		$(use_enable introspection) \
 		$(use_enable nautilus) \
 		$(use_enable postscript ps) \
