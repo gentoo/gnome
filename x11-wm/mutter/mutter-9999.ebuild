@@ -25,10 +25,9 @@ fi
 COMMON_DEPEND="
 	>=x11-libs/pango-1.2[X,introspection?]
 	>=x11-libs/cairo-1.10[X]
-	x11-libs/gdk-pixbuf:2[introspection?]
 	>=x11-libs/gtk+-3.9.11:3[X,introspection?]
 	>=dev-libs/glib-2.36.0:2
-	>=media-libs/clutter-1.14.3:1.0[introspection?]
+	>=media-libs/clutter-1.19.5:1.0[introspection?]
 	>=media-libs/cogl-1.17.1:1.0=[introspection?]
 	>=media-libs/libcanberra-0.26[gtk3]
 	>=x11-libs/startup-notification-0.7
@@ -37,17 +36,25 @@ COMMON_DEPEND="
 	gnome-base/gnome-desktop:3=
 	>sys-power/upower-0.99
 
+	# gbm
+	# clutter-egl-1.0
+
 	x11-libs/libICE
 	x11-libs/libSM
 	x11-libs/libX11
+	>=x11-libs/libXcomposite-0.2
 	x11-libs/libXcursor
 	x11-libs/libXdamage
 	x11-libs/libXext
 	x11-libs/libXfixes
+	>=x11-libs/libXi-1.7
 	x11-libs/libXinerama
 	x11-libs/libXrandr
 	x11-libs/libXrender
-	>=x11-libs/libXi-1.7
+	x11-libs/libxcb
+	x11-libs/libxkbfile
+	>=x11-libs/libxkbcommon-0.4.3
+	x11-misc/xkeyboard-config
 
 	gnome-extra/zenity
 
@@ -55,7 +62,7 @@ COMMON_DEPEND="
 "
 DEPEND="${COMMON_DEPEND}
 	>=dev-util/gtk-doc-am-1.15
-	>=dev-util/intltool-0.35
+	>=dev-util/intltool-0.41
 	sys-devel/gettext
 	virtual/pkgconfig
 	x11-proto/xextproto
