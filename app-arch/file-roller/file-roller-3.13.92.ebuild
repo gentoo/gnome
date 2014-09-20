@@ -9,7 +9,7 @@ GNOME2_LA_PUNT="yes"
 inherit eutils gnome2 readme.gentoo
 
 DESCRIPTION="Archive manager for GNOME"
-HOMEPAGE="http://fileroller.sourceforge.net/"
+HOMEPAGE="http://fileroller.sourceforge.net/ https://wiki.gnome.org/Apps/FileRoller"
 
 LICENSE="GPL-2+ CC-BY-SA-3.0"
 SLOT="0"
@@ -23,7 +23,7 @@ RDEPEND="
 	>=app-arch/libarchive-3:=
 	>=dev-libs/glib-2.36:2
 	>=dev-libs/json-glib-0.14
-	>=x11-libs/gtk+-3.9.3:3
+	>=x11-libs/gtk+-3.13.2:3
 	>=x11-libs/libnotify-0.4.3:=
 	sys-apps/file
 	x11-libs/cairo
