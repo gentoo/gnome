@@ -19,14 +19,13 @@ IUSE="systemd +X"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 fi
 
 RDEPEND="
 	>=dev-libs/glib-2.37.3:2
-	>=gnome-base/libgtop-2.28.2:2
-	>=x11-libs/gtk+-3.9.5:3[X(+)]
-	>=x11-themes/gnome-icon-theme-2.31
+	>=gnome-base/libgtop-2.28.2:2=
+	>=x11-libs/gtk+-3.12:3[X(+)]
 	>=dev-cpp/gtkmm-3.3.18:3.0
 	>=dev-cpp/glibmm-2.34:2
 	>=dev-libs/libxml2-2.0:2
