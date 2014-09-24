@@ -33,6 +33,7 @@ PINENTRY_DEPEND="|| ( app-crypt/pinentry[gtk] app-crypt/pinentry-qt app-crypt/pi
 # pst is not mature enough and changes API/ABI frequently
 # google tasks requires >=libgdata-0.15.1
 # gnome-desktop support is optional with --enable-gnome-desktop
+# gnome-autoar (currently disabled because no release has been made)
 COMMON_DEPEND="
 	>=app-crypt/gcr-3.4
 	>=app-text/enchant-1.1.7
@@ -48,7 +49,7 @@ COMMON_DEPEND="
 	>=net-libs/webkit-gtk-2.2.0:3
 	>=x11-libs/cairo-1.9.15:=[glib]
 	>=x11-libs/gdk-pixbuf-2.24:2
-	>=x11-libs/gtk+-3.8.0:3
+	>=x11-libs/gtk+-3.10.0:3
 	>=x11-libs/libnotify-0.7:=
 	>=x11-misc/shared-mime-info-0.22
 
@@ -127,6 +128,7 @@ src_configure() {
 	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		--without-glade-catalog \
+		--disable-autoar \
 		--disable-code-coverage \
 		--disable-installed-tests \
 		--disable-pst-import \
