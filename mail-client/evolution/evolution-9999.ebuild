@@ -43,7 +43,7 @@ COMMON_DEPEND="
 	>=dev-libs/libxml2-2.7.3:2
 	>=gnome-base/gnome-desktop-2.91.3:3=
 	>=gnome-base/gsettings-desktop-schemas-2.91.92
-	>=gnome-extra/evolution-data-server-${PV}:=[weather?]
+	>=gnome-extra/evolution-data-server-${PV}:=[gtk,weather?]
 	>=media-libs/libcanberra-0.25[gtk3]
 	>=net-libs/libsoup-2.42:2.4
 	>=net-libs/webkit-gtk-2.2.0:3
@@ -55,6 +55,7 @@ COMMON_DEPEND="
 
 	app-text/iso-codes
 	dev-libs/atk
+	gnome-base/dconf
 	x11-libs/libSM
 	x11-libs/libICE
 
