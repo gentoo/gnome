@@ -73,6 +73,7 @@ src_configure() {
 			ITSTOOL=$(type -P true)
 			VALAC=$(type -P true)"
 	fi
+	# bindir is needed due to bad macro expansion in desktop file, bug #508610
 	gnome2_src_configure \
 		--enable-pgp \
 		--enable-ssh \

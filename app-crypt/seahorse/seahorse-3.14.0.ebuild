@@ -48,12 +48,13 @@ src_prepare() {
 		-e '/CFLAGS="$CFLAGS -O0/d' \
 		-i configure.ac configure || die "sed 1 failed"
 
-	vala_src_prepare
 	gnome2_src_prepare
 }
 
 src_configure() {
+	# bindir is needed due to bad macro expansion in desktop file, bug #508610
 	gnome2_src_configure \
+		--bindir=/usr/bin \
 		--enable-pgp \
 		--enable-ssh \
 		--enable-pkcs11 \
