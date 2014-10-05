@@ -11,7 +11,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="An integrated VNC server for GNOME"
-HOMEPAGE="http://live.gnome.org/Vino"
+HOMEPAGE="https://wiki.gnome.org/Projects/Vino"
 
 LICENSE="GPL-2+"
 SLOT="0"
@@ -57,12 +57,12 @@ DEPEND="${RDEPEND}
 	>=dev-lang/perl-5
 	>=dev-util/intltool-0.50
 	virtual/pkgconfig
-	app-crypt/libsecret"
+	app-crypt/libsecret
+"
 # libsecret is always required at build time per bug 322763
 
 src_configure() {
 	gnome2_src_configure \
-		--enable-http-server \
 		--with-gcrypt \
 		$(use_with avahi) \
 		$(use_with crypt gcrypt) \
