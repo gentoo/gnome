@@ -9,7 +9,7 @@ VALA_MIN_API_VERSION="0.24"
 inherit gnome-games vala
 
 DESCRIPTION="Play the classic two-player boardgame of chess"
-HOMEPAGE="https://wiki.gnome.org/Chess"
+HOMEPAGE="https://wiki.gnome.org/Apps/Chess"
 
 LICENSE="LGPL-2+"
 SLOT="0"
@@ -17,12 +17,9 @@ KEYWORDS="~amd64 ~arm ~x86"
 IUSE=""
 
 RDEPEND="
-	dev-libs/glib:2
+	>=dev-libs/glib-2.40:2
 	>=gnome-base/librsvg-2.32
-	virtual/glu
-	virtual/opengl
-	>=x11-libs/gtk+-3.10:3
-	x11-libs/libX11
+	>=x11-libs/gtk+-3.13.2:3
 "
 DEPEND="${RDEPEND}
 	$(vala_depend)
