@@ -8,12 +8,12 @@ GCONF_DEBUG="no"
 inherit eutils gnome2 virtualx
 
 DESCRIPTION="PackageKit client for the GNOME desktop"
-HOMEPAGE="http://www.packagekit.org/"
+HOMEPAGE="http://www.freedesktop.org/software/PackageKit/"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="nls systemd test udev"
+IUSE="systemd test udev"
 
 # gdk-pixbuf used in gpk-animated-icon
 # pango used on gpk-common
@@ -35,7 +35,7 @@ RDEPEND="
 
 	systemd? ( >=sys-apps/systemd-42 )
 	!systemd? ( sys-auth/consolekit )
-	udev? ( >=virtual/udev-171[gudev] )
+	udev? ( virtual/libgudev:= )
 "
 DEPEND="${RDEPEND}
 	app-text/docbook-sgml-utils
@@ -48,13 +48,10 @@ DEPEND="${RDEPEND}
 
 # NOTES:
 # app-text/docbook-sgml-utils required for man pages
-# app-text/gnome-doc-utils and dev-libs/libxslt required for gnome help files
-# gtk-doc is generating a useless file, don't need it
 
 # UPSTREAM:
 # misuse of CPPFLAGS/CXXFLAGS ?
 # see if tests can forget about display (use eclass for that ?)
-# intltool and gettext only with +nls
 
 src_prepare() {
 	# Regenerate marshalers for <glib-2.31 compat
@@ -81,13 +78,10 @@ src_prepare() {
 src_configure() {
 	gnome2_src_configure \
 		--localstatedir=/var \
-		--enable-compile-warnings=yes \
 		--enable-iso-c \
-		$(use_enable nls) \
 		$(use_enable systemd) \
 		$(use_enable test tests) \
-		$(use_enable udev gudev) \
-		ITSTOOL="$(type -P true)"
+		$(use_enable udev gudev)
 }
 
 src_test() {
