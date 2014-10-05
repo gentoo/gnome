@@ -5,15 +5,15 @@
 EAPI="5"
 GCONF_DEBUG="no"
 VALA_USE_DEPEND="vapigen"
-VALA_MIN_API_VERSION="0.24"
+VALA_MIN_API_VERSION="0.24.0.65"
 
-inherit linux-info gnome2 vala
+inherit linux-info gnome2 readme.gentoo vala
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
 DESCRIPTION="Simple GNOME 3 application to access remote or virtual systems"
-HOMEPAGE="https://wiki.gnome.org/Design/Apps/Boxes"
+HOMEPAGE="https://wiki.gnome.org/Apps/Boxes"
 
 LICENSE="LGPL-2"
 SLOT="0"
@@ -27,14 +27,15 @@ fi
 # NOTE: sys-fs/* stuff is called via exec()
 # FIXME: ovirt is not available in tree
 RDEPEND="
+	>=app-arch/libarchive-3:=
 	>=dev-libs/glib-2.38:2
 	>=dev-libs/gobject-introspection-0.9.6
 	>=dev-libs/libxml2-2.7.8:2
 	>=sys-libs/libosinfo-0.2.9
 	>=app-emulation/qemu-1.3.1[spice,smartcard?,usbredir?]
 	>=app-emulation/libvirt-0.9.3[libvirtd,qemu]
-	>=app-emulation/libvirt-glib-0.1.7
-	>=x11-libs/gtk+-3.11:3
+	>=app-emulation/libvirt-glib-0.1.9
+	>=x11-libs/gtk+-3.13.2:3
 	>=net-libs/gtk-vnc-0.4.4[gtk3]
 	>=net-misc/spice-gtk-0.16[gtk3,smartcard?,usbredir?]
 
@@ -46,7 +47,7 @@ RDEPEND="
 	sys-fs/fuse
 	sys-fs/fuseiso
 	sys-fs/mtools
-	>=virtual/udev-165[gudev]
+	virtual/libgudev:=
 	!bindist? ( gnome-extra/gnome-boxes-nonfree )
 "
 DEPEND="${RDEPEND}
@@ -67,6 +68,14 @@ if [[ ${PV} = 9999 ]]; then
 		net-libs/rest:0.7[introspection]"
 fi
 
+DISABLE_AUTOFORMATTING="yes"
+DOC_CONTENTS="Before running gnome-boxes, you will need to load the KVM modules.
+If you have an Intel Processor, run:
+# modprobe kvm-intel
+
+If you have an AMD Processor, run:
+# modprobe kvm-amd"
+
 pkg_pretend() {
 	linux_config_exists
 
@@ -86,7 +95,7 @@ src_prepare() {
 }
 
 src_configure() {
-	# debug needed for splitdebug proper behavior (cardoe)
+	# debug needed for splitdebug proper behavior (cardoe), bug #????
 	gnome2_src_configure \
 		--enable-debug \
 		--disable-strict-cc \
@@ -95,12 +104,12 @@ src_configure() {
 		--enable-ovirt=no
 }
 
+src_install() {
+	gnome2_src_install
+	readme.gentoo_create_doc
+}
+
 pkg_postinst() {
 	gnome2_pkg_postinst
-	elog "Before running gnome-boxes, you will need to load the KVM modules"
-	elog "If you have an Intel Processor, run:"
-	elog "	modprobe kvm-intel"
-	einfo
-	elog "If you have an AMD Processor, run:"
-	elog "	modprobe kvm-amd"
+	readme.gentoo_print_elog
 }
