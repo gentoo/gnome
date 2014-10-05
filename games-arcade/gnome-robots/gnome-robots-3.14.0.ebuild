@@ -8,7 +8,7 @@ GCONF_DEBUG="no"
 inherit gnome-games
 
 DESCRIPTION="Avoid the robots and make them crash into each other"
-HOMEPAGE="https://wiki.gnome.org/Robots"
+HOMEPAGE="https://wiki.gnome.org/Apps/Robots"
 
 LICENSE="GPL-2+"
 SLOT="0"
@@ -16,13 +16,14 @@ KEYWORDS="~amd64 ~arm ~x86"
 IUSE=""
 
 RDEPEND="
-	dev-libs/glib:2
-	>=gnome-base/librsvg-2.32.0
+	>=dev-libs/glib-2.32:2
+	>=gnome-base/librsvg-2.36.2:2
 	>=media-libs/libcanberra-0.26[gtk3]
-	>=x11-libs/gtk+-3.4.0:3
+	>=x11-libs/gtk+-3.12:3
 "
 DEPEND="${RDEPEND}
 	app-text/yelp-tools
+	dev-util/appdata-tools
 	>=dev-util/intltool-0.50
 	sys-devel/gettext
 	virtual/pkgconfig
