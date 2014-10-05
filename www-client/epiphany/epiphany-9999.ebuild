@@ -33,9 +33,9 @@ COMMON_DEPEND="
 	>=dev-libs/libxslt-1.1.7
 	>=gnome-base/gsettings-desktop-schemas-0.0.1
 	>=net-dns/avahi-0.6.22[dbus]
-	>=net-libs/webkit-gtk-2.4:3[jit?]
+	>=net-libs/webkit-gtk-2.5.90:4[jit?]
 	>=net-libs/libsoup-2.42.1:2.4
-	>=x11-libs/gtk+-3.11.6:3
+	>=x11-libs/gtk+-3.13:3
 	>=x11-libs/libnotify-0.5.1:=
 	gnome-base/gnome-desktop:3=
 
@@ -65,7 +65,7 @@ if [[ ${PV} == 9999 ]]; then
 fi
 
 # Tests refuse to run with the gsettings trick for some reason
-RESTRICT="test"
+#RESTRICT="test"
 
 src_configure() {
 	local myconf=""
