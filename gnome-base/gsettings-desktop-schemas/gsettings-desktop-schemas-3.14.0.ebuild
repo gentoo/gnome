@@ -1,6 +1,6 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/gnome-base/gsettings-desktop-schemas/gsettings-desktop-schemas-3.10.1.ebuild,v 1.6 2014/03/28 02:24:50 jer Exp $
+# $Header: $
 
 EAPI="5"
 GCONF_DEBUG="no"

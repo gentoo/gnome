@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -25,6 +25,7 @@ fi
 RDEPEND="
 	>=dev-libs/glib-2.31:2
 	introspection? ( >=dev-libs/gobject-introspection-1.31.0 )
+	!<gnome-base/gdm-3.8
 "
 DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.40
