@@ -7,7 +7,7 @@ GCONF_DEBUG="no"
 
 inherit gnome2
 if [[ ${PV} = 9999 ]]; then
-	VALA_MIN_API_VERSION="0.22"
+	VALA_MIN_API_VERSION="0.26"
 	VALA_USE_DEPEND="vapigen"
 	inherit gnome2-live vala
 fi
@@ -26,7 +26,7 @@ fi
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.40:2
-	>=x11-libs/gtk+-3.12:3
+	>=x11-libs/gtk+-3.13.2:3
 "
 RDEPEND="${COMMON_DEPEND}
 	gnome-base/gsettings-desktop-schemas

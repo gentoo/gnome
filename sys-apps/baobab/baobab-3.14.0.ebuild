@@ -17,7 +17,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-fr
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.40:2
-	>=x11-libs/gtk+-3.12:3
+	>=x11-libs/gtk+-3.13.2:3
 "
 RDEPEND="${COMMON_DEPEND}
 	gnome-base/gsettings-desktop-schemas
