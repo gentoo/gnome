@@ -16,7 +16,8 @@ HOMEPAGE="https://wiki.gnome.org/Projects/Orca"
 LICENSE="LGPL-2.1+ CC-BY-SA-3.0"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
-IUSE=""
+
+IUSE="+braille"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 # liblouis is not in portage yet
@@ -29,6 +30,9 @@ COMMON_DEPEND="
 	>=dev-libs/glib-2.28:2
 	>=dev-python/pygobject-3.10:3[${PYTHON_USEDEP}]
 	>=x11-libs/gtk+-3.6.2:3[introspection]
+	braille? (
+		>=app-accessibility/brltty-5.0-r3[${PYTHON_USEDEP}]
+		dev-libs/liblouis[python,${PYTHON_USEDEP}] )
 	${PYTHON_DEPS}
 "
 RDEPEND="${COMMON_DEPEND}
@@ -52,7 +56,9 @@ src_prepare() {
 }
 
 src_configure() {
-	python_foreach_impl run_in_build_dir gnome2_src_configure ITSTOOL="$(type -P true)"
+	python_foreach_impl run_in_build_dir gnome2_src_configure \
+		ITSTOOL="$(type -P true)" \
+		$(use_with braille liblouis)
 }
 
 src_compile() {
