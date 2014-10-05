@@ -8,7 +8,7 @@ GCONF_DEBUG="yes"
 inherit gnome2
 
 DESCRIPTION="CD ripper for GNOME"
-HOMEPAGE="http://www.burtonini.com/blog/computers/sound-juicer/"
+HOMEPAGE="https://wiki.gnome.org/Apps/SoundJuicer"
 
 LICENSE="GPL-2+"
 SLOT="0"
@@ -17,11 +17,12 @@ IUSE="flac test vorbis"
 
 COMMON_DEPEND="
 	app-text/iso-codes
-	>=dev-libs/glib-2.32:2
-	>=x11-libs/gtk+-3.2:3
+	>=dev-libs/glib-2.38:2
+	>=x11-libs/gtk+-3.4:3
 	media-libs/libcanberra[gtk3]
 	>=app-cdr/brasero-2.90
 	sys-apps/dbus
+	gnome-base/gsettings-desktop-schemas
 
 	media-libs/libdiscid
 	>=media-libs/musicbrainz-5.0.1:5
