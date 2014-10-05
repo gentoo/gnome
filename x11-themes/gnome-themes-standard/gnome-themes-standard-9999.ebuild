@@ -62,10 +62,3 @@ src_configure() {
 		$(use_enable gtk gtk3-engine) \
 		GTK_UPDATE_ICON_CACHE=$(type -P true)
 }
-
-src_install() {
-	gnome2_src_install
-
-	# Make it the default cursor theme
-	dosym Adwaita /usr/share/cursors/xorg-x11/default
-}
