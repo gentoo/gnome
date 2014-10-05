@@ -8,7 +8,7 @@ GNOME2_LA_PUNT="yes"
 PYTHON_COMPAT=( python{2_6,2_7} )
 # libanjuta-language-vala.so links to a specific slot of libvala; we want to
 # avoid automagic behavior.
-VALA_MIN_API_VERSION="0.24"
+VALA_MIN_API_VERSION="0.26"
 VALA_MAX_API_VERSION="${VALA_MIN_API_VERSION}"
 
 inherit gnome2 flag-o-matic readme.gentoo python-single-r1 vala
@@ -27,7 +27,7 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 COMMON_DEPEND="
 	>=dev-libs/glib-2.34:2
 	x11-libs/gdk-pixbuf:2
-	>=x11-libs/gtk+-3.6:3
+	>=x11-libs/gtk+-3.10:3
 	>=dev-libs/libxml2-2.4.23
 	>=dev-libs/gdl-3.5.5:3=
 	>=x11-libs/gtksourceview-3:3.0
@@ -50,7 +50,9 @@ COMMON_DEPEND="
 		>=net-libs/serf-1.2:1=
 		>=dev-libs/apr-1:=
 		>=dev-libs/apr-util-1:= )
-	terminal? ( >=x11-libs/vte-0.27.6:2.90 )
+	terminal? (
+		>=x11-libs/vte-0.27.6:2.91
+		>=x11-libs/vte-0.27.6:2.90 )
 	vala? ( $(vala_depend) )
 "
 RDEPEND="${COMMON_DEPEND}
