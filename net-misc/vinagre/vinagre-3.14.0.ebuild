@@ -9,16 +9,15 @@ VALA_MIN_API_VERSION=0.18
 inherit gnome2 vala
 
 DESCRIPTION="VNC client for the GNOME desktop"
-HOMEPAGE="https://wiki.gnome.org/Vinagre"
+HOMEPAGE="https://wiki.gnome.org/Apps/Vinagre"
 
 LICENSE="GPL-3+"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
+KEYWORDS="~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 IUSE="avahi rdp +ssh spice +telepathy"
 
 # cairo used in vinagre-tab
 # gdk-pixbuf used all over the place
-# FIXME: uses xfreerdp ???
 RDEPEND="
 	>=dev-libs/glib-2.28.0:2
 	>=x11-libs/gtk+-3.9.6:3
@@ -27,18 +26,21 @@ RDEPEND="
 	>=net-libs/gtk-vnc-0.4.3[gtk3]
 	x11-libs/cairo:=
 	x11-libs/gdk-pixbuf:2
-	x11-themes/gnome-icon-theme
+	x11-themes/hicolor-icon-theme
 
 	avahi? ( >=net-dns/avahi-0.6.26[dbus,gtk3] )
 	rdp? ( net-misc/freerdp )
-	ssh? ( >=x11-libs/vte-0.20:2.90 )
-	spice? ( >=net-misc/spice-gtk-0.5[gtk3] )
+	ssh? ( >=x11-libs/vte-0.20:2.91 )
+	spice? (
+		app-emulation/spice-protocol
+		>=net-misc/spice-gtk-0.5[gtk3] )
 	telepathy? (
 		dev-libs/dbus-glib
 		>=net-libs/telepathy-glib-0.11.6 )
 "
 DEPEND="${RDEPEND}
 	>=dev-lang/perl-5
+	dev-libs/appstream-glib
 	>=dev-util/intltool-0.50
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
