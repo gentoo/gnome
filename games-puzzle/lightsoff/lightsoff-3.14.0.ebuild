@@ -9,7 +9,7 @@ VALA_MIN_API_VERSION="0.22"
 inherit gnome-games vala
 
 DESCRIPTION="Turn off all the lights"
-HOMEPAGE="https://wiki.gnome.org/Lightsoff"
+HOMEPAGE="https://wiki.gnome.org/Apps/Lightsoff"
 
 LICENSE="GPL-2+"
 SLOT="0"
@@ -18,9 +18,10 @@ IUSE=""
 
 RDEPEND="
 	dev-libs/glib:2
+	>=gnome-base/librsvg-2.32:2
 	>=media-libs/clutter-1.14:1.0
-	>=media-libs/clutter-gtk-1.4:1.0
-	>=x11-libs/gtk+-3.10:3
+	>=media-libs/clutter-gtk-1.5.5:1.0
+	>=x11-libs/gtk+-3.13.2:3
 "
 DEPEND="${RDEPEND}
 	$(vala_depend)
