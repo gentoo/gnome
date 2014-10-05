@@ -16,12 +16,15 @@ SLOT="0"
 KEYWORDS="~amd64 ~arm ~x86"
 IUSE=""
 
-RDEPEND="
+COMMON_DEPEND="
 	>=dev-libs/glib-2.36:2
 	>=gnome-base/librsvg-2.32.0
 	>=x11-libs/gtk+-3.12:3
 "
-DEPEND="${RDEPEND}
+RDEPEND="${COMMON_DEPEND}
+	!<x11-themes/gnome-themes-standard-3.14
+"
+DEPEND="${COMMON_DEPEND}
 	$(vala_depend)
 	app-text/yelp-tools
 	dev-util/appdata-tools
@@ -31,10 +34,6 @@ DEPEND="${RDEPEND}
 "
 
 src_prepare() {
-	# Fix screenshot metadata
-	sed 's/height="564"/height="563"/' \
-		-i "${S}"/data/gnome-mines.appdata.xml.in || die
-
 	gnome-games_src_prepare
 	vala_src_prepare
 }
