@@ -4,7 +4,7 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
-PYTHON_COMPAT=( python{3_2,3_3} )
+PYTHON_COMPAT=( python{3_3,3_4} )
 
 inherit gnome2 python-single-r1
 
@@ -26,7 +26,8 @@ COMMON_DEPEND="
 	>=dev-libs/glib-2.28:2
 	>=dev-libs/gobject-introspection-1.35.9
 	>=media-libs/grilo-0.2.6:0.2[introspection]
-	>=x11-libs/gtk+-3.9:3[introspection]
+	media-libs/libmediaart:1.0
+	>=x11-libs/gtk+-3.13.2:3[introspection]
 "
 RDEPEND="${COMMON_DEPEND}
 	app-misc/tracker[introspection(+)]
@@ -49,4 +50,9 @@ DEPEND="${COMMON_DEPEND}
 
 src_configure() {
 	gnome2_src_configure ITSTOOL="$(type -P true)"
+}
+
+src_install() {
+	gnome2_src_install
+	python_fix_shebang "${ED}"
 }
