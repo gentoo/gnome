@@ -12,7 +12,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="A cheesy program to take pictures and videos from your webcam"
-HOMEPAGE="http://projects.gnome.org/cheese/"
+HOMEPAGE="https://wiki.gnome.org/Apps/Cheese"
 
 LICENSE="GPL-2+"
 SLOT="0/7" # subslot = libcheese soname version
@@ -27,11 +27,8 @@ fi
 # using clutter-gst-2.0.0 results in GLSL errors; bug #478702
 COMMON_DEPEND="
 	>=dev-libs/glib-2.39.90:2
-	>=x11-libs/gtk+-3.10:3[introspection?]
-	>=x11-libs/cairo-1.10:=
-	>=x11-libs/pango-1.28.0
+	>=x11-libs/gtk+-3.13.4:3[introspection?]
 	>=gnome-base/gnome-desktop-2.91.6:3=
-	>=gnome-base/librsvg-2.32.0:2
 	>=media-libs/libcanberra-0.26[gtk3]
 	>=media-libs/clutter-1.13.2:1.0[introspection?]
 	>=media-libs/clutter-gtk-0.91.8:1.0
@@ -46,7 +43,7 @@ COMMON_DEPEND="
 	media-libs/gstreamer:1.0[introspection?]
 	media-libs/gst-plugins-base:1.0[introspection?,ogg,pango,theora,vorbis,X]
 
-	>=virtual/udev-171:=[gudev]
+	virtual/libgudev:=
 	introspection? ( >=dev-libs/gobject-introspection-0.6.7 )
 "
 RDEPEND="${COMMON_DEPEND}
@@ -61,7 +58,9 @@ DEPEND="${COMMON_DEPEND}
 	$(vala_depend)
 	app-text/docbook-xml-dtd:4.3
 	app-text/yelp-tools
+	dev-libs/appstream-glib
 	dev-libs/libxml2:2
+	dev-util/gdbus-codegen
 	>=dev-util/gtk-doc-am-1.14
 	>=dev-util/intltool-0.50
 	virtual/pkgconfig
