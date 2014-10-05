@@ -9,7 +9,7 @@ GNOME2_LA_PUNT="yes" # Needed with USE 'sendto'
 inherit eutils gnome2 readme.gentoo virtualx
 
 DESCRIPTION="A file manager for the GNOME desktop"
-HOMEPAGE="http://live.gnome.org/Nautilus"
+HOMEPAGE="https://wiki.gnome.org/Apps/Nautilus"
 
 LICENSE="GPL-2+ LGPL-2+ FDL-1.1"
 SLOT="0"
@@ -28,7 +28,7 @@ RESTRICT="test"
 COMMON_DEPEND="
 	>=dev-libs/glib-2.35.3:2
 	>=x11-libs/pango-1.28.3
-	>=x11-libs/gtk+-3.11.6:3[introspection?]
+	>=x11-libs/gtk+-3.13.2:3[introspection?]
 	>=dev-libs/libxml2-2.7.8:2
 	>=gnome-base/gnome-desktop-3:3=
 
