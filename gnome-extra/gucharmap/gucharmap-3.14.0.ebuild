@@ -30,6 +30,7 @@ RDEPEND="${COMMON_DEPEND}
 "
 DEPEND="${RDEPEND}
 	app-text/yelp-tools
+	dev-util/desktop-file-utils
 	>=dev-util/gtk-doc-am-1
 	>=dev-util/intltool-0.40
 	sys-devel/gettext
