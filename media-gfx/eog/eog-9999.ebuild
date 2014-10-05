@@ -12,7 +12,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="The Eye of GNOME image viewer"
-HOMEPAGE="http://projects.gnome.org/eog/"
+HOMEPAGE="https://wiki.gnome.org/Apps/EyeOfGnome"
 
 LICENSE="GPL-2+"
 SLOT="1"
@@ -27,13 +27,12 @@ fi
 REQUIRED_USE="exif? ( jpeg )"
 
 RDEPEND="
-	>=x11-libs/gtk+-3.10.6:3[introspection,X]
+	>=x11-libs/gtk+-3.14:3[introspection,X]
 	>=dev-libs/glib-2.38:2
 	>=dev-libs/libxml2-2:2
 	>=dev-libs/libpeas-0.7.4:=[gtk]
 	>=gnome-base/gnome-desktop-2.91.2:3=
 	>=gnome-base/gsettings-desktop-schemas-2.91.92
-	>=x11-themes/gnome-icon-theme-2.19.1
 	>=x11-misc/shared-mime-info-0.20
 
 	x11-libs/gdk-pixbuf:2[jpeg?,tiff?]
