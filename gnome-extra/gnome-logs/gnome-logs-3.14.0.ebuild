@@ -18,10 +18,11 @@ IUSE=""
 RDEPEND="
 	>=dev-libs/glib-2.39.90:2
 	sys-apps/systemd
-	>=x11-libs/gtk+-3.9.6:3
+	>=x11-libs/gtk+-3.13.4:3
 "
 DEPEND="${RDEPEND}
 	~app-text/docbook-xml-dtd-4.3
+	dev-libs/appstream-glib
 	dev-libs/libxslt
 	>=dev-util/intltool-0.50
 	virtual/pkgconfig
