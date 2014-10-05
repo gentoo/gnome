@@ -8,7 +8,7 @@ GCONF_DEBUG="no"
 inherit gnome2 pax-utils virtualx
 
 DESCRIPTION="Javascript bindings for GNOME"
-HOMEPAGE="http://live.gnome.org/Gjs"
+HOMEPAGE="https://wiki.gnome.org/Projects/Gjs"
 
 LICENSE="MIT || ( MPL-1.1 LGPL-2+ GPL-2+ )"
 SLOT="0"
@@ -17,12 +17,12 @@ KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 RDEPEND="
 	>=dev-libs/glib-2.36:2
-	>=dev-libs/gobject-introspection-1.39.3
+	>=dev-libs/gobject-introspection-1.41.4
 
-	sys-libs/readline
+	sys-libs/readline:0
 	dev-lang/spidermonkey:24
 	virtual/libffi
-	cairo? ( x11-libs/cairo )
+	cairo? ( x11-libs/cairo[X] )
 	gtk? ( x11-libs/gtk+:3 )
 "
 DEPEND="${RDEPEND}
@@ -33,7 +33,7 @@ DEPEND="${RDEPEND}
 "
 
 # Large amount of tests are broken even in master.
-RESTRICT="test"
+#RESTRICT="test"
 
 src_configure() {
 	# FIXME: add systemtap/dtrace support, like in glib:2
