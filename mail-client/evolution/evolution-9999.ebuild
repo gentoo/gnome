@@ -58,6 +58,7 @@ COMMON_DEPEND="
 	gnome-base/dconf
 	x11-libs/libSM
 	x11-libs/libICE
+	x11-themes/gnome-icon-theme
 
 	crypt? ( || (
 		( >=app-crypt/gnupg-2.0.1-r2 x11-libs/libcryptui ${PINENTRY_DEPEND} )
