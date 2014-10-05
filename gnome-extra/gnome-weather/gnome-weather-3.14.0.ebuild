@@ -23,6 +23,7 @@ RDEPEND="
 	>=x11-libs/gtk+-3.11.4:3
 "
 DEPEND="${RDEPEND}
+	dev-util/appdata-tools
 	>=dev-util/intltool-0.26
 	virtual/pkgconfig
 "
