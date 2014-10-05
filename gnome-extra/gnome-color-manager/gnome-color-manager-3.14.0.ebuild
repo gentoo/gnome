@@ -8,7 +8,7 @@ GCONF_DEBUG="no"
 inherit gnome2 virtualx
 
 DESCRIPTION="Color profile manager for the GNOME desktop"
-HOMEPAGE="http://projects.gnome.org/gnome-color-manager/"
+HOMEPAGE="https://git.gnome.org/browse/gnome-color-manager"
 
 LICENSE="GPL-2+"
 SLOT="0"
@@ -24,7 +24,7 @@ COMMON_DEPEND="
 	media-libs/tiff
 
 	>=x11-libs/gtk+-3.3.8:3
-	>=x11-libs/vte-0.25.1:2.90
+	>=x11-libs/vte-0.25.1:2.91
 	>=x11-misc/colord-0.1.34:0=
 	>=x11-libs/colord-gtk-0.1.20
 
@@ -38,6 +38,7 @@ DEPEND="${COMMON_DEPEND}
 	app-text/docbook-sgml-dtd:4.1
 	app-text/docbook-sgml-utils
 	dev-libs/libxslt
+	dev-util/appdata-tools
 	>=dev-util/intltool-0.35
 	virtual/pkgconfig
 "
