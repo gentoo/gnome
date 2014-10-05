@@ -11,7 +11,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="GNOME power management service"
-HOMEPAGE="http://projects.gnome.org/gnome-power-manager/"
+HOMEPAGE="https://projects.gnome.org/gnome-power-manager/"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -26,7 +26,7 @@ COMMON_DEPEND="
 	>=dev-libs/glib-2.36:2
 	>=x11-libs/gtk+-3.3.8:3
 	>=x11-libs/cairo-1
-	>=sys-power/upower-0.99
+	>=sys-power/upower-0.99:=
 "
 RDEPEND="${COMMON_DEPEND}
 	x11-themes/gnome-icon-theme-symbolic
@@ -58,8 +58,7 @@ src_prepare() {
 
 src_configure() {
 	gnome2_src_configure \
-		$(use_enable test tests) \
-		--enable-compile-warnings=minimum
+		$(use_enable test tests)
 }
 
 src_test() {
