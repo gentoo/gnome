@@ -11,7 +11,7 @@ DESCRIPTION="GObject-based interfaces and classes for commonly used data structu
 HOMEPAGE="https://wiki.gnome.org/Projects/Libgee"
 
 LICENSE="LGPL-2.1+"
-SLOT="0.8"
+SLOT="0.8/7"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-linux"
 IUSE="+introspection"
 
