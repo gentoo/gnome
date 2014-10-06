@@ -17,36 +17,38 @@ LICENSE="GPL-2+"
 KEYWORDS="~amd64 ~x86"
 SLOT="0"
 
-IUSE_plugins="charmap git terminal"
+IUSE_plugins="charmap git terminal zeitgeist"
 IUSE="+python ${IUSE_plugins}"
 REQUIRED_USE="
 	charmap? ( python )
 	git? ( python )
 	terminal? ( python )
+	zeitgeist? ( python )
 	python? ( ${REQUIRED_PYTHON_USE} )
 "
 
 RDEPEND="
-	>=app-editors/gedit-3.11.3[python?]
+	>=app-editors/gedit-3.14[python?]
 	>=dev-libs/glib-2.32:2
 	>=dev-libs/libpeas-1.7.0[gtk,python?]
 	>=x11-libs/gtk+-3.9:3
-	>=x11-libs/gtksourceview-3.9.2:3.0
+	>=x11-libs/gtksourceview-3.14:3.0
 	python? (
 		${PYTHON_DEPS}
-		>=app-editors/gedit-3[introspection,${PYTHON_USEDEP}]
+		>=app-editors/gedit-3.14[introspection,${PYTHON_USEDEP}]
 		dev-libs/libpeas[${PYTHON_USEDEP}]
 		>=dev-python/dbus-python-0.82[${PYTHON_USEDEP}]
 		dev-python/pycairo[${PYTHON_USEDEP}]
 		dev-python/pygobject:3[cairo,${PYTHON_USEDEP}]
 		>=x11-libs/gtk+-3.9:3[introspection]
-		>=x11-libs/gtksourceview-3.9.2:3.0[introspection]
+		>=x11-libs/gtksourceview-3.14:3.0[introspection]
 		x11-libs/pango[introspection]
 		x11-libs/gdk-pixbuf:2[introspection]
 	)
 	charmap? ( >=gnome-extra/gucharmap-3:2.90[introspection] )
 	git? ( >=dev-libs/libgit2-glib-0.0.6 )
-	terminal? ( x11-libs/vte:2.90[introspection] )
+	terminal? ( x11-libs/vte:2.91[introspection] )
+	zeitgeist? ( >=gnome-extra/zeitgeist-0.9.12[introspection] )
 "
 DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.40.0
@@ -71,6 +73,7 @@ src_install() {
 	clean_plugin charmap
 	clean_plugin git
 	clean_plugin terminal
+	clean_plugin zeitgeist
 }
 
 clean_plugin() {
