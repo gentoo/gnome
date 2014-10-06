@@ -6,19 +6,21 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes" # plugins are dlopened
 PYTHON_COMPAT=( python3_{2,3} )
+VALA_MIN_API_VERSION="0.26"
+VALA_USE_DEPEND="vapigen"
 
-inherit eutils gnome2 multilib python-r1 virtualx
+inherit eutils gnome2 multilib python-r1 vala virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
 DESCRIPTION="A text editor for the GNOME desktop"
-HOMEPAGE="http://live.gnome.org/Gedit"
+HOMEPAGE="https://wiki.gnome.org/Apps/Gedit"
 
 LICENSE="GPL-2+ CC-BY-SA-3.0"
 SLOT="0"
 
-IUSE="+introspection +python spell zeitgeist"
+IUSE="+introspection +python spell vala"
 REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
@@ -31,8 +33,8 @@ fi
 COMMON_DEPEND="
 	>=dev-libs/libxml2-2.5.0:2
 	>=dev-libs/glib-2.39.5:2
-	>=x11-libs/gtk+-3.11.6:3[introspection?]
-	>=x11-libs/gtksourceview-3.11.2:3.0[introspection?]
+	>=x11-libs/gtk+-3.14:3[introspection?]
+	>=x11-libs/gtksourceview-3.14:3.0[introspection?]
 	>=dev-libs/libpeas-1.7.0[gtk]
 
 	gnome-base/gsettings-desktop-schemas
@@ -53,12 +55,13 @@ COMMON_DEPEND="
 	spell? (
 		>=app-text/enchant-1.2:=
 		>=app-text/iso-codes-0.35 )
-	zeitgeist? ( >=gnome-extra/zeitgeist-0.9.12 )
 "
 RDEPEND="${COMMON_DEPEND}
 	x11-themes/gnome-icon-theme-symbolic
+	python? ( dev-libs/libpeas[${PYTHON_USEDEP}] )
 "
 DEPEND="${COMMON_DEPEND}
+	${vala_depend}
 	app-text/docbook-xml-dtd:4.1.2
 	>=app-text/scrollkeeper-0.3.11
 	dev-libs/libxml2:2
@@ -75,20 +78,37 @@ if [[ ${PV} = 9999 ]]; then
 		app-text/yelp-tools"
 fi
 
+src_prepare() {
+	vala_src_prepare
+	gnome2_src_prepare
+}
+
 src_configure() {
 	local myconf=""
 	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	DOCS="AUTHORS BUGS ChangeLog MAINTAINERS NEWS README"
-	gnome2_src_configure \
-		--disable-deprecations \
-		--enable-updater \
-		--enable-gvfs-metadata \
-		$(use_enable introspection) \
-		$(use_enable python) \
-		$(use_enable spell) \
-		$(use_enable zeitgeist) \
-		ITSTOOL=$(type -P true) \
-		${myconf}
+
+	gedit_configure() {
+		ECONF_SOURCE=${S} \
+		gnome2_src_configure \
+			--disable-deprecations \
+			--enable-updater \
+			--enable-gvfs-metadata \
+			$(use_enable introspection) \
+			$(use_enable spell) \
+			$(use_enable vala) \
+			${myconf} \
+			"$@"
+	}
+
+	gedit_py_configure() {
+		mkdir -p "${BUILD_DIR}" || die
+		run_in_build_dir gedit_configure --enable-python
+	}
+
+	# run gedit_py_configure first to avoid out-of-source build for C code
+	use python && python_parallel_foreach_impl gedit_py_configure
+	gedit_configure --disable-python
 }
 
 src_test() {
@@ -97,4 +117,16 @@ src_test() {
 
 	unset DBUS_SESSION_BUS_ADDRESS
 	GSETTINGS_SCHEMA_DIR="${S}/data" Xemake check
+}
+
+src_install() {
+	gedit_py_install() {
+		pushd "${BUILD_DIR}" > /dev/null || die
+		# manually set pyoverridesdir due to bug #524018 and AM_PATH_PYTHON limitations
+		emake DESTDIR="${D}" top_builddir="${S}" pyoverridesdir="$(python_get_sitedir)/gi/overrides" install
+		popd > /dev/null
+	}
+
+	gnome2_src_install
+	use python && python_foreach_impl gedit_py_install
 }
