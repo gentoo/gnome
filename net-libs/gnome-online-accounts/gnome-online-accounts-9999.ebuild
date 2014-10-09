@@ -53,7 +53,7 @@ DEPEND="${RDEPEND}
 	dev-libs/libxslt
 	>=dev-util/gtk-doc-am-1.3
 	>=dev-util/gdbus-codegen-2.30.0
-	>=dev-util/intltool-0.50
+	>=dev-util/intltool-0.50.1
 	sys-devel/gettext
 	virtual/pkgconfig
 "
@@ -79,9 +79,11 @@ src_configure() {
 		--enable-facebook \
 		--enable-flickr \
 		--enable-imap-smtp \
+		--enable-media-server \
 		--enable-owncloud \
 		--enable-pocket \
 		--enable-telepathy \
+		--enable-windows-live \
 		$(use_enable kerberos)
 		#$(use_enable telepathy)
 	# gudev & cheese from sub-configure is overriden
