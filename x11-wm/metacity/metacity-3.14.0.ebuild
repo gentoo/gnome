@@ -8,20 +8,13 @@ GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="GNOME default window manager"
 HOMEPAGE="http://blogs.gnome.org/metacity/"
 
 LICENSE="GPL-2"
 SLOT="0"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~x86-solaris"
 IUSE="test xinerama"
 
 # XXX: libgtop is automagic, hard-enabled instead
@@ -58,12 +51,6 @@ DEPEND="${RDEPEND}
 "
 
 src_configure() {
-	local myconf=""
-
-	if [[ ${PV} != 9999 ]]; then
-		myconf="${myconf} ITSTOOL=$(type -P true)"
-	fi
-
 	DOCS="AUTHORS ChangeLog HACKING NEWS README *.txt doc/*.txt"
 	gnome2_src_configure \
 		--disable-static \
@@ -76,5 +63,5 @@ src_configure() {
 		--enable-xsync \
 		--enable-themes-documentation \
 		$(use_enable xinerama) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
