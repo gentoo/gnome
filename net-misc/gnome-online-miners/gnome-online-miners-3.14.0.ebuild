@@ -16,9 +16,9 @@ IUSE=""
 KEYWORDS="~amd64 ~x86"
 
 RDEPEND="
-	>=dev-libs/libgdata-0.13.3:0=
+	>=dev-libs/libgdata-0.15.2:0=
 	>=dev-libs/glib-2.35.1:2
-	>=net-libs/gnome-online-accounts-3.7.3
+	>=net-libs/gnome-online-accounts-3.13.3
 	>=media-libs/grilo-0.2.6:0.2
 	>=net-libs/libgfbgraph-0.2.2:0.2
 	>=net-libs/libzapojit-0.0.2
