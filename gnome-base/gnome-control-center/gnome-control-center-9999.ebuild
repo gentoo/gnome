@@ -40,23 +40,20 @@ QA_CONFIGURE_OPTIONS=".*"
 COMMON_DEPEND="
 	>=dev-libs/glib-2.39.91:2
 	>=x11-libs/gdk-pixbuf-2.23.0:2
-	>=x11-libs/gtk+-3.11.1:3
-	>=gnome-base/gsettings-desktop-schemas-3.9.91
+	>=x11-libs/gtk+-3.13:3
+	>=gnome-base/gsettings-desktop-schemas-3.13.91
 	>=gnome-base/gnome-desktop-3.11.3:3=
 	>=gnome-base/gnome-settings-daemon-3.8.3[colord?,policykit]
-	>=gnome-base/libgnomekbd-2.91.91
 
 	>=dev-libs/libpwquality-1.2.2
 	dev-libs/libxml2:2
-	gnome-base/gnome-menus:3
-	gnome-base/libgtop:2
+	gnome-base/libgtop:2=
 	media-libs/fontconfig
-	>=media-libs/grilo-0.2.6:0.2
 
 	>=media-libs/libcanberra-0.13[gtk3]
 	>=media-sound/pulseaudio-2[glib]
 	>=sys-auth/polkit-0.97
-	>=sys-power/upower-0.99
+	>=sys-power/upower-0.99:=
 	>=x11-libs/libnotify-0.7.3:0=
 
 	>=gnome-extra/nm-applet-0.9.7.995
@@ -65,6 +62,7 @@ COMMON_DEPEND="
 
 	virtual/opengl
 	x11-apps/xmodmap
+	x11-libs/cairo
 	x11-libs/libX11
 	x11-libs/libXxf86misc
 	>=x11-libs/libXi-1.2
@@ -72,11 +70,14 @@ COMMON_DEPEND="
 	bluetooth? ( >=net-wireless/gnome-bluetooth-3.11.1:= )
 	colord? (
 		net-libs/libsoup:2.4
-		>=x11-misc/colord-0.1.34:0= )
+		>=x11-misc/colord-0.1.34:0=
+		>=x11-libs/colord-gtk-0.1.24 )
 	cups? (
 		>=net-print/cups-1.4[dbus]
 		|| ( >=net-fs/samba-3.6.14-r1[smbclient] >=net-fs/samba-4.0.0[client] ) )
-	gnome-online-accounts? ( >=net-libs/gnome-online-accounts-3.9.90 )
+	gnome-online-accounts? (
+		>=media-libs/grilo-0.2.6:0.2
+		>=net-libs/gnome-online-accounts-3.9.90 )
 	i18n? ( >=app-i18n/ibus-1.5.2 )
 	kerberos? ( app-crypt/mit-krb5 )
 	v4l? (
@@ -90,18 +91,17 @@ COMMON_DEPEND="
 		>=x11-libs/libXi-1.2 )
 "
 # <gnome-color-manager-3.1.2 has file collisions with g-c-c-3.1.x
+# libgnomekbd needed only for gkbd-keyboard-display tool
 RDEPEND="${COMMON_DEPEND}
 	|| ( ( app-admin/openrc-settingsd sys-auth/consolekit ) >=sys-apps/systemd-31 )
 	>=sys-apps/accountsservice-0.6.30
 	x11-themes/gnome-icon-theme-symbolic
-	colord? (
-		>=gnome-extra/gnome-color-manager-3
-		>=x11-misc/colord-0.1.34
-		>=x11-libs/colord-gtk-0.1.24 )
+	colord? ( >=gnome-extra/gnome-color-manager-3 )
 	cups? (
 		>=app-admin/system-config-printer-gnome-1.3.5
 		net-print/cups-pk-helper )
 	input_devices_wacom? ( gnome-base/gnome-settings-daemon[input_devices_wacom] )
+	i18n? ( >=gnome-base/libgnomekbd-3 )
 
 	!<gnome-base/gdm-2.91.94
 	!<gnome-extra/gnome-color-manager-3.1.2
@@ -137,7 +137,7 @@ src_prepare() {
 
 	# Make some panels and dependencies optional; requires eautoreconf
 	# https://bugzilla.gnome.org/686840, 697478, 700145
-	epatch "${FILESDIR}"/${PN}-3.12.1-optional.patch
+	epatch "${FILESDIR}"/${PN}-3.12.1-optional-r1.patch
 
 	# Fix some absolute paths to be appropriate for Gentoo
 	epatch "${FILESDIR}"/${PN}-3.10.2-gentoo-paths.patch
