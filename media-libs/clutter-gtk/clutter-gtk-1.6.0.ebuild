@@ -8,23 +8,14 @@ CLUTTER_LA_PUNT="yes"
 
 # inherit clutter after gnome2 so that defaults aren't overriden
 inherit gnome2 clutter gnome.org
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Library for embedding a Clutter canvas (stage) in GTK+"
 HOMEPAGE="https://wiki.gnome.org/Projects/Clutter"
 
 SLOT="1.0"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
 IUSE="examples +introspection"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-	IUSE="${IUSE} doc"
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
-fi
 
-# XXX: Needs gtk with X support (!directfb)
 RDEPEND="
 	>=x11-libs/gtk+-3.6.0:3[introspection?]
 	>=media-libs/clutter-1.18:1.0[introspection?]
