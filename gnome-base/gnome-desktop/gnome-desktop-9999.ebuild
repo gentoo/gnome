@@ -5,7 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="yes"
 
-inherit gnome2
+inherit gnome2 virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit git-2 gnome2-live
 fi
@@ -26,7 +26,7 @@ fi
 # cairo[X] needed for gnome-bg
 COMMON_DEPEND="
 	app-text/iso-codes
-	>=dev-libs/glib-2.35:2
+	>=dev-libs/glib-2.38:2
 	>=x11-libs/gdk-pixbuf-2.21.3:2[introspection?]
 	>=x11-libs/gtk+-3.3.6:3[introspection?]
 	>=x11-libs/libXext-1.1
@@ -42,6 +42,7 @@ RDEPEND="${COMMON_DEPEND}
 "
 DEPEND="${COMMON_DEPEND}
 	app-text/docbook-xml-dtd:4.1.2
+	dev-util/gdbus-codegen
 	>=dev-util/gtk-doc-am-1.4
 	>=dev-util/intltool-0.40.6
 	sys-devel/gettext
@@ -101,4 +102,11 @@ src_configure() {
 		--enable-desktop-docs \
 		$(use_enable introspection) \
 		${myconf}
+}
+
+src_test() {
+	# Makes unittest fail without this locale installed
+	rm ${S}/tests/he_IL* || due
+
+	Xemake check
 }
