@@ -3,15 +3,15 @@
 # $Header: $
 
 EAPI="5"
-CLUTTER_LA_PUNT="yes"
+GCONF_DEBUG="no"
+GNOME2_LA_PUNT="yes"
 
-# Inherit gnome2 after clutter to download sources from gnome.org
-# since clutter-project.org doesn't provide .xz tarballs
-inherit clutter gnome2 virtualx
+inherit gnome2 virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
+HOMEPAGE="https://wiki.gnome.org/Projects/Clutter"
 DESCRIPTION="Clutter is a library for creating graphical user interfaces"
 
 LICENSE="LGPL-2.1+ FDL-1.1+"
@@ -73,8 +73,6 @@ src_prepare() {
 }
 
 src_configure() {
-	DOCS="README NEWS ChangeLog*"
-
 	# XXX: Conformance test suite (and clutter itself) does not work under Xvfb
 	# (GLX error blabla)
 	# XXX: Profiling, coverage disabled for now
@@ -102,8 +100,4 @@ src_configure() {
 
 src_test() {
 	Xemake check -C tests/conform
-}
-
-src_install() {
-	clutter_src_install
 }
