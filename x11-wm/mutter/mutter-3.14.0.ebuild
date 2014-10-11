@@ -15,6 +15,7 @@ SLOT="0"
 IUSE="+introspection test"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
+# FIXME: automagic on systemd/libinput/wayland
 COMMON_DEPEND="
 	>=x11-libs/pango-1.2[X,introspection?]
 	>=x11-libs/cairo-1.10[X]
@@ -28,9 +29,6 @@ COMMON_DEPEND="
 	>=gnome-base/gsettings-desktop-schemas-3.7.3[introspection?]
 	gnome-base/gnome-desktop:3=
 	>sys-power/upower-0.99
-
-	# gbm
-	# clutter-egl-1.0
 
 	x11-libs/libICE
 	x11-libs/libSM
@@ -53,6 +51,8 @@ COMMON_DEPEND="
 
 	introspection? ( >=dev-libs/gobject-introspection-0.9.5 )
 "
+	# clutter-egl-1.0
+
 DEPEND="${COMMON_DEPEND}
 	>=dev-util/gtk-doc-am-1.15
 	>=dev-util/intltool-0.41
