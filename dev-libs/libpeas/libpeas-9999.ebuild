@@ -71,8 +71,8 @@ src_configure() {
 
 	configuration() {
 		local myconf="$@"
-		[[ ${EPYTHON} == python2* ]] && myconf+=" --enable-python2 --disable-python3 PYTHON2_CONFIG=/usr/bin/python-config-${EPYTHON#python}"
-		[[ ${EPYTHON} == python3* ]] && myconf+=" --enable-python3 --disable-python2 PYTHON3_CONFIG=/usr/bin/python-config-${EPYTHON#python}"
+		[[ ${EPYTHON} == python2* ]] && myconf+=" --enable-python2 --disable-python3 PYTHON2_CONFIG=/usr/bin/python-config"
+		[[ ${EPYTHON} == python3* ]] && myconf+=" --enable-python3 --disable-python2 PYTHON3_CONFIG=/usr/bin/python-config"
 		gnome2_src_configure ${myconf}
 	}
 

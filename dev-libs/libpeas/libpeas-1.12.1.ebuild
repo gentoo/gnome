@@ -7,7 +7,7 @@ GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 PYTHON_COMPAT=( python{2_6,2_7,3_2,3_3} )
 
-inherit eutils gnome2 multilib python-r1 virtualx
+inherit gnome2 multilib python-r1 virtualx
 
 DESCRIPTION="A GObject plugins library"
 HOMEPAGE="http://developer.gnome.org/libpeas/stable/"
@@ -59,8 +59,8 @@ src_configure() {
 
 	configuration() {
 		local myconf="$@"
-		[[ ${EPYTHON} == python2* ]] && myconf+=" --enable-python2 --disable-python3 PYTHON2_CONFIG=/usr/bin/python-config-${EPYTHON#python}"
-		[[ ${EPYTHON} == python3* ]] && myconf+=" --enable-python3 --disable-python2 PYTHON3_CONFIG=/usr/bin/python-config-${EPYTHON#python}"
+		[[ ${EPYTHON} == python2* ]] && myconf+=" --enable-python2 --disable-python3 PYTHON2_CONFIG=/usr/bin/python-config"
+		[[ ${EPYTHON} == python3* ]] && myconf+=" --enable-python3 --disable-python2 PYTHON3_CONFIG=/usr/bin/python-config"
 		gnome2_src_configure ${myconf}
 	}
 
