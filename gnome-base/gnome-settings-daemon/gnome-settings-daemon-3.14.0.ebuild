@@ -6,16 +6,15 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
-inherit autotools eutils gnome2 systemd virtualx
+inherit autotools eutils gnome2 systemd udev virtualx
 
 DESCRIPTION="Gnome Settings Daemon"
 HOMEPAGE="https://git.gnome.org/browse/gnome-settings-daemon"
 
 LICENSE="GPL-2+"
 SLOT="0"
-IUSE="+colord +cups debug +i18n input_devices_wacom -openrc-force packagekit policykit +short-touchpad-timeout smartcard +udev"
+IUSE="+colord +cups debug input_devices_wacom -openrc-force networkmanager policykit +short-touchpad-timeout smartcard +udev"
 REQUIRED_USE="
-	packagekit? ( udev )
 	smartcard? ( udev )
 "
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
@@ -31,7 +30,7 @@ COMMON_DEPEND="
 	>=media-libs/lcms-2.2:2
 	media-libs/libcanberra[gtk3]
 	>=media-sound/pulseaudio-2
-	>=sys-power/upower-0.99
+	>=sys-power/upower-0.99:=
 	x11-libs/cairo
 	x11-libs/gdk-pixbuf:2
 	>=x11-libs/libnotify-0.7.3:=
@@ -51,15 +50,14 @@ COMMON_DEPEND="
 
 	colord? ( >=x11-misc/colord-1.0.2:= )
 	cups? ( >=net-print/cups-1.4[dbus] )
-	i18n? ( >=app-i18n/ibus-1.4.99 )
 	input_devices_wacom? (
 		>=dev-libs/libwacom-0.7
 		>=x11-libs/pango-1.20
 		x11-drivers/xf86-input-wacom
-		virtual/udev[gudev] )
-	packagekit? ( >=app-admin/packagekit-base-0.8.1 )
+		virtual/libgudev:= )
+	networkmanager? ( >=net-misc/networkmanager-0.9.9.1 )
 	smartcard? ( >=dev-libs/nss-3.11.2 )
-	udev? ( virtual/udev[gudev] )
+	udev? ( virtual/libgudev:= )
 "
 # Themes needed by g-s-d, gnome-shell, gtk+:3 apps to work properly
 # <gnome-color-manager-3.1.1 has file collisions with g-s-d-3.1.x
@@ -93,10 +91,10 @@ src_prepare() {
 	# people, so revert it if USE=short-touchpad-timeout.
 	# Revisit if/when upstream adds a setting for customizing the timeout.
 	use short-touchpad-timeout &&
-		epatch "${FILESDIR}/${PN}-3.7.90-short-touchpad-timeout.patch"
+		epatch "${FILESDIR}"/${PN}-3.7.90-short-touchpad-timeout.patch
 
 	# Make colord and wacom optional; requires eautoreconf
-	epatch "${FILESDIR}/${PN}-3.12.0-optional.patch"
+	epatch "${FILESDIR}"/${PN}-3.14.0-optional.patch
 
 	epatch_user
 	eautoreconf
@@ -112,8 +110,7 @@ src_configure() {
 		$(use_enable cups) \
 		$(use_enable debug) \
 		$(use_enable debug more-warnings) \
-		$(use_enable i18n ibus) \
-		$(use_enable packagekit) \
+		$(use_enable networkmanager network-manager) \
 		$(use_enable smartcard smartcard-support) \
 		$(use_enable udev gudev) \
 		$(use_enable input_devices_wacom wacom)
@@ -121,6 +118,10 @@ src_configure() {
 
 src_test() {
 	Xemake check
+}
+
+src_install() {
+	gnome2_src_install udevrulesdir="$(get_udevdir)"/rules.d #509484
 }
 
 pkg_postinst() {
