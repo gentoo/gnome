@@ -19,12 +19,12 @@ RDEPEND="
 	app-arch/bzip2:=
 	>=app-arch/xz-utils-4.9:=
 	dev-db/sqlite:3=
-	>=dev-libs/glib-2.25.11:2
+	>=dev-libs/glib-2.38:2
 	>=dev-libs/libxml2-2.6.5:2
 	>=dev-libs/libxslt-1.1.4
-	>=gnome-extra/yelp-xsl-3.6.1
+	>=gnome-extra/yelp-xsl-3.12
 	>=net-libs/webkit-gtk-1.3.10:3
-	>=x11-libs/gtk+-3.8:3
+	>=x11-libs/gtk+-3.13.3:3
 	x11-themes/gnome-icon-theme-symbolic
 "
 DEPEND="${RDEPEND}
