@@ -39,16 +39,9 @@ DEPEND="${RDEPEND}
 
 RESTRICT="test" # Need network #424719
 
-src_prepare() {
-	gnome2_src_prepare
-
-	# Crazy flags
-	sed -e 's:-Wall ::' -i configure || die
+src_test() {
+	export GVFS_DISABLE_FUSE=1
+	export GIO_USE_VFS=gvfs
+	ewarn "Tests require network access to http://where.yahooapis.com"
+	dbus-launch emake check || die "tests failed"
 }
-
-#src_test() {
-#	export GVFS_DISABLE_FUSE=1
-#	export GIO_USE_VFS=gvfs
-#	ewarn "Tests require network access to http://where.yahooapis.com"
-#	dbus-launch emake check || die "tests failed"
-#}
