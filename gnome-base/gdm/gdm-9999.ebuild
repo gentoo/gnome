@@ -3,6 +3,7 @@
 # $Header: $
 
 EAPI="5"
+GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
 inherit autotools eutils gnome2 pam readme.gentoo systemd user
@@ -11,7 +12,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="GNOME Display Manager for managing graphical display servers and user logins"
-HOMEPAGE="https://wiki.gnome.org/GDM"
+HOMEPAGE="https://wiki.gnome.org/Projects/GDM"
 
 SRC_URI="${SRC_URI}
 	branding? ( http://www.mail-archive.com/tango-artists@lists.freedesktop.org/msg00043/tango-gentoo-v1.1.tar.gz )
@@ -97,6 +98,7 @@ RDEPEND="${COMMON_DEPEND}
 "
 DEPEND="${COMMON_DEPEND}
 	app-text/docbook-xml-dtd:4.1.2
+	dev-util/gdbus-codegen
 	>=dev-util/intltool-0.40.0
 	virtual/pkgconfig
 	x11-proto/inputproto
@@ -140,7 +142,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	# make custom session work, bug #216984
+	# make custom session work, bug #216984, upstream bug #737578
 	epatch "${FILESDIR}/${PN}-3.2.1.1-custom-session.patch"
 
 	# ssh-agent handling must be done at xinitrc.d, bug #220603
@@ -182,7 +184,6 @@ src_configure() {
 		--with-default-pam-config=exherbo \
 		--with-at-spi-registryd-directory="${EPREFIX}"/usr/libexec \
 		--with-consolekit-directory="${EPREFIX}"/usr/lib/ConsoleKit \
-		--with-initial-vt=7 \
 		--without-xevie \
 		$(use_with audit libaudit) \
 		$(use_enable ipv6) \
@@ -208,9 +209,6 @@ src_install() {
 	insinto /etc/X11/xinit/xinitrc.d
 	newins "${FILESDIR}/49-keychain-r1" 49-keychain
 	newins "${FILESDIR}/50-ssh-agent-r1" 50-ssh-agent
-
-	# log, etc.
-	keepdir /var/log/gdm
 
 	# gdm user's home directory
 	keepdir /var/lib/gdm
@@ -240,10 +238,4 @@ pkg_postinst() {
 	eend ${ret}
 
 	readme.gentoo_print_elog
-
-	if [[ -f "/etc/X11/gdm/gdm.conf" ]]; then
-		elog "You had /etc/X11/gdm/gdm.conf which is the old configuration"
-		elog "file.  It has been moved to /etc/X11/gdm/gdm-pre-gnome-2.16"
-		mv /etc/X11/gdm/gdm.conf /etc/X11/gdm/gdm-pre-gnome-2.16
-	fi
 }
