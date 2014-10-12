@@ -47,7 +47,7 @@ src_prepare() {
 }
 
 src_configure() {
-	DOCS="AUTHORS ChangeLog MAINTAINERS NEWS"
+	DOCS="AUTHORS MAINTAINERS NEWS README"
 	gnome2_src_configure \
 		--disable-static \
 		$(use_enable glade glade-catalog) \
