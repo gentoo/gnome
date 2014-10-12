@@ -7,7 +7,7 @@ GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 PYTHON_COMPAT=( python{2_6,2_7} )
 
-inherit gnome2 python-any-r1
+inherit gnome2 multilib-minimal python-any-r1
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -22,14 +22,14 @@ if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 	IUSE="${IUSE} doc"
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x86-solaris"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x86-solaris"
 fi
 
 RDEPEND="
-	>=dev-libs/glib-2.38:2
-	>=dev-libs/libxml2-2:2
-	dev-db/sqlite:3
-	>=net-libs/glib-networking-2.30.0[ssl?]
+	>=dev-libs/glib-2.34.3:2[${MULTILIB_USEDEP}]
+	>=dev-libs/libxml2-2.9.1-r4:2[${MULTILIB_USEDEP}]
+	>=dev-db/sqlite-3.8.2:3[${MULTILIB_USEDEP}]
+	>=net-libs/glib-networking-2.38.2[ssl?,${MULTILIB_USEDEP}]
 	introspection? ( >=dev-libs/gobject-introspection-0.9.5 )
 	samba? ( net-fs/samba )
 "
@@ -38,7 +38,7 @@ DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.35
 	>=dev-util/gtk-doc-am-1.10
 	sys-devel/gettext
-	virtual/pkgconfig
+	>=virtual/pkgconfig-0-r1[${MULTILIB_USEDEP}]
 "
 
 if [[ ${PV} = 9999 ]]; then
@@ -51,6 +51,12 @@ fi
 #		dev-lang/php[apache2,xmlrpc]
 #		net-misc/curl
 #		net-libs/glib-networking[ssl])"
+RDEPEND="${RDEPEND}
+	abi_x86_32? (
+		!<=app-emulation/emul-linux-x86-baselibs-20140508-r8
+		!app-emulation/emul-linux-x86-baselibs[-abi_x86_32(-)]
+	)
+"
 
 src_prepare() {
 	if [[ ${PV} = 9999 ]]; then
@@ -72,12 +78,26 @@ src_configure() {
 	# root cause (bug #249496) is solved
 	addpredict /usr/share/snmp/mibs/.index
 
+	multilib-minimal_src_configure
+}
+
+multilib_src_configure() {
 	# Disable apache tests until they are usable on Gentoo, bug #326957
+	ECONF_SOURCE=${S} \
 	gnome2_src_configure \
 		--disable-static \
 		--disable-tls-check \
 		--without-gnome \
 		--without-apache-httpd \
-		$(use_enable introspection) \
+		$(multilib_native_use_enable introspection) \
 		$(use_with samba ntlm-auth '${EPREFIX}'/usr/bin/ntlm_auth)
+
+	if multilib_is_native_abi; then
+		# fix gtk-doc
+		ln -s "${S}"/docs/reference/html docs/reference/html || die
+	fi
+}
+
+multilib_src_install() {
+	gnome2_src_install
 }
