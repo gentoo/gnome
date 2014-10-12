@@ -23,7 +23,7 @@ COMMON_DEPEND="
 	>=x11-themes/hicolor-icon-theme-0.10
 "
 RDEPEND="${COMMON_DEPEND}
-	!x11-themes/gnome-themes-standard
+	!<x11-themes/gnome-themes-standard-3.14
 "
 DEPEND="${COMMON_DEPEND}
 	>=x11-misc/icon-naming-utils-0.8.7
@@ -42,6 +42,11 @@ src_prepare() {
 			|| die "Copying gentoo logos failed"
 		done
 	fi
+
+	# Install cursors in the right place
+	sed -e 's:^\(cursordir.*\)icons\(.*\):\1cursors/xorg-x11\2:' \
+		-i Adwaita/cursors/Makefile.am \
+		-i Adwaita/cursors/Makefile.in || die
 
 	gnome2_src_prepare
 }
