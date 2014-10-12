@@ -45,15 +45,6 @@ RDEPEND="${COMMON_DEPEND}
 	!<x11-themes/gnome-themes-2.32.1-r1
 "
 
-src_prepare() {
-	# Install cursors in the right place
-	sed -e 's:^\(cursordir.*\)icons\(.*\):\1cursors/xorg-x11\2:' \
-		-i themes/Adwaita/cursors/Makefile.am \
-		-i themes/Adwaita/cursors/Makefile.in || die
-
-	gnome2_src_prepare
-}
-
 src_configure() {
 	# The icon cache needs to be generated in pkg_postinst()
 	gnome2_src_configure \
