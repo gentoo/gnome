@@ -4,18 +4,21 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
+VALA_MIN_API_VERSION="0.24"
+VALA_USE_DEPEND="vapigen"
 
-inherit gnome2 virtualx
+inherit gnome2 vala virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
 DESCRIPTION="A text widget implementing syntax highlighting and other features"
-HOMEPAGE="http://projects.gnome.org/gtksourceview/"
+HOMEPAGE="https://wiki.gnome.org/Projects/GtkSourceView"
 
 LICENSE="GPL-2+ LGPL-2.1+"
-SLOT="3.0/2"
-IUSE="glade +introspection"
+SLOT="3.0/3"
+IUSE="glade +introspection vala"
+REQUIRED_USE="vala? ( introspection )"
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
@@ -25,9 +28,9 @@ fi
 
 # Note: has native OSX support, prefix teams, attack!
 RDEPEND="
-	>=dev-libs/glib-2.37.3:2
+	>=dev-libs/glib-2.38:2
 	>=dev-libs/libxml2-2.6:2
-	>=x11-libs/gtk+-3.11:3[introspection?]
+	>=x11-libs/gtk+-3.13.7:3[introspection?]
 	glade? ( >=dev-util/glade-3.9:3.10 )
 	introspection? ( >=dev-libs/gobject-introspection-0.9.0 )
 "
@@ -36,6 +39,7 @@ DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.50
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
+	vala? ( $(vala_depend) )
 "
 
 if [[ ${PV} = 9999 ]]; then
@@ -43,12 +47,18 @@ if [[ ${PV} = 9999 ]]; then
 		doc? ( >=dev-util/gtk-doc-1.11 )"
 fi
 
+src_prepare() {
+	use vala && vala_src_prepare
+	gnome2_src_prepare
+}
+
 src_configure() {
 	gnome2_src_configure \
 		--disable-deprecations \
 		--enable-providers \
 		$(use_enable glade glade-catalog) \
-		$(use_enable introspection)
+		$(use_enable introspection) \
+		$(use_enable vala)
 }
 
 src_test() {
