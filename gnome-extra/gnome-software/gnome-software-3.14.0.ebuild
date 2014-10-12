@@ -16,13 +16,14 @@ KEYWORDS="~amd64"
 IUSE="" # test
 
 RDEPEND="
-	>=app-admin/packagekit-base-0.8.12
+	>=app-admin/packagekit-base-1
 	dev-db/sqlite:3
+	>=dev-libs/appstream-glib-0.2.4
 	>=dev-libs/glib-2.39.1:2
 	gnome-base/gnome-desktop:3
 	>=gnome-base/gsettings-desktop-schemas-3.11.5
 	net-libs/libsoup:2.4
-	>=x11-libs/gtk+-3.11.5:3
+	>=x11-libs/gtk+-3.13.1:3
 "
 DEPEND="${DEPEND}
 	dev-libs/libxslt
