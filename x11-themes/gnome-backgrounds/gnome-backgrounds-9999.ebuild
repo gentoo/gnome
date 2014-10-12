@@ -20,7 +20,7 @@ else
 fi
 IUSE=""
 
-RDEPEND=""
+RDEPEND="!<x11-themes/gnome-themes-standard-3.14"
 DEPEND="
 	>=dev-util/intltool-0.40.0
 	sys-devel/gettext
