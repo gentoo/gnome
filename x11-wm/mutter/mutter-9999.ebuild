@@ -28,7 +28,7 @@ COMMON_DEPEND="
 	>=x11-libs/cairo-1.10[X]
 	>=x11-libs/gtk+-3.9.11:3[X,introspection?]
 	>=dev-libs/glib-2.36.0:2
-	>=media-libs/clutter-1.19.5:1.0[introspection?]
+	>=media-libs/clutter-1.19.5:1.0[egl,introspection?]
 	>=media-libs/cogl-1.17.1:1.0=[introspection?]
 	>=media-libs/libcanberra-0.26[gtk3]
 	>=x11-libs/startup-notification-0.7
@@ -51,16 +51,13 @@ COMMON_DEPEND="
 	x11-libs/libXrender
 	x11-libs/libxcb
 	x11-libs/libxkbfile
-	>=x11-libs/libxkbcommon-0.4.3
+	>=x11-libs/libxkbcommon-0.4.3[X]
 	x11-misc/xkeyboard-config
 
 	gnome-extra/zenity
 
 	introspection? ( >=dev-libs/gobject-introspection-0.9.5 )
 "
-	# gbm: mesa
-	# clutter-egl-1.0
-
 DEPEND="${COMMON_DEPEND}
 	>=dev-util/gtk-doc-am-1.15
 	>=dev-util/intltool-0.41
