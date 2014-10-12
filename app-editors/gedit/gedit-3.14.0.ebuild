@@ -9,7 +9,7 @@ PYTHON_COMPAT=( python3_{2,3} )
 VALA_MIN_API_VERSION="0.26"
 VALA_USE_DEPEND="vapigen"
 
-inherit eutils gnome2 multilib python-r1 vala virtualx
+inherit autotools eutils gnome2 multilib python-r1 vala virtualx
 
 DESCRIPTION="A text editor for the GNOME desktop"
 HOMEPAGE="https://wiki.gnome.org/Apps/Gedit"
@@ -69,6 +69,11 @@ src_prepare() {
 	# FIXME: Not able to set some metadata
 	#sed -e '/g_test_add_func/d' \
 	#	-i tests/document-loader.c || die
+
+	# Fix out-of-source build
+	epatch "${FILESDIR}"/${PN}-3.14.0-fix-install.patch
+
+	eautoreconf
 
 	vala_src_prepare
 	gnome2_src_prepare

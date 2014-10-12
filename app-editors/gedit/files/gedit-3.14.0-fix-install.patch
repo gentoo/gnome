@@ -1,0 +1,23 @@
+From 634726ba5be7caa947a676fbe7b8091311b41b62 Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Sun, 12 Oct 2014 23:20:35 +0200
+Subject: [PATCH] Force creation of directory with out-of-source build
+
+---
+ plugins/externaltools/data/Makefile.am | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/plugins/externaltools/data/Makefile.am b/plugins/externaltools/data/Makefile.am
+index e3a4707..3a8de2e 100644
+--- a/plugins/externaltools/data/Makefile.am
++++ b/plugins/externaltools/data/Makefile.am
+@@ -59,5 +59,6 @@ CLEANFILES +=					\
+ # generating the .desktop files.
+ # If the following bug is fixed, this hack can normally be removed:
+ # https://bugs.launchpad.net/intltool/+bug/605826
++BUILT_SOURCES = $(externaltools_all_desktop_files) $(externaltools_tools_SCRIPTS)
+ $(externaltools_all_desktop_files):
+ 	$(AM_V_GEN) $(MKDIR_P) $(top_builddir)/plugins/externaltools/data/
+-- 
+2.1.2
+
