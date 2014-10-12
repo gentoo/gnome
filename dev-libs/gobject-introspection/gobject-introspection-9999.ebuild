@@ -7,13 +7,13 @@ GCONF_DEBUG="no"
 PYTHON_COMPAT=( python2_7 )
 PYTHON_REQ_USE="xml"
 
-inherit gnome2 python-single-r1 toolchain-funcs
+inherit gnome2 python-single-r1 toolchain-funcs versionator
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
 DESCRIPTION="Introspection infrastructure for generating gobject library bindings for various languages"
-HOMEPAGE="http://live.gnome.org/GObjectIntrospection/"
+HOMEPAGE="https://wiki.gnome.org/Projects/GObjectIntrospection"
 
 LICENSE="LGPL-2+ GPL-2+"
 SLOT="0"
@@ -30,9 +30,10 @@ else
 fi
 
 # virtual/pkgconfig needed at runtime, bug #505408
+# We force glib and goi to be in sync by this way as explained in bug #518424
 RDEPEND="
 	>=dev-libs/gobject-introspection-common-${PV}
-	>=dev-libs/glib-2.36:2
+	>=dev-libs/glib-2.$(get_version_component_range 2):2
 	doctool? ( dev-python/mako )
 	virtual/libffi:=
 	virtual/pkgconfig
