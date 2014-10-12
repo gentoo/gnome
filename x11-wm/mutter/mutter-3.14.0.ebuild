@@ -66,8 +66,6 @@ RDEPEND="${COMMON_DEPEND}
 "
 
 src_prepare() {
-	DOCS="AUTHORS ChangeLog HACKING MAINTAINERS NEWS README *.txt doc/*.txt"
-
 	# Compat with Ubuntu metacity themes (e.g. x11-themes/light-themes)
 	epatch "${FILESDIR}/${PN}-3.2.1-ignore-shadow-and-padding.patch"
 
@@ -77,10 +75,8 @@ src_prepare() {
 src_configure() {
 	gnome2_src_configure \
 		--disable-static \
-		--enable-shape \
 		--enable-sm \
 		--enable-startup-notification \
-		--enable-xsync \
 		--enable-verbose-mode \
 		--with-libcanberra \
 		$(use_enable introspection)
