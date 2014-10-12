@@ -6,7 +6,7 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
-inherit flag-o-matic gnome2 multilib virtualx
+inherit eutils flag-o-matic gnome2 multilib virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -24,7 +24,8 @@ SLOT="3"
 IUSE="aqua cloudprint colord cups debug examples +introspection test vim-syntax wayland X xinerama"
 REQUIRED_USE="
 	|| ( aqua wayland X )
-	xinerama? ( X )"
+	xinerama? ( X )
+"
 
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
@@ -37,13 +38,13 @@ fi
 # NOTE: cairo[svg] dep is due to bug 291283 (not patched to avoid eautoreconf)
 # Use gtk+:2 for gtk-update-icon-cache
 COMMON_DEPEND="
-	>=dev-libs/atk-2.7.5[introspection?]
-	>=dev-libs/glib-2.39.5:2
+	>=dev-libs/atk-2.12[introspection?]
+	>=dev-libs/glib-2.41.2:2
 	media-libs/fontconfig
 	>=x11-libs/cairo-1.12[aqua?,glib,svg,X?]
-	>=x11-libs/gdk-pixbuf-2.27.1:2[introspection?,X?]
+	>=x11-libs/gdk-pixbuf-2.30:2[introspection?,X?]
 	>=x11-libs/gtk+-2.24:2
-	>=x11-libs/pango-1.32.4[introspection?]
+	>=x11-libs/pango-1.36.7[introspection?]
 	x11-misc/shared-mime-info
 
 	cloudprint? (
@@ -53,7 +54,7 @@ COMMON_DEPEND="
 	cups? ( >=net-print/cups-1.2 )
 	introspection? ( >=dev-libs/gobject-introspection-1.39 )
 	wayland? (
-		>=dev-libs/wayland-1.3.90
+		>=dev-libs/wayland-1.5.91
 		media-libs/mesa[wayland]
 		>=x11-libs/libxkbcommon-0.2
 	)
@@ -77,6 +78,7 @@ DEPEND="${COMMON_DEPEND}
 	dev-libs/libxslt
 	dev-util/gdbus-codegen
 	>=dev-util/gtk-doc-am-1.20
+	sys-devel/gettext
 	virtual/pkgconfig
 	X? (
 		x11-proto/xextproto
