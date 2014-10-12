@@ -4,9 +4,15 @@
 
 EAPI="5"
 PYTHON_COMPAT=( python2_{6,7} )
-# Avoid runtime dependency on python when USE=test
+# Building with --disable-debug highly unrecommended.  It will build glib in
+# an unusable form as it disables some commonly used API.  Please do not
+# convert this to the use_enable form, as it results in a broken build.
+GCONF_DEBUG="yes"
+# Completely useless with or without USE static-libs, people need to use
+# pkg-config
+GNOME2_LA_PUNT="yes"
 
-inherit autotools bash-completion-r1 gnome.org libtool eutils flag-o-matic gnome2-utils multilib pax-utils python-r1 toolchain-funcs versionator virtualx linux-info multilib-minimal
+inherit autotools bash-completion-r1 gnome2 libtool eutils flag-o-matic gnome2-utils multilib pax-utils python-r1 toolchain-funcs versionator virtualx linux-info multilib-minimal
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -18,7 +24,11 @@ SRC_URI="${SRC_URI}
 
 LICENSE="LGPL-2+"
 SLOT="2"
-IUSE="debug fam kernel_linux selinux static-libs systemtap test utils xattr"
+IUSE="fam kernel_linux +mime selinux static-libs systemtap test utils xattr"
+REQUIRED_USE="
+	utils? ( ${PYTHON_REQUIRED_USE} )
+	test? ( ${PYTHON_REQUIRED_USE} )
+"
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
@@ -26,19 +36,20 @@ else
 	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux"
 fi
 
-# FIXME: want libselinux[${MULTILIB_USEDEP}] - bug #480960
+
 RDEPEND="
-	virtual/libiconv[${MULTILIB_USEDEP}]
-	virtual/libffi[${MULTILIB_USEDEP}]
-	sys-libs/zlib[${MULTILIB_USEDEP}]
+	!<dev-util/gdbus-codegen-${PV}
+	>=virtual/libiconv-0-r1[${MULTILIB_USEDEP}]
+	>=virtual/libffi-3.0.13-r1[${MULTILIB_USEDEP}]
+	>=sys-libs/zlib-1.2.8-r1[${MULTILIB_USEDEP}]
 	|| (
 		>=dev-libs/elfutils-0.142
 		>=dev-libs/libelf-0.8.12
 		>=sys-freebsd/freebsd-lib-9.2_rc1
 		)
-	selinux? ( sys-libs/libselinux )
-	xattr? ( sys-apps/attr[${MULTILIB_USEDEP}] )
-	fam? ( virtual/fam[${MULTILIB_USEDEP}] )
+	selinux? ( >=sys-libs/libselinux-2.2.2-r5[${MULTILIB_USEDEP}] )
+	xattr? ( >=sys-apps/attr-2.4.47-r1[${MULTILIB_USEDEP}] )
+	fam? ( >=virtual/fam-0-r1[${MULTILIB_USEDEP}] )
 	utils? (
 		${PYTHON_DEPS}
 		>=dev-util/gdbus-codegen-${PV}[${PYTHON_USEDEP}] )
@@ -64,8 +75,9 @@ DEPEND="${RDEPEND}
 # gobject-introspection blocker to ensure people don't mix
 # different g-i and glib major versions
 
-PDEPEND="x11-misc/shared-mime-info
-	!<gnome-base/gvfs-1.6.4-r990"
+PDEPEND="!<gnome-base/gvfs-1.6.4-r990
+	mime? ( x11-misc/shared-mime-info )
+"
 # shared-mime-info needed for gio/xdgmime, bug #409481
 # Earlier versions of gvfs do not work with glib
 
@@ -100,7 +112,9 @@ src_prepare() {
 	mv -f "${WORKDIR}"/pkg-config-*/pkg.m4 "${S}"/m4macros/ || die
 
 	# Fix gmodule issues on fbsd; bug #184301, upstream bug #107626
-	epatch "${FILESDIR}"/${PN}-2.12.12-fbsd.patch
+	# Upstream doesn't even know if this is needed, looks like openBSD
+	# people is not needing it
+	#epatch "${FILESDIR}"/${PN}-2.12.12-fbsd.patch
 
 	if use test; then
 		# Do not try to remove files on live filesystem, upstream bug #619274
@@ -148,16 +162,19 @@ src_prepare() {
 
 		# Test relies on /usr/bin/true, but we have /bin/true, upstream bug #698655
 		sed -i -e "s:/usr/bin/true:/bin/true:" gio/tests/desktop-app-info.c || die
-	fi
 
-	# thread test fails, upstream bug #679306
-	epatch "${FILESDIR}/${PN}-2.34.0-testsuite-skip-thread4.patch"
+		# thread test fails, upstream bug #679306
+		epatch "${FILESDIR}/${PN}-2.34.0-testsuite-skip-thread4.patch"
+
+		# This test is prone to fail, bug #504024, upstream bug #723719
+		sed -i -e '/gdbus-close-pending/d' gio/tests/Makefile.am || die
+	else
+		# Don't build tests, also prevents extra deps, bug #512022
+		sed -i -e 's/ tests//' {.,gio,glib}/Makefile.am || die
+	fi
 
 	# gdbus-codegen is a separate package
 	epatch "${FILESDIR}/${PN}-2.40.0-external-gdbus-codegen.patch"
-
-	# do not allow libgobject to unload; bug #405173, https://bugzilla.gnome.org/show_bug.cgi?id=707298
-	epatch "${FILESDIR}/${PN}-2.36.4-znodelete.patch"
 
 	# leave python shebang alone
 	sed -e '/${PYTHON}/d' \
@@ -167,18 +184,12 @@ src_prepare() {
 	sed -i "s|^completiondir =.*|completiondir = $(get_bashcompdir)|" \
 		gio/Makefile.am || die
 
-	# Support compilation in clang until upstream solves this, upstream bug #691608
-	append-flags -Wno-format-nonliteral
-
 	epatch_user
 
-	# Needed for the punt-python-check patch, disabling timeout test
 	# Also needed to prevent cross-compile failures, see bug #267603
-	# Also needed for the no-gdbus-codegen patch
 	eautoreconf
 
-	# FIXME: Really needed when running eautoreconf before? bug#????
-	#[[ ${CHOST} == *-freebsd* ]] && elibtoolize
+	gnome2_src_prepare
 
 	epunt_cxx
 }
@@ -203,25 +214,13 @@ multilib_src_configure() {
 		*)        myconf="${myconf} --with-threads=posix" ;;
 	esac
 
-	# Building with --disable-debug highly unrecommended.  It will build glib in
-	# an unusable form as it disables some commonly used API.  Please do not
-	# convert this to the use_enable form, as it results in a broken build.
-	use debug && myconf="--enable-debug"
-
 	# Only used by the gresource bin
 	multilib_is_native_abi || myconf="${myconf} --disable-libelf"
-
-	# FIXME: change to "$(use_enable selinux)" when libselinux is multilibbed, bug #480960
-	if multilib_is_native_abi; then
-		myconf="${myconf} $(use_enable selinux)"
-	else
-		myconf="${myconf} --disable-selinux"
-	fi
 
 	[[ ${PV} = 9999 ]] && myconf="${myconf} $(use_enable doc gtk-doc)"
 
 	# Always use internal libpcre, bug #254659
-	ECONF_SOURCE="${S}" econf ${myconf} \
+	ECONF_SOURCE="${S}" gnome2_src_configure ${myconf} \
 		$(use_enable xattr) \
 		$(use_enable fam) \
 		$(use_enable selinux) \
@@ -232,32 +231,16 @@ multilib_src_configure() {
 		--enable-man \
 		--with-pcre=internal \
 		--with-xml-catalog="${EPREFIX}/etc/xml/catalog"
-}
 
-multilib_src_install_all() {
-	einstalldocs
-
-	if use utils ; then
-		python_replicate_script "${ED}"/usr/bin/gtester-report
-	else
-		rm "${ED}usr/bin/gtester-report"
-		rm "${ED}usr/share/man/man1/gtester-report.1"
+	if multilib_is_native_abi; then
+		local d
+		for d in glib gio gobject; do
+			ln -s "${S}"/docs/reference/${d}/html docs/reference/${d}/html || die
+		done
 	fi
-
-	# Do not install charset.alias even if generated, leave it to libiconv
-	rm -f "${ED}/usr/lib/charset.alias"
-
-	# Don't install gdb python macros, bug 291328
-	rm -rf "${ED}/usr/share/gdb/" "${ED}/usr/share/glib-2.0/gdb/"
-
-	# Completely useless with or without USE static-libs, people need to use
-	# pkg-config
-	prune_libtool_files --modules
 }
 
 multilib_src_test() {
-	gnome2_environment_reset
-
 	unset DBUS_SESSION_BUS_ADDRESS
 	export XDG_CONFIG_DIRS=/etc/xdg
 	export XDG_DATA_DIRS=/usr/local/share:/usr/share
@@ -280,7 +263,30 @@ multilib_src_test() {
 	Xemake check
 }
 
+multilib_src_install() {
+	gnome2_src_install
+}
+
+multilib_src_install_all() {
+	DOCS="AUTHORS ChangeLog* NEWS* README"
+	einstalldocs
+
+	if use utils ; then
+		python_replicate_script "${ED}"/usr/bin/gtester-report
+	else
+		rm "${ED}usr/bin/gtester-report"
+		rm "${ED}usr/share/man/man1/gtester-report.1"
+	fi
+
+	# Do not install charset.alias even if generated, leave it to libiconv
+	rm -f "${ED}/usr/lib/charset.alias"
+
+	# Don't install gdb python macros, bug 291328
+	rm -rf "${ED}/usr/share/gdb/" "${ED}/usr/share/glib-2.0/gdb/"
+}
+
 pkg_postinst() {
+	gnome2_pkg_postinst
 	if has_version '<x11-libs/gtk+-3.0.12:3'; then
 		# To have a clear upgrade path for gtk+-3.0.x users, have to resort to
 		# a warning instead of a blocker
