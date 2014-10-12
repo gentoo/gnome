@@ -21,7 +21,6 @@ KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 # libXfixes-5.0 needed for pointer barriers
 # FIXME:
 #  * gstreamer support is currently automagic
-#  * mutter/mutter-wayland support is automagic
 COMMON_DEPEND="
 	>=app-accessibility/at-spi2-atk-2.5.3
 	>=dev-libs/atk-2[introspection]
@@ -29,7 +28,7 @@ COMMON_DEPEND="
 	>=dev-libs/glib-2.39.1:2
 	>=dev-libs/gjs-1.39
 	>=dev-libs/gobject-introspection-0.10.1
-	>=x11-libs/gtk+-3.7.9:3[introspection]
+	>=x11-libs/gtk+-3.13.2:3[introspection]
 	>=media-libs/clutter-1.15.90:1.0[introspection]
 	>=dev-libs/json-glib-0.13.2
 	>=dev-libs/libcroco-0.6.8:0.6
@@ -44,7 +43,7 @@ COMMON_DEPEND="
 	>=sys-auth/polkit-0.100[introspection]
 	>=x11-libs/libXfixes-5.0
 	x11-libs/libXtst
-	>=x11-wm/mutter-3.12.1[introspection]
+	>=x11-wm/mutter-3.14[introspection]
 	>=x11-libs/startup-notification-0.11
 
 	${PYTHON_DEPS}
@@ -84,11 +83,9 @@ RDEPEND="${COMMON_DEPEND}
 	>=sys-auth/polkit-0.101[introspection]
 
 	>=app-accessibility/caribou-0.4.8
-	>=gnome-base/gdm-3.5[introspection]
-	>=gnome-base/libgnomekbd-2.91.4[introspection]
 	media-libs/cogl[introspection]
 	>=sys-apps/accountsservice-0.6.14[introspection]
-	sys-power/upower[introspection]
+	>=sys-power/upower-0.99[introspection]
 
 	>=gnome-base/gnome-session-2.91.91
 	>=gnome-base/gnome-settings-daemon-3.8.3
@@ -106,6 +103,9 @@ RDEPEND="${COMMON_DEPEND}
 		net-misc/mobile-broadband-provider-info
 		sys-libs/timezone-data )
 "
+# avoid circular dependency
+PDEPEND=">=gnome-base/gdm-3.5[introspection]
+"
 DEPEND="${COMMON_DEPEND}
 	dev-libs/libxslt
 	>=dev-util/gtk-doc-am-1.17
@@ -119,14 +119,14 @@ DEPEND="${COMMON_DEPEND}
 
 src_prepare() {
 	# Change favorites defaults, bug #479918
-	epatch "${FILESDIR}/${PN}-defaults.patch"
+	epatch "${FILESDIR}/${PN}-3.14.0-defaults.patch"
 
 	# Fix automagic gnome-bluetooth dep, bug #398145
-	epatch "${FILESDIR}/${PN}-3.12-bluetooth-flag.patch"
+	epatch "${FILESDIR}/${PN}-3.12.0-bluetooth-flag.patch"
 
 	# Fix silent bluetooth linking failure with ld.gold, bug #503952
 	# https://bugzilla.gnome.org/show_bug.cgi?id=726435
-	epatch "${FILESDIR}/${PN}-3.10.4-bluetooth-gold.patch"
+	epatch "${FILESDIR}/${PN}-3.14.0-bluetooth-gold.patch"
 
 	epatch_user
 
