@@ -14,9 +14,10 @@ HOMEPAGE="https://git.gnome.org/browse/gvfs"
 LICENSE="LGPL-2+"
 SLOT="0"
 
-IUSE="afp archive avahi bluetooth bluray cdda fuse gdu gnome-online-accounts gphoto2 gtk +http ios libsecret mtp samba systemd test +udev udisks"
+IUSE="afp archive avahi bluray cdda fuse gnome-online-accounts gphoto2 gtk +http ios libsecret mtp samba systemd test +udev udisks"
 REQUIRED_USE="
 	cdda? ( udev )
+	mtp? ( udev )
 	udisks? ( udev )
 	systemd? ( udisks )
 "
@@ -31,17 +32,8 @@ RDEPEND="
 	afp? ( >=dev-libs/libgcrypt-1.2.2:0= )
 	archive? ( app-arch/libarchive:= )
 	avahi? ( >=net-dns/avahi-0.6 )
-	bluetooth? (
-		>=app-mobilephone/obex-data-server-0.4.5
-		dev-libs/dbus-glib
-		net-wireless/bluez
-		dev-libs/expat )
 	bluray? ( media-libs/libbluray )
 	fuse? ( >=sys-fs/fuse-2.8.0 )
-	gdu? ( || (
-		>=gnome-base/libgdu-3.0.2
-		=sys-apps/gnome-disk-utility-3.0.2-r300
-		=sys-apps/gnome-disk-utility-3.0.2-r200 ) )
 	gnome-online-accounts? ( >=net-libs/gnome-online-accounts-3.7.1 )
 	gphoto2? ( >=media-libs/libgphoto2-2.4.7:= )
 	gtk? ( >=x11-libs/gtk+-3.0:3 )
@@ -55,7 +47,8 @@ RDEPEND="
 	systemd? ( sys-apps/systemd:0= )
 	udev? (
 		cdda? ( || ( dev-libs/libcdio-paranoia <dev-libs/libcdio-0.90[-minimal] ) )
-		virtual/udev[gudev] )
+		virtual/libgudev:=
+		virtual/libudev:= )
 	udisks? ( >=sys-fs/udisks-1.97:2 )
 "
 DEPEND="${RDEPEND}
@@ -80,6 +73,8 @@ DEPEND="${RDEPEND}
 RESTRICT="test"
 
 src_prepare() {
+	DOCS="AUTHORS ChangeLog NEWS MAINTAINERS README TODO" # ChangeLog.pre-1.2 README.commits
+
 	if ! use udev; then
 		sed -e 's/gvfsd-burn/ /' \
 			-e 's/burn.mount.in/ /' \
@@ -94,19 +89,21 @@ src_prepare() {
 
 src_configure() {
 	# --enable-documentation installs man pages
+	# --disable-obexftp, upstream bug #729945
 	gnome2_src_configure \
-		--disable-bash-completion \
+		--enable-bash-completion \
+		--with-bash-completion-dir="$(get_bashcompdir)" \
+		--disable-gdu \
 		--disable-hal \
+		--disable-obexftp \
 		--with-dbus-service-dir="${EPREFIX}"/usr/share/dbus-1/services \
 		--enable-documentation \
 		$(use_enable afp) \
 		$(use_enable archive) \
 		$(use_enable avahi) \
-		$(use_enable bluetooth obexftp) \
 		$(use_enable bluray) \
 		$(use_enable cdda) \
 		$(use_enable fuse) \
-		$(use_enable gdu) \
 		$(use_enable gnome-online-accounts goa) \
 		$(use_enable gphoto2) \
 		$(use_enable gtk) \
@@ -119,10 +116,4 @@ src_configure() {
 		$(use_enable samba) \
 		$(use_enable systemd libsystemd-login) \
 		$(use_enable udisks udisks2)
-}
-
-src_install() {
-	DOCS="AUTHORS ChangeLog NEWS MAINTAINERS README TODO" # ChangeLog.pre-1.2 README.commits
-	gnome2_src_install
-	dobashcomp programs/completion/gvfs
 }
