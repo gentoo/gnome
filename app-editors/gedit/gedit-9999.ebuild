@@ -88,27 +88,23 @@ src_configure() {
 	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	DOCS="AUTHORS BUGS ChangeLog MAINTAINERS NEWS README"
 
-	gedit_configure() {
-		ECONF_SOURCE=${S} \
-		gnome2_src_configure \
-			--disable-deprecations \
-			--enable-updater \
-			--enable-gvfs-metadata \
-			$(use_enable introspection) \
-			$(use_enable spell) \
-			$(use_enable vala) \
-			${myconf} \
-			"$@"
-	}
+	local myconf
+	myconf="
+		--disable-deprecations
+		--enable-updater
+		--enable-gvfs-metadata
+		$(use_enable introspection)
+		$(use_enable spell)
+		$(use_enable vala)
+		$(use_enable python)
+		ITSTOOL=$(type -P true)
+	"
 
-	gedit_py_configure() {
-		mkdir -p "${BUILD_DIR}" || die
-		run_in_build_dir gedit_configure --enable-python
-	}
-
-	# run gedit_py_configure first to avoid out-of-source build for C code
-	use python && python_parallel_foreach_impl gedit_py_configure
-	gedit_configure --disable-python
+	if use python ; then
+		python_parallel_foreach_impl gnome2_src_configure ${myconf}
+	else
+		gnome2_src_configure ${myconf}
+	fi
 }
 
 src_test() {
@@ -120,13 +116,9 @@ src_test() {
 }
 
 src_install() {
-	gedit_py_install() {
-		pushd "${BUILD_DIR}" > /dev/null || die
-		# manually set pyoverridesdir due to bug #524018 and AM_PATH_PYTHON limitations
-		emake DESTDIR="${D}" top_builddir="${S}" pyoverridesdir="$(python_get_sitedir)/gi/overrides" install
-		popd > /dev/null
-	}
-
-	gnome2_src_install
-	use python && python_foreach_impl gedit_py_install
+	if use python ; then
+		python_foreach_impl gnome2_src_install
+	else
+		gnome2_src_install
+	fi
 }
