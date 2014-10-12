@@ -40,6 +40,9 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 "
 
+# Requires dogtail
+RESTRICT="test"
+
 src_configure() {
 	gnome2_src_configure ITSTOOL=$(type -P true)
 }
