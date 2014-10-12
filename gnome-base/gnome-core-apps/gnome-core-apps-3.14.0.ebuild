@@ -21,34 +21,33 @@ RDEPEND="
 	>=gnome-base/gnome-core-libs-${PV}[cups?]
 
 	>=gnome-base/gnome-session-${PV}
-	>=gnome-base/gnome-menus-3.10.1:3
+	>=gnome-base/gnome-menus-3.13.3:3
 	>=gnome-base/gnome-settings-daemon-${PV}[cups?]
 	>=gnome-base/gnome-control-center-${PV}[cups?]
 
 	>=app-crypt/gcr-${PV}
 	>=gnome-base/nautilus-${PV}
 	>=gnome-base/gnome-keyring-${PV}
-	>=gnome-extra/evolution-data-server-${PV}
+	>=gnome-extra/evolution-data-server-3.12.6
 
 	>=app-crypt/seahorse-${PV}
 	>=app-editors/gedit-${PV}
 	>=app-text/evince-${PV}
 	>=gnome-extra/gnome-contacts-${PV}
 	>=media-gfx/eog-${PV}
-	>=media-video/totem-${PV}
-	>=net-im/empathy-${PV}
+	>=media-video/totem-3.12.2
+	>=net-im/empathy-3.12.6
 	>=x11-terms/gnome-terminal-${PV}
 
 	>=gnome-extra/gnome-user-docs-${PV}
 	>=gnome-extra/yelp-${PV}
 
 	>=x11-themes/gtk-engines-2.20.2:2
-	>=x11-themes/gnome-icon-theme-${PV}
-	>=x11-themes/gnome-icon-theme-symbolic-${PV}
+	>=x11-themes/adwaita-icon-theme-${PV}
 	>=x11-themes/gnome-themes-standard-${PV}
 
 	bluetooth? ( >=net-wireless/gnome-bluetooth-${PV} )
-	cdr? ( >=app-cdr/brasero-3.11.3 )
+	cdr? ( >=app-cdr/brasero-3.11.4 )
 
 	!gnome-base/gnome-applets
 "
