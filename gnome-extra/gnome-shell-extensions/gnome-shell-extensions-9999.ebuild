@@ -11,7 +11,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="JavaScript extensions for GNOME Shell"
-HOMEPAGE="http://live.gnome.org/GnomeShell/Extensions"
+HOMEPAGE="https://wiki.gnome.org/Projects/GnomeShell/Extensions"
 
 LICENSE="GPL-2"
 SLOT="0"
