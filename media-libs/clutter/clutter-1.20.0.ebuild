@@ -13,7 +13,7 @@ DESCRIPTION="Clutter is a library for creating graphical user interfaces"
 
 LICENSE="LGPL-2.1+ FDL-1.1+"
 SLOT="1.0"
-IUSE="debug doc gtk +introspection test" # evdev tslib
+IUSE="debug doc egl gtk +introspection test" # evdev tslib
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
 
 # NOTE: glx flavour uses libdrm + >=mesa-7.3
@@ -38,6 +38,7 @@ RDEPEND="
 	>=x11-libs/libXi-1.3
 	>=x11-libs/libXcomposite-0.4
 
+	egl? ( media-libs/cogl[gles2] )
 	gtk? ( >=x11-libs/gtk+-3.3.18:3 )
 	introspection? ( >=dev-libs/gobject-introspection-0.9.6 )
 "
@@ -69,7 +70,7 @@ src_configure() {
 	# XXX: Conformance test suite (and clutter itself) does not work under Xvfb
 	# (GLX error blabla)
 	# XXX: Profiling, coverage disabled for now
-	# XXX: What about cex100/egl/osx/wayland/win32 backends?
+	# XXX: What about cex100/osx/wayland/win32 backends?
 	# XXX: evdev/tslib input seem to be experimental?
 	gnome2_src_configure \
 		--enable-xinput \
@@ -78,7 +79,6 @@ src_configure() {
 		--disable-maintainer-flags \
 		--disable-gcov \
 		--disable-cex100-backend \
-		--disable-egl-backend \
 		--disable-quartz-backend \
 		--disable-wayland-backend \
 		--disable-win32-backend \
@@ -86,6 +86,7 @@ src_configure() {
 		--disable-evdev-input \
 		$(usex debug --enable-debug=yes --enable-debug=minimum) \
 		$(use_enable doc docs) \
+		$(use_enable egl egl-backend) \
 		$(use_enable gtk gdk-backend) \
 		$(use_enable introspection) \
 		$(use_enable test gdk-pixbuf)
