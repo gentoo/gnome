@@ -17,5 +17,5 @@ IUSE=""
 src_install() {
 	default
 	mv doc-build/README README.doc-build || die "renaming doc-build/README failed"
-	dodoc ChangeLog README* doc/usage.txt
+	dodoc ChangeLog README*
 }
