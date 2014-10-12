@@ -35,6 +35,13 @@ DEPEND="${RDEPEND}
 # Large amount of tests are broken even in master.
 #RESTRICT="test"
 
+src_prepare() {
+	# Disable broken unittests
+	epatch "${FILESDIR}"/${PN}-1.42.0-disable-unittest-*.patch
+
+	gnome2_src_prepare
+}
+
 src_configure() {
 	# FIXME: add systemtap/dtrace support, like in glib:2
 	# FIXME: --enable-systemtap installs files in ${D}/${D} for some reason
