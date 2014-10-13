@@ -5,7 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="no"
 VALA_USE_DEPEND="vapigen"
-VALA_MIN_API_VERSION="0.24.0.65"
+VALA_MIN_API_VERSION="0.26"
 
 inherit linux-info gnome2 readme.gentoo vala
 if [[ ${PV} = 9999 ]]; then
@@ -31,7 +31,7 @@ RDEPEND="
 	>=dev-libs/glib-2.38:2
 	>=dev-libs/gobject-introspection-0.9.6
 	>=dev-libs/libxml2-2.7.8:2
-	>=sys-libs/libosinfo-0.2.9
+	>=sys-libs/libosinfo-0.2.11
 	>=app-emulation/qemu-1.3.1[spice,smartcard?,usbredir?]
 	>=app-emulation/libvirt-0.9.3[libvirtd,qemu]
 	>=app-emulation/libvirt-glib-0.1.9
