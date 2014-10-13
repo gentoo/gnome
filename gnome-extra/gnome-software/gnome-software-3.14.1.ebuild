@@ -23,7 +23,7 @@ RDEPEND="
 	gnome-base/gnome-desktop:3
 	>=gnome-base/gsettings-desktop-schemas-3.11.5
 	net-libs/libsoup:2.4
-	>=x11-libs/gtk+-3.13.1:3
+	>=x11-libs/gtk+-3.14.1:3
 "
 DEPEND="${DEPEND}
 	dev-libs/libxslt
