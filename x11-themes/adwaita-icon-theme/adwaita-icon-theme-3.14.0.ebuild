@@ -38,23 +38,21 @@ src_prepare() {
 	if use branding; then
 		for i in 16 22 24 32 48; do
 			cp "${WORKDIR}"/tango-gentoo-v1.1/${i}x${i}/gentoo.png \
-			"${S}"/adwaita/${i}x${i}/places/start-here.png \
+			"${S}"/Adwaita/${i}x${i}/places/start-here.png \
 			|| die "Copying gentoo logos failed"
 		done
 	fi
 
 	# Install cursors in the right place
 	sed -e 's:^\(cursordir.*\)icons\(.*\):\1cursors/xorg-x11\2:' \
-		-i Adwaita/cursors/Makefile.am \
-		-i Adwaita/cursors/Makefile.in || die
+		-i "${S}"/Makefile.am \
+		-i "${S}"/Makefile.in || die
 
 	gnome2_src_prepare
 }
 
 src_configure() {
-	gnome2_src_configure \
-		--enable-icon-mapping \
-		GTK_UPDATE_ICON_CACHE=$(type -P true)
+	gnome2_src_configure GTK_UPDATE_ICON_CACHE=$(type -P true)
 }
 
 src_install() {
