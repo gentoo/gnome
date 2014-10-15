@@ -16,7 +16,7 @@ KEYWORDS="~amd64"
 IUSE=""
 
 RDEPEND="
-	>=dev-libs/gjs-1.39.91
+	>=dev-libs/gjs-1.41.4
 	>=dev-libs/glib-2.32:2
 	>=dev-libs/gobject-introspection-1.35.9
 	>=dev-libs/libgweather-3.9.5
