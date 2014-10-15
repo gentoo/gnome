@@ -13,7 +13,7 @@ HOMEPAGE="https://git.gnome.org/browse/gnome-settings-daemon"
 
 LICENSE="GPL-2+"
 SLOT="0"
-IUSE="+colord +cups debug input_devices_wacom -openrc-force networkmanager policykit +short-touchpad-timeout smartcard +udev"
+IUSE="+colord +cups debug input_devices_wacom -openrc-force networkmanager policykit +short-touchpad-timeout smartcard +udev wayland"
 REQUIRED_USE="
 	smartcard? ( udev )
 "
@@ -58,6 +58,7 @@ COMMON_DEPEND="
 	networkmanager? ( >=net-misc/networkmanager-0.9.9.1 )
 	smartcard? ( >=dev-libs/nss-3.11.2 )
 	udev? ( virtual/libgudev:= )
+	wayland? ( dev-libs/wayland )
 "
 # Themes needed by g-s-d, gnome-shell, gtk+:3 apps to work properly
 # <gnome-color-manager-3.1.1 has file collisions with g-s-d-3.1.x
@@ -113,7 +114,8 @@ src_configure() {
 		$(use_enable networkmanager network-manager) \
 		$(use_enable smartcard smartcard-support) \
 		$(use_enable udev gudev) \
-		$(use_enable input_devices_wacom wacom)
+		$(use_enable input_devices_wacom wacom) \
+		$(use_enable wayland)
 }
 
 src_test() {
