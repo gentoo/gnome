@@ -4,37 +4,37 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
-PYTHON_COMPAT=( python{3_2,3_3} )
+VALA_MIN_API_VERSION="0.26"
 
-inherit eutils gnome-games python-single-r1
+inherit gnome-games vala
 
 DESCRIPTION="Test your logic skills in this number grid puzzle"
-HOMEPAGE="https://wiki.gnome.org/GnomeSudoku"
+HOMEPAGE="https://wiki.gnome.org/Apps/Sudoku"
 
 LICENSE="LGPL-2+"
 SLOT="0"
 KEYWORDS="~amd64 ~arm ~x86"
 IUSE=""
-REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
-RDEPEND="${PYTHON_DEPS}
-	dev-libs/glib:2
-	dev-python/pycairo[${PYTHON_USEDEP}]
-	>=dev-python/pygobject-3.11:3[${PYTHON_USEDEP}]
+RDEPEND="
+	>=dev-libs/glib-2.40:2
+	dev-libs/libgee:0.8[introspection]
+	dev-libs/json-glib
 	x11-libs/gdk-pixbuf:2[introspection]
-	x11-libs/gtk+:3[introspection]
+	>=x11-libs/gtk+-3.14.3:3[introspection]
 	x11-libs/pango[introspection]
 "
 DEPEND="${RDEPEND}
 	app-text/yelp-tools
+	dev-util/appdata-tools
 	>=dev-util/intltool-0.50
 	sys-devel/gettext
 	virtual/pkgconfig
 "
 
-pkg_setup() {
-	gnome-games_pkg_setup
-	python-single-r1_pkg_setup
+src_prepare() {
+	vala_src_prepare
+	gnome-games_src_prepare
 }
 
 src_configure() {
@@ -42,9 +42,4 @@ src_configure() {
 	gnome-games_src_configure \
 		--prefix="${EPREFIX}/usr" \
 		--bindir="${GAMES_BINDIR}"
-}
-
-src_install() {
-	python_fix_shebang src
-	gnome-games_src_install
 }
