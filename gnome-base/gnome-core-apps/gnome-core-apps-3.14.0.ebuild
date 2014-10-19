@@ -28,15 +28,15 @@ RDEPEND="
 	>=app-crypt/gcr-${PV}
 	>=gnome-base/nautilus-${PV}
 	>=gnome-base/gnome-keyring-${PV}
-	>=gnome-extra/evolution-data-server-3.12.6
+	>=gnome-extra/evolution-data-server-3.12.7
 
 	>=app-crypt/seahorse-${PV}
 	>=app-editors/gedit-${PV}
 	>=app-text/evince-${PV}
 	>=gnome-extra/gnome-contacts-${PV}
 	>=media-gfx/eog-${PV}
-	>=media-video/totem-3.12.2
-	>=net-im/empathy-3.12.6
+	>=media-video/totem-${PV}
+	>=net-im/empathy-3.12.7
 	>=x11-terms/gnome-terminal-${PV}
 
 	>=gnome-extra/gnome-user-docs-${PV}
