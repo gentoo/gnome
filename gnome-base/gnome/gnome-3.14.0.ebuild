@@ -30,22 +30,21 @@ RDEPEND="
 	>=gnome-base/gnome-shell-${PV}[bluetooth?]
 
 	>=x11-themes/gnome-backgrounds-${PV}
-	>=x11-themes/gnome-icon-theme-extras-3.6.2
 	x11-themes/sound-theme-freedesktop
 
 	accessibility? (
-		>=app-accessibility/at-spi2-atk-2.12
-		>=app-accessibility/at-spi2-core-2.12
-		>=app-accessibility/caribou-0.4.13
+		>=app-accessibility/at-spi2-atk-2.14.1
+		>=app-accessibility/at-spi2-core-2.14.0
+		>=app-accessibility/caribou-0.4.15
 		>=app-accessibility/orca-${PV}
-		>=gnome-extra/mousetweaks-${PV} )
+		>=gnome-extra/mousetweaks-3.12.0 )
 	classic? ( >=gnome-extra/gnome-shell-extensions-${PV} )
 	extras? ( >=gnome-base/gnome-extra-apps-${PV} )
 "
 
 DEPEND=""
 
-PDEPEND="|| ( >=gnome-base/gvfs-1.18[udisks] >=gnome-base/gvfs-1.18[gdu] )"
+PDEPEND=">=gnome-base/gvfs-1.22.1[udisks]"
 
 # Broken from assumptions of gnome-vfs headers being included in nautilus headers,
 # which isn't the case with nautilus-2.22, bug #216019
