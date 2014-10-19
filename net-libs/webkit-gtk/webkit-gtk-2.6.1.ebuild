@@ -4,9 +4,9 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
-PYTHON_COMPAT=( python{2_6,2_7} )
+PYTHON_COMPAT=( python2_7 )
 
-inherit autotools check-reqs eutils flag-o-matic gnome2 pax-utils python-any-r1 toolchain-funcs versionator virtualx
+inherit check-reqs cmake-utils eutils flag-o-matic gnome2 pax-utils python-any-r1 toolchain-funcs versionator virtualx
 
 MY_P="webkitgtk-${PV}"
 DESCRIPTION="Open source web browser engine"
@@ -14,9 +14,9 @@ HOMEPAGE="http://www.webkitgtk.org/"
 SRC_URI="http://www.webkitgtk.org/releases/${MY_P}.tar.xz"
 
 LICENSE="LGPL-2+ BSD"
-SLOT="2" # no usable subslot
-KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~amd64-linux ~ia64-linux ~x86-linux ~x86-macos"
-IUSE="aqua coverage debug +egl +geoloc gles2 +gstreamer +introspection +jit libsecret +opengl spell +webgl +X"
+SLOT="4/25" # soname version of libwebkit2gtk-3.0
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~amd64-linux ~ia64-linux ~x86-linux ~x86-macos"
+IUSE="coverage debug +egl +geoloc gles2 +gstreamer +introspection +jit libsecret +opengl spell wayland +webgl +X"
 # bugs 372493, 416331
 REQUIRED_USE="
 	geoloc? ( introspection )
@@ -24,21 +24,27 @@ REQUIRED_USE="
 	gles2? ( egl )
 	webgl? ( ^^ ( gles2 opengl ) )
 	!webgl? ( ?? ( gles2 opengl ) )
-	|| ( aqua X )
+	|| ( wayland X )
 "
 
 # use sqlite, svg by default
+# Aqua support in gtk3 is untested
+# gtk2 is needed for plugin process support
+# gtk3-3.10 required for wayland
 RDEPEND="
-	dev-libs/libxml2:2
-	dev-libs/libxslt
-	media-libs/harfbuzz:=[icu(+)]
-	media-libs/libwebp:=
-	virtual/jpeg:0=
-	>=media-libs/libpng-1.4:0=
-	>=x11-libs/cairo-1.10:=[X]
 	>=dev-libs/glib-2.36.0:2
+	>=dev-libs/libxml2-2.8:2
+	>=dev-libs/libxslt-1.1.7
+	virtual/jpeg:0=
+	>=media-libs/harfbuzz-0.9.18:=[icu(+)]
+	>=media-libs/libpng-1.4:0=
+	media-libs/libwebp:=
 	>=dev-libs/icu-3.8.1-r1:=
+	>=media-libs/fontconfig-2.8:1.0
+	>=media-libs/freetype-2.4.2:2
 	>=net-libs/libsoup-2.42.0:2.4[introspection?]
+	>=x11-libs/cairo-1.10.2:=[X]
+	>=x11-libs/gtk+-3.6.0:3[X?,introspection?]
 	dev-db/sqlite:3=
 	>=x11-libs/pango-1.30.0.0
 	x11-libs/libXrender
@@ -55,6 +61,7 @@ RDEPEND="
 	libsecret? ( app-crypt/libsecret )
 	opengl? ( virtual/opengl )
 	spell? ( >=app-text/enchant-0.22:= )
+	wayland? ( >=x11-libs/gtk+-3.12:3[wayland] )
 	webgl? (
 		x11-libs/cairo[opengl]
 		x11-libs/libXcomposite
@@ -65,22 +72,24 @@ RDEPEND="
 # Need real bison, not yacc
 DEPEND="${RDEPEND}
 	${PYTHON_DEPS}
-	dev-lang/perl
+	>=dev-lang/perl-5.10
 	|| (
 		virtual/rubygems[ruby_targets_ruby20]
 		virtual/rubygems[ruby_targets_ruby21]
 		virtual/rubygems[ruby_targets_ruby19]
 	)
+	>=app-accessibility/at-spi2-core-2.5.3
 	>=dev-libs/atk-2.8.0
 	>=dev-util/gtk-doc-am-1.10
-	dev-util/gperf
+	>=dev-util/gperf-3.0.1
 	>=sys-devel/bison-2.4.3
-	>=sys-devel/flex-2.5.33
+	>=sys-devel/flex-2.5.34
 	|| ( >=sys-devel/gcc-4.7 >=sys-devel/clang-3.3 )
 	sys-devel/gettext
 	>=sys-devel/make-3.82-r4
 	virtual/pkgconfig
 
+	geoloc? ( dev-util/gdbus-codegen )
 	introspection? ( jit? ( sys-apps/paxctl ) )
 	test? (
 		dev-lang/python:2.7
@@ -94,6 +103,8 @@ S="${WORKDIR}/${MY_P}"
 CHECKREQS_DISK_BUILD="18G" # and even this might not be enough, bug #417307
 
 pkg_pretend() {
+	nvidia_check || die #463960
+
 	if [[ ${MERGE_TYPE} != "binary" ]] && is-flagq "-g*" && ! is-flagq "-g*0" ; then
 		einfo "Checking for sufficient disk space to build ${PN} with debugging CFLAGS"
 		check-reqs_pkg_pretend
@@ -105,6 +116,8 @@ pkg_pretend() {
 }
 
 pkg_setup() {
+	nvidia_check || die #463960
+
 	# Check whether any of the debugging flags is enabled
 	if [[ ${MERGE_TYPE} != "binary" ]] && is-flagq "-g*" && ! is-flagq "-g*0" ; then
 		if is-flagq "-ggdb" && [[ ${WEBKIT_GTK_GGDB} != "yes" ]]; then
@@ -128,48 +141,15 @@ pkg_setup() {
 }
 
 src_prepare() {
-	# intermediate MacPorts hack while upstream bug is not fixed properly
-	# https://bugs.webkit.org/show_bug.cgi?id=28727
-	use aqua && epatch "${FILESDIR}"/${PN}-1.6.1-darwin-quartz.patch
-
-	# Leave optimization level to user CFLAGS
-	# FORTIFY_SOURCE is enabled by default in Gentoo
-	sed -e 's/-O[012]//g' \
-		-e 's/-D_FORTIFY_SOURCE=2//g' \
-		-i Source/autotools/SetupCompilerFlags.m4 || die
-
-	# Failing tests
-	# * webinspector -> https://bugs.webkit.org/show_bug.cgi?id=50744
-	# * keyevents is interactive
-	# * mimehandling test sometimes fails under Xvfb (works fine manually), bug #???
-	# * webdatasource test needs a network connection and intermittently fails with icedtea-web
-	# * webplugindatabase intermittently fails with icedtea-web, bug #????
-	sed -e '/Programs\/TestWebKitAPI\/WebKitGtk\/testwebinspector/ d' \
-		-e '/Programs\/TestWebKitAPI\/WebKitGtk\/testkeyevents/ d' \
-		-e '/Programs\/TestWebKitAPI\/WebKitGtk\/testmimehandling/ d' \
-		-e '/Programs\/TestWebKitAPI\/WebKitGtk\/testwebdatasource/ d' \
-		-e '/Programs\/TestWebKitAPI\/WebKitGtk\/testwebplugindatabase/ d' \
-		-i Tools/TestWebKitAPI/GNUmakefile.am || die
-
-	# bug #459978, upstream bug #113397
-	epatch "${FILESDIR}/${PN}-1.11.90-gtk-docize-fix.patch"
-
-	# Do not build unittests unless requested, upstream bug #128163
-	epatch "${FILESDIR}"/${PN}-2.2.4-unittests-build.patch
-
-	# Deadlock causing infinite compilations with nvidia-drivers:
-	# https://bugs.gentoo.org/show_bug.cgi?id=463960
-	# http://osdyson.org/issues/161
-	# https://bugs.webkit.org/show_bug.cgi?id=125651
-	epatch "${FILESDIR}"/${PN}-2.2.5-gir-nvidia-hangs.patch
-
 	# Debian patches to fix support for some arches
 	# https://bugs.webkit.org/show_bug.cgi?id=129540
-	epatch "${FILESDIR}"/${PN}-2.2.5-{hppa,ia64}-platform.patch
+	epatch "${FILESDIR}"/${PN}-2.6.0-{hppa,ia64}-platform.patch
 	# https://bugs.webkit.org/show_bug.cgi?id=129542
-	epatch "${FILESDIR}"/${PN}-2.4.1-ia64-malloc.patch
+	epatch "${FILESDIR}"/${PN}-2.6.0-ia64-malloc.patch
 
-	AT_M4DIR=Source/autotools eautoreconf
+	# Fix building on ppc (from OpenBSD, only needed on slot 3)
+	# https://bugs.webkit.org/show_bug.cgi?id=130837
+	epatch "${FILESDIR}"/${PN}-2.6.0-atomic-ppc.patch
 
 	gnome2_src_prepare
 }
@@ -199,71 +179,75 @@ src_configure() {
 		append-ldflags "-Wl,--reduce-memory-overheads"
 	fi
 
-	local myconf=""
+	local ruby_interpreter=""
 
 	if has_version "virtual/rubygems[ruby_targets_ruby21]"; then
-		myconf="${myconf} RUBY=$(type -P ruby21)"
+		ruby_interpreter="RUBY=$(type -P ruby21)"
 	elif has_version "virtual/rubygems[ruby_targets_ruby20]"; then
-		myconf="${myconf} RUBY=$(type -P ruby20)"
+		ruby_interpreter="RUBY=$(type -P ruby20)"
 	else
-		myconf="${myconf} RUBY=$(type -P ruby19)"
+		ruby_interpreter="RUBY=$(type -P ruby19)"
 	fi
 
 	# TODO: Check Web Audio support
 	# should somehow let user select between them?
 	#
-	# * dependency-tracking is required so parallel builds won't fail
-	gnome2_src_configure \
-		$(use_enable aqua quartz-target) \
-		$(use_enable coverage) \
-		$(use_enable debug) \
-		$(use_enable egl) \
-		$(use_enable geoloc geolocation) \
-		$(use_enable gles2) \
-		$(use_enable gstreamer video) \
-		$(use_enable gstreamer web-audio) \
-		$(use_enable introspection) \
-		$(use_enable jit) \
-		$(use_enable libsecret credential_storage) \
-		$(use_enable opengl glx) \
-		$(use_enable spell spellcheck) \
-		$(use_enable webgl) \
-		$(use_enable webgl accelerated-compositing) \
-		$(use_enable X x11-target) \
-		--with-gtk=2.0 \
-		--disable-webkit2 \
-		--enable-dependency-tracking \
-		--disable-gtk-doc \
-		${myconf}
+	# FTL_JIT requires llvm + libcxxabi
+	local mycmakeargs=(
+		$(cmake-utils_use_enable test API_TESTS)
+		$(cmake-utils_use_enable geoloc GEOLOCATION)
+		$(cmake-utils_use_enable gstreamer VIDEO)
+		$(cmake-utils_use_enable gstreamer WEB_AUDIO)
+		$(cmake-utils_use_enable jit)
+		$(cmake-utils_use_enable libsecret CREDENTIAL_STORAGE)
+		$(cmake-utils_use_enable spell SPELLCHECK SPELLCHECK)
+		$(cmake-utils_use_enable wayland WAYLANG_TARGET)
+		$(cmake-utils_use_enable webgl WEBGL)
+		$(cmake-utils_use_enable X X11_TARGET)
+		$(cmake-utils_use_find_package egl EGL)
+		$(cmake-utils_use_find_package introspection GobjectIntrospection)
+		$(cmake-utils_use_find_package opengl OpenGL)
+		-DPORT=GTK
+		-DENABLE_GTKDOC=ON
+		-DENABLE_PLUGIN_PROCESS_GTK2=ON
+		${ruby_interpreter}
+	)
+
+	cmake-utils_src_configure
+}
+
+src_compile() {
+	cmake-utils_src_compile
 }
 
 src_test() {
-	# Tests expect an out-of-source build in WebKitBuild
-	ln -s . WebKitBuild || die "ln failed"
-
 	# Prevents test failures on PaX systems
 	use jit && pax-mark m $(list-paxables Programs/*[Tt]ests/*) # Programs/unittests/.libs/test*
 
-	unset DISPLAY
-	# Tests need virtualx, bug #294691, bug #310695
-	# Parallel tests sometimes fail
-	Xemake -j1 check
+	cmake-utils_src_test
 }
 
 src_install() {
-	DOCS="ChangeLog NEWS" # other ChangeLog files handled by src_install
+	cmake-utils_src_install
 
-	# https://bugs.webkit.org/show_bug.cgi?id=129242
-	MAKEOPTS="${MAKEOPTS} -j1" gnome2_src_install
+	# Prevents crashes on PaX systems, bug #522808
+	use jit && pax-mark m "${ED}usr/bin/jsc-3" "${ED}usr/libexec/WebKitWebProcess"
+	pax-mark m "${ED}usr/libexec/WebKitPluginProcess"
+}
 
-	newdoc Source/WebKit/gtk/ChangeLog ChangeLog.gtk
-	newdoc Source/JavaScriptCore/ChangeLog ChangeLog.JavaScriptCore
-	newdoc Source/WebCore/ChangeLog ChangeLog.WebCore
-
-	# Prevents crashes on PaX systems
-	use jit && pax-mark m "${ED}usr/bin/jsc-1"
-
-	# File collisions with slot 3
-	# bug #402699, https://bugs.webkit.org/show_bug.cgi?id=78134
-	rm -rf "${ED}usr/share/gtk-doc" || die
+nvidia_check() {
+	if [[ ${MERGE_TYPE} != "binary" ]] &&
+	   use introspection &&
+	   has_version '=x11-drivers/nvidia-drivers-325*' &&
+	   [[ $(eselect opengl show 2> /dev/null) = "nvidia" ]]
+	then
+		eerror "${PN} freezes while compiling if x11-drivers/nvidia-drivers-325.* is"
+		eerror "used as the system OpenGL library."
+		eerror "You can either update to >=nvidia-drivers-331.13, or temporarily select"
+		eerror "Mesa as the system OpenGL library:"
+		eerror " # eselect opengl set xorg-x11"
+		eerror "See https://bugs.gentoo.org/463960 for more details."
+		eerror
+		return 1
+	fi
 }
