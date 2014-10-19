@@ -27,7 +27,7 @@ COMMON_DEPEND="
 	>=gnome-base/gsettings-desktop-schemas-0.0.1
 	>=net-dns/avahi-0.6.22[dbus]
 	>=net-libs/webkit-gtk-2.5.90:4[jit?]
-	>=net-libs/libsoup-2.42.1:2.4
+	>=net-libs/libsoup-2.48:2.4
 	>=x11-libs/gtk+-3.13:3
 	>=x11-libs/libnotify-0.5.1:=
 	gnome-base/gnome-desktop:3=
@@ -54,16 +54,16 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 "
 
-# Tests refuse to run with the gsettings trick for some reason
-#RESTRICT="test"
+src_prepare() {
+	# Fix missing symbol in webextension.so, bug #728972
+	epatch "${FILESDIR}"/${PN}-3.14.0-missing-symbol.patch
 
-#src_prepare() {
-#	# Fix missing symbol in webextensio.so
-#	epatch "${FILESDIR}"/${P}-missing-symbol.patch
-#
-#	eautoreconf
-#	gnome2_src_prepare
-#}
+	# Fix unittests
+	epatch "${FILESDIR}"/${PN}-3.14.0-unittest-*.patch
+
+	eautoreconf
+	gnome2_src_prepare
+}
 
 src_configure() {
 	gnome2_src_configure \
