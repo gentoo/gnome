@@ -29,7 +29,7 @@ RDEPEND="
 	>=gnome-base/libgnomekbd-3.6
 	>=x11-libs/startup-notification-0.12
 
-	>=gnome-base/gvfs-1.22.0
+	>=gnome-base/gvfs-1.22.1
 	>=gnome-base/dconf-0.22.0
 
 	|| (
