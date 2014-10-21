@@ -12,7 +12,7 @@ HOMEPAGE="http://gstreamer.freedesktop.org/"
 
 LICENSE="LGPL-2"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
-IUSE="egl +introspection +orc vnc"
+IUSE="egl gles2 +introspection +orc opengl vnc wayland"
 
 # FIXME: we need to depend on mesa to avoid automagic on egl
 # dtmf plugin moved from bad to good in 1.2
@@ -21,9 +21,14 @@ RDEPEND="
 	>=dev-libs/glib-2.34.3:2[${MULTILIB_USEDEP}]
 	>=media-libs/gst-plugins-base-1.2:${SLOT}[${MULTILIB_USEDEP}]
 	>=media-libs/gstreamer-1.2:${SLOT}[${MULTILIB_USEDEP}]
-	egl? ( >=media-libs/mesa-9.1.6[egl,${MULTILIB_USEDEP}] )
+	egl? (
+		>=media-libs/mesa-9.1.6[egl,${MULTILIB_USEDEP}]
+		wayland? ( media-libs/mesa[wayland,${MULTILIB_USEDEP}] )
+	)
+	gles2? ( >=media-libs/mesa-9.1.6[egl,${MULTILIB_USEDEP}] )
 	introspection? ( >=dev-libs/gobject-introspection-1.31.1 )
 	orc? ( >=dev-lang/orc-0.4.17[${MULTILIB_USEDEP}] )
+	opengl? ( virtual/opengl[${MULTILIB_USEDEP}] )
 
 	!<media-libs/gst-plugins-good-1.1:${SLOT}
 "
@@ -40,13 +45,27 @@ src_configure() {
 }
 
 multilib_src_configure() {
+	local myconf
+	myconf=""
+	if use egl; then
+		myconf+=" --enable-egl --enable-gl"
+		if use wayland; then
+			myconf+=" --enable-wayland"
+		fi
+	else
+		myconf+=" --disable-egl"
+	fi
+
 	gstreamer_multilib_src_configure \
 		$(multilib_native_use_enable introspection) \
 		$(use_enable orc) \
 		$(use_enable vnc librfb) \
+		--disable-dispmanx \
 		--disable-examples \
 		--disable-debug \
-		--with-egl-window-system=$(usex egl x11 none)
+		$(use_enable gles2) \
+		$(use_enable opengl gl) \
+		${myconf}
 }
 
 multilib_src_install_all() {
