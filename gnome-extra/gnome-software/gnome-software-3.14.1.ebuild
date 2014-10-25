@@ -7,8 +7,8 @@ GCONF_DEBUG="no"
 
 inherit gnome2 virtualx
 
-DESCRIPTION=""
-HOMEPAGE=""
+DESCRIPTION="Gnome install & update software"
+HOMEPAGE="http://wiki.gnome.org/Apps/Software"
 
 LICENSE="GPL-2+"
 SLOT="0"
