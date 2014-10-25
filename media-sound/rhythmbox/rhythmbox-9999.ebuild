@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -14,13 +14,14 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="Music management and playback software for GNOME"
-HOMEPAGE="http://www.rhythmbox.org/"
+HOMEPAGE="https://wiki.gnome.org/Apps/Rhythmbox"
 
 LICENSE="GPL-2"
 SLOT="0"
 IUSE="cdr daap dbus +libsecret html ipod libnotify lirc mtp nsplugin +python
 test +udev upnp-av visualizer webkit zeitgeist"
 
+# Let people emerge this by default, bug #472932
 IUSE+=" python_single_target_python3_2 +python_single_target_python3_3"
 
 if [[ ${PV} = 9999 ]]; then
@@ -63,13 +64,13 @@ COMMON_DEPEND="
 	daap? (
 		>=net-libs/libdmapsharing-2.9.19:3.0
 		media-plugins/gst-plugins-soup:1.0 )
-	libsecret? ( >=app-crypt/libsecret-0.14 )
+	libsecret? ( >=app-crypt/libsecret-0.18 )
 	html? ( >=net-libs/webkit-gtk-1.10:3 )
 	libnotify? ( >=x11-libs/libnotify-0.7.0 )
 	lirc? ( app-misc/lirc )
 	python? ( >=dev-python/pygobject-3.0:3[${PYTHON_USEDEP}] )
 	udev? (
-		virtual/udev[gudev]
+		virtual/libgudev:=
 		ipod? ( >=media-libs/libgpod-0.7.92[udev] )
 		mtp? ( >=media-libs/libmtp-0.3 ) )
 	zeitgeist? ( gnome-extra/zeitgeist )
@@ -92,7 +93,7 @@ RDEPEND="${COMMON_DEPEND}
 		x11-libs/pango[introspection]
 
 		dbus? ( sys-apps/dbus )
-		libsecret? ( >=app-crypt/libsecret-0.14[introspection] )
+		libsecret? ( >=app-crypt/libsecret-0.18[introspection] )
 		webkit? (
 			dev-python/mako[${PYTHON_USEDEP}]
 			>=net-libs/webkit-gtk-1.10:3[introspection] ) )
@@ -114,7 +115,9 @@ src_prepare() {
 	DOCS="AUTHORS ChangeLog DOCUMENTERS INTERNALS \
 		MAINTAINERS MAINTAINERS.old NEWS README THANKS"
 
+	# upstream bug 737831
 	rm -v lib/rb-marshal.{c,h} || die
+
 	gnome2_src_prepare
 }
 
@@ -150,5 +153,5 @@ src_configure() {
 src_test() {
 	unset SESSION_MANAGER
 	unset DBUS_SESSION_BUS_ADDRESS
-	Xemake check || die "test failed"
+	Xemake check
 }
