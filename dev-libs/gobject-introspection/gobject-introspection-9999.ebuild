@@ -33,7 +33,7 @@ fi
 # We force glib and goi to be in sync by this way as explained in bug #518424
 RDEPEND="
 	>=dev-libs/gobject-introspection-common-${PV}
-	>=dev-libs/glib-2.$(get_version_component_range 2):2
+	>=dev-libs/glib-9999:2
 	doctool? ( dev-python/mako )
 	virtual/libffi:=
 	virtual/pkgconfig
