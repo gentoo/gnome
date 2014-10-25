@@ -3,10 +3,12 @@
 # $Header: $
 
 EAPI="5"
-VALA_MIN_API_VERSION="0.18"
+GCONF_DEBUG="no"
+GNOME2_LA_PUNT="yes"
 VALA_USE_DEPEND="vapigen"
+VALA_MIN_API_VERSION="0.18"
 
-inherit bash-completion-r1 check-reqs eutils user systemd base udev vala
+inherit bash-completion-r1 check-reqs eutils gnome2 user systemd udev vala
 if [[ ${PV} = 9999 ]]; then
 	GCONF_DEBUG="no"
 	inherit gnome2-live # need all the hacks from gnome2-live_src_prepare
@@ -21,8 +23,10 @@ else
 fi
 
 LICENSE="GPL-2+"
-SLOT="0/1" # subslot = libcolord soname version
-IUSE="examples extra-print-profiles +gusb +introspection scanner systemd +udev vala"
+SLOT="0/2" # subslot = libcolord soname version
+
+# We prefer policykit enabled by default, bug #448058
+IUSE="examples extra-print-profiles +gusb +introspection +policykit scanner systemd +udev vala"
 REQUIRED_USE="
 	gusb? ( udev )
 	scanner? ( udev )
@@ -37,16 +41,23 @@ fi
 
 COMMON_DEPEND="
 	dev-db/sqlite:3=
-	>=dev-libs/glib-2.32.0:2
-	>=media-libs/lcms-2.5:2=
-	>=sys-auth/polkit-0.103
+	>=dev-libs/glib-2.36:2
+	>=media-libs/lcms-2.6:2=
 	gusb? ( >=dev-libs/libgusb-0.1.1[introspection?] )
 	introspection? ( >=dev-libs/gobject-introspection-0.9.8 )
+	policykit? ( >=sys-auth/polkit-0.103 )
 	scanner? ( media-gfx/sane-backends )
-	systemd? ( >=sys-apps/systemd-44 )
-	udev? ( virtual/udev:=[gudev] )"
+	systemd? ( >=sys-apps/systemd-44:0= )
+	udev? (
+		virtual/udev
+		virtual/libgudev:=
+		virtual/libudev:=
+		)
+"
 RDEPEND="${COMMON_DEPEND}
-	!media-gfx/shared-color-profiles"
+	!media-gfx/shared-color-profiles
+	!<=media-gfx/colorhug-client-0.1.13
+"
 DEPEND="${COMMON_DEPEND}
 	dev-libs/libxslt
 	>=dev-util/gtk-doc-am-1.9
@@ -83,7 +94,11 @@ pkg_setup() {
 }
 
 src_prepare() {
+	# Adapt to Gentoo paths
+	sed -i -e 's/spotread/argyll-spotread/' src/sensors/cd-sensor-argyll.c || die
+
 	use vala && vala_src_prepare
+	gnome2_src_prepare
 }
 
 src_configure() {
@@ -91,13 +106,11 @@ src_configure() {
 	[[ ${PV} = 9999 ]] && myconf="${myconf} $(use_enable doc gtk-doc)"
 	# Reverse tools require gusb
 	# bash-completion test does not work on gentoo
-	econf \
+	gnome2_src_configure \
 		--disable-bash-completion \
 		--disable-examples \
-		--disable-gtk-doc \
 		--disable-static \
-		--disable-volume-search \
-		--enable-polkit \
+		--enable-libcolordcompat \
 		--with-daemon-user=colord \
 		--localstatedir="${EPREFIX}"/var \
 		$(use_enable extra-print-profiles print-profiles) \
@@ -105,10 +118,11 @@ src_configure() {
 		$(use_enable gusb) \
 		$(use_enable gusb reverse) \
 		$(use_enable introspection) \
+		$(use_enable policykit polkit) \
 		$(use_enable scanner sane) \
 		$(use_enable systemd systemd-login) \
-		$(use_enable udev gudev) \
-		--with-udevrulesdir="$(udev_get_udevdir)"/rules.d \
+		$(use_enable udev) \
+		--with-udevrulesdir="$(get_udevdir)"/rules.d \
 		$(use_enable vala) \
 		"$(systemd_with_unitdir)" \
 		${myconf}
@@ -120,8 +134,8 @@ src_configure() {
 }
 
 src_install() {
-	DOCS=(AUTHORS ChangeLog MAINTAINERS NEWS README TODO)
-	default
+	DOCS="AUTHORS ChangeLog MAINTAINERS NEWS README.md TODO"
+	gnome2_src_install
 
 	newbashcomp data/colormgr colormgr
 	rm -vr "${ED}etc/bash_completion.d"
@@ -135,6 +149,4 @@ src_install() {
 		insinto /usr/share/doc/${PF}/examples
 		doins examples/*.c
 	fi
-
-	prune_libtool_files --modules
 }
