@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -23,9 +23,9 @@ if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
 	SRC_URI="http://spice-space.org/download/gtk/${P}.tar.bz2"
-	KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc x86"
+	KEYWORDS="~alpha ~amd64 ~arm ~ppc ~ppc64"
 fi
-IUSE="dbus doc gstreamer gtk3 +introspection policykit pulseaudio python sasl smartcard static-libs usbredir vala"
+IUSE="dbus doc gstreamer gtk3 +introspection policykit pulseaudio python sasl smartcard static-libs usbredir vala webdav"
 REQUIRED_USE="
 	${PYTHON_REQUIRED_USE}
 	?? ( pulseaudio gstreamer )
@@ -42,6 +42,7 @@ RDEPEND="
 		media-libs/gst-plugins-base:0.10 )
 	>=x11-libs/pixman-0.17.7
 	>=media-libs/celt-0.5.1.1:0.5.1
+	media-libs/opus
 	dev-libs/openssl
 	gtk3? ( x11-libs/gtk+:3[introspection?] )
 	x11-libs/gtk+:2[introspection?]
@@ -53,17 +54,19 @@ RDEPEND="
 	introspection? ( dev-libs/gobject-introspection )
 	python? ( dev-python/pygtk:2 )
 	sasl? ( dev-libs/cyrus-sasl )
-	smartcard? ( app-emulation/libcacard )
+	smartcard? ( app-emulation/qemu[smartcard] )
 	usbredir? (
 		sys-apps/hwids
 		>=sys-apps/usbredir-0.4.2
 		virtual/libusb:1
-		virtual/udev[gudev]
+		virtual/libgudev:=
 		policykit? (
 			sys-apps/acl
 			>=sys-auth/polkit-0.110-r1
 			!~sys-auth/polkit-0.111 )
-		)"
+		)
+	webdav? ( net-libs/phodav )
+"
 DEPEND="${RDEPEND}
 	dev-lang/python
 	dev-python/pyparsing
