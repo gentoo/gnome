@@ -13,7 +13,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="Telepathy instant messaging and video/audio call client for GNOME"
-HOMEPAGE="https://wiki.gnome.org/Empathy"
+HOMEPAGE="https://wiki.gnome.org/Apps/Empathy"
 
 LICENSE="GPL-2 CC-BY-SA-3.0 FDL-1.3 LGPL-2.1"
 SLOT="0"
@@ -76,7 +76,7 @@ COMMON_DEPEND="
 	v4l? (
 		media-plugins/gst-plugins-v4l2:1.0
 		>=media-video/cheese-3.4:=
-		virtual/udev[gudev] )
+		virtual/libgudev:= )
 "
 
 # >=empathy-3.4 is incompatible with telepathy-rakia-0.6, bug #403861
@@ -101,6 +101,7 @@ PDEPEND=">=net-im/telepathy-mission-control-5.14"
 
 pkg_setup() {
 	python-any-r1_pkg_setup
+	export PYTHONIOENCODING=UTF-8 # See bug 489774
 }
 
 src_configure() {
@@ -125,5 +126,5 @@ src_configure() {
 }
 
 src_test() {
-	Xemake check
+	dbus-launch Xemake check #504516
 }
