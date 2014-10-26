@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -8,7 +8,7 @@ GNOME_ORG_MODULE="tracker"
 inherit gnome.org toolchain-funcs
 
 DESCRIPTION="Nautilus extension to tag files for Tracker"
-HOMEPAGE="https://projects.gnome.org/tracker/"
+HOMEPAGE="https://wiki.gnome.org/Projects/Tracker"
 
 LICENSE="GPL-2"
 SLOT="0"
