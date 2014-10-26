@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -13,31 +13,32 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="GLib-based library for accessing online service APIs using the GData protocol"
-HOMEPAGE="http://live.gnome.org/libgdata"
+HOMEPAGE="https://wiki.gnome.org/Projects/libgdata"
 
 LICENSE="LGPL-2.1+"
-SLOT="0/13" # subslot = libgdata soname version
-IUSE="gnome gnome-online-accounts +introspection static-libs vala"
+SLOT="0/19" # subslot = libgdata soname version
+IUSE="gnome +introspection static-libs vala"
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sparc x86"
+	KEYWORDS="~amd64 ~arm ~hppa ~ppc ~ppc64 ~x86"
 fi
 REQUIRED_IUSE="vala? ( introspection )"
 
 # gtk+ is needed for gdk
 # configure checks for gtk:3, but only uses it for demos which are not installed
 RDEPEND="
-	>=dev-libs/glib-2.31:2
+	>=dev-libs/glib-2.32:2
+	>=dev-libs/json-glib-0.15
 	>=dev-libs/libxml2-2:2
 	>=net-libs/liboauth-0.9.4
 	>=net-libs/libsoup-2.42.0:2.4[introspection?]
+	net-libs/uhttpmock
 	>=x11-libs/gdk-pixbuf-2.14:2
 	gnome? (
 		app-crypt/gcr:=
-		gnome-online-accounts? ( >=net-libs/gnome-online-accounts-3.2 )
-	)
+		>=net-libs/gnome-online-accounts-3.8 )
 	introspection? ( >=dev-libs/gobject-introspection-0.9.7 )
 "
 DEPEND="${RDEPEND}
@@ -75,5 +76,6 @@ src_configure() {
 src_test() {
 	unset ORBIT_SOCKETDIR
 	unset DBUS_SESSION_BUS_ADDRESS
-	dbus-launch emake check || die "emake check failed"
+	export GSETTINGS_BACKEND="memory" #486412
+	dbus-launch emake check
 }
