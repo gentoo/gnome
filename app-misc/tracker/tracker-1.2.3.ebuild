@@ -1,21 +1,24 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/app-misc/tracker/tracker-1.0.4.ebuild,v 1.2 2014/09/26 20:38:21 pacho Exp $
 
 EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 PYTHON_COMPAT=( python2_{6,7} )
-VALA_MIN_API_VERSION="0.14"
+VALA_MIN_API_VERSION="0.18"
 
-inherit autotools gnome2 linux-info multilib python-any-r1 vala versionator virtualx
+inherit autotools eutils gnome2 linux-info multilib python-any-r1 vala versionator virtualx
 
 DESCRIPTION="A tagging metadata database, search tool and indexer"
-HOMEPAGE="http://projects.gnome.org/tracker/"
+HOMEPAGE="https://wiki.gnome.org/Projects/Tracker"
 
 LICENSE="GPL-2+ LGPL-2.1+"
 SLOT="0/100"
-IUSE="cue eds elibc_glibc exif ffmpeg firefox-bookmarks flac gif gsf gstreamer gtk iptc +iso +jpeg laptop +miner-fs mp3 nautilus networkmanager pdf playlist rss test thunderbird +tiff upnp-av +vorbis +xml xmp xps"
+IUSE="cue eds elibc_glibc exif ffmpeg firefox-bookmarks flac gif gsf
+gstreamer gtk iptc +iso +jpeg +miner-fs mp3 nautilus networkmanager
+pdf playlist rss test thunderbird +tiff upnp-av upower +vorbis +xml xmp xps"
+
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 REQUIRED_USE="
@@ -38,7 +41,7 @@ RDEPEND="
 		>=media-gfx/imagemagick-5.2.1[png,jpeg=]
 		media-gfx/graphicsmagick[imagemagick,png,jpeg=] )
 	>=media-libs/libpng-1.2:0=
-	>=media-libs/libmediaart-0.1:1.0
+	>=media-libs/libmediaart-0.5:1.0
 	>=x11-libs/pango-1:=
 	sys-apps/util-linux
 
@@ -66,7 +69,7 @@ RDEPEND="
 	iptc? ( media-libs/libiptcdata )
 	iso? ( >=sys-libs/libosinfo-0.2.9:= )
 	jpeg? ( virtual/jpeg:0 )
-	laptop? ( >=sys-power/upower-0.9 )
+	upower? ( || ( >=sys-power/upower-0.9:= sys-power/upower-pm-utils ) )
 	mp3? ( >=media-libs/taglib-1.6 )
 	networkmanager? ( >=net-misc/networkmanager-0.8 )
 	pdf? (
@@ -90,7 +93,7 @@ DEPEND="${RDEPEND}
 	${PYTHON_DEPS}
 	$(vala_depend)
 	>=dev-util/gtk-doc-am-1.8
-	>=dev-util/intltool-0.40
+	>=dev-util/intltool-0.40.0
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
 	gtk? ( >=dev-libs/libgee-0.3 )
@@ -173,12 +176,14 @@ src_configure() {
 		--enable-icon \
 		--enable-ps \
 		--enable-text \
-		--enable-guarantee-metadata \
 		--enable-introspection \
 		--enable-libpng \
 		--enable-libmediaart \
+		--enable-miner-apps \
+		--enable-miner-user-guides \
 		--enable-tracker-fts \
-		--with-enca \
+		--enable-tracker-writeback \
+		--enable-enca \
 		--with-unicode-support=libicu \
 		$(use_enable cue libcue) \
 		$(use_enable eds miner-evolution) \
@@ -194,7 +199,7 @@ src_configure() {
 		$(use_enable iptc libiptcdata) \
 		$(use_enable iso libosinfo) \
 		$(use_enable jpeg libjpeg) \
-		$(use_enable laptop upower) \
+		$(use_enable upower upower) \
 		$(use_enable miner-fs) \
 		$(use_enable mp3 taglib) \
 		$(use_enable mp3) \
@@ -218,7 +223,7 @@ src_configure() {
 src_test() {
 	export G_MESSAGES_DEBUG=all # upstream bug #699401#c1
 	unset DBUS_SESSION_BUS_ADDRESS
-	Xemake check XDG_DATA_HOME="${T}" XDG_CONFIG_HOME="${T}"
+	Xemake check
 }
 
 src_install() {
