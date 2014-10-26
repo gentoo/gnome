@@ -9,7 +9,7 @@ inherit gnome2
 [[ ${PV} = 9999 ]] && inherit gnome2-live
 
 DESCRIPTION="Lightweight HTML rendering/printing/editing engine"
-HOMEPAGE="http://projects.gnome.org/evolution/"
+HOMEPAGE="https://git.gnome.org/browse/gtkhtml"
 
 LICENSE="GPL-2+ LGPL-2+"
 SLOT="4.0"
@@ -25,7 +25,6 @@ RDEPEND="
 	>=x11-libs/gtk+-3.2:3
 	>=x11-libs/cairo-1.10:=
 	x11-libs/pango
-	>=x11-themes/gnome-icon-theme-2.22.0
 	>=app-text/enchant-1.1.7:=
 	gnome-base/gsettings-desktop-schemas
 	>=app-text/iso-codes-0.49
