@@ -30,6 +30,7 @@ COMMON_DEPEND="
 	gnome-base/gnome-desktop:3=
 	>sys-power/upower-0.99
 
+	>=media-libs/mesa-10.3[gbm]
 	x11-libs/libICE
 	x11-libs/libSM
 	x11-libs/libX11
