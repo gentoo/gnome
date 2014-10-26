@@ -22,7 +22,7 @@ REQUIRED_USE="
 RDEPEND="
 	app-text/iso-codes
 	>=dev-libs/glib-2.34.3:2[${MULTILIB_USEDEP}]
-	>=media-libs/gstreamer-1.2.3:1.0[introspection?,${MULTILIB_USEDEP}]
+	>=media-libs/gstreamer-1.4.0:1.0[introspection?,${MULTILIB_USEDEP}]
 	>=sys-libs/zlib-1.2.8-r1[${MULTILIB_USEDEP}]
 	alsa? ( >=media-libs/alsa-lib-1.0.27.2[${MULTILIB_USEDEP}] )
 	introspection? ( >=dev-libs/gobject-introspection-1.31.1 )

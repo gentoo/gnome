@@ -19,8 +19,8 @@ IUSE="egl gles2 +introspection +orc opengl vnc wayland"
 # X11 is automagic for now, upstream #709530
 RDEPEND="
 	>=dev-libs/glib-2.34.3:2[${MULTILIB_USEDEP}]
-	>=media-libs/gst-plugins-base-1.2:${SLOT}[${MULTILIB_USEDEP}]
-	>=media-libs/gstreamer-1.2:${SLOT}[${MULTILIB_USEDEP}]
+	>=media-libs/gst-plugins-base-1.4.0:${SLOT}[${MULTILIB_USEDEP}]
+	>=media-libs/gstreamer-1.4.0:${SLOT}[${MULTILIB_USEDEP}]
 	egl? (
 		>=media-libs/mesa-9.1.6[egl,${MULTILIB_USEDEP}]
 		wayland? ( media-libs/mesa[wayland,${MULTILIB_USEDEP}] )

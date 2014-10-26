@@ -17,8 +17,8 @@ IUSE="+orc"
 # dtmf plugin moved from bad to good in 1.2
 RDEPEND="
 	>=dev-libs/glib-2.34.3:2[${MULTILIB_USEDEP}]
-	>=media-libs/gst-plugins-base-1.2.3:${SLOT}[${MULTILIB_USEDEP}]
-	>=media-libs/gstreamer-1.2.4:${SLOT}[${MULTILIB_USEDEP}]
+	>=media-libs/gst-plugins-base-1.4.0:${SLOT}[${MULTILIB_USEDEP}]
+	>=media-libs/gstreamer-1.4.0:${SLOT}[${MULTILIB_USEDEP}]
 	>=app-arch/bzip2-1.0.6-r4[${MULTILIB_USEDEP}]
 	>=sys-libs/zlib-1.2.8-r1[${MULTILIB_USEDEP}]
 	orc? ( >=dev-lang/orc-0.4.17[${MULTILIB_USEDEP}] )
