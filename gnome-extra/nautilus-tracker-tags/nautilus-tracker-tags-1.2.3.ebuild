@@ -31,7 +31,7 @@ S="${S}/src/plugins/nautilus"
 
 pkg_setup() {
 	tc-export CC
-	export TRACKER_API=${GNOME_ORG_PVP}
+	export TRACKER_API=1.0
 }
 
 src_prepare() {
