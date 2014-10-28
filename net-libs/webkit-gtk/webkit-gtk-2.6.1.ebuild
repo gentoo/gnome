@@ -231,8 +231,8 @@ src_install() {
 	cmake-utils_src_install
 
 	# Prevents crashes on PaX systems, bug #522808
-	use jit && pax-mark m "${ED}usr/bin/jsc-3" "${ED}usr/libexec/WebKitWebProcess"
-	pax-mark m "${ED}usr/libexec/WebKitPluginProcess"
+	use jit && pax-mark m "${ED}usr/bin/jsc" "${ED}usr/libexec/webkit2gtk-4.0/WebKitWebProcess"
+	pax-mark m "${ED}usr/libexec/webkit2gtk-4.0/WebKitPluginProcess"{,2}
 }
 
 nvidia_check() {
