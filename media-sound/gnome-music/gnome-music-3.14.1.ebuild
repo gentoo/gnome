@@ -15,7 +15,7 @@ LICENSE="GPL-2+"
 SLOT="0"
 IUSE=""
 # Let people emerge this by default, bug #472932
-IUSE+=" python_single_target_python3_2 +python_single_target_python3_3"
+IUSE+=" +python_single_target_python3_3 python_single_target_python3_4"
 
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
