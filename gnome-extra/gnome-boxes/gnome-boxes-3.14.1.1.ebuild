@@ -21,6 +21,9 @@ KEYWORDS="~amd64" # qemu-kvm[spice] is 64bit-only
 
 # NOTE: sys-fs/* stuff is called via exec()
 # FIXME: ovirt is not available in tree
+# FIXME: use vala.eclass but only because of libgd not being able
+#        to use its pre-generated files so do not copy all the
+#        vala deps like live ebuild has.
 RDEPEND="
 	>=app-arch/libarchive-3:=
 	>=dev-libs/glib-2.38:2
@@ -47,6 +50,7 @@ RDEPEND="
 #	!bindist? ( gnome-extra/gnome-boxes-nonfree )
 
 DEPEND="${RDEPEND}
+	$(vala_depend)
 	app-text/yelp-tools
 	dev-util/desktop-file-utils
 	>=dev-util/intltool-0.40
