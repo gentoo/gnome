@@ -53,15 +53,11 @@ vala_api_versions() {
 # VALA_MIN_API_VERSION
 vala_depend() {
 	local u v versions=$(vala_api_versions)
-	[[ ${VALA_USE_DEPEND} ]] && u="[${VALA_USE_DEPEND}]"
+	[[ ${VALA_USE_DEPEND} ]] && u="[${VALA_USE_DEPEND}(+)]"
 
 	echo -n "|| ("
 	for v in ${versions}; do
-		if [[ "$v" = "0.26" ]]; then
-			echo -n " dev-lang/vala:${v}"
-		else
-			echo -n " dev-lang/vala:${v}${u}"
-		fi
+		echo -n " dev-lang/vala:${v}${u}"
 	done
 	echo " )"
 }
@@ -72,13 +68,9 @@ vala_depend() {
 # VALA_MAX_API_VERSION, VALA_MIN_API_VERSION, and VALA_USE_DEPEND.
 vala_best_api_version() {
 	local u v
-	[[ ${VALA_USE_DEPEND} ]] && u="[${VALA_USE_DEPEND}]"
+	[[ ${VALA_USE_DEPEND} ]] && u="[${VALA_USE_DEPEND}(+)]"
 	for v in $(vala_api_versions); do
-		if [[ "$v" = "0.26" ]]; then
-			has_version "dev-lang/vala:${v}" && echo "${v}" && return
-		else
-			has_version "dev-lang/vala:${v}${u}" && echo "${v}" && return
-		fi
+		has_version "dev-lang/vala:${v}${u}" && echo "${v}" && return
 	done
 }
 
