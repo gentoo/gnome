@@ -19,7 +19,7 @@ IUSE="test xinerama"
 
 # XXX: libgtop is automagic, hard-enabled instead
 RDEPEND="
-	>=x11-libs/gtk+-3.8:3
+	>=x11-libs/gtk+-3.12:3
 	>=x11-libs/pango-1.2[X]
 	>=dev-libs/glib-2.25.10:2
 	>=gnome-base/gsettings-desktop-schemas-3.3
