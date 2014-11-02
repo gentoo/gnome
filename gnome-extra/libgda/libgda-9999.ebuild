@@ -5,11 +5,11 @@
 EAPI="5"
 GNOME2_LA_PUNT="yes"
 GCONF_DEBUG="yes"
-PYTHON_COMPAT=( python{2_6,2_7} )
+PYTHON_COMPAT=( python2_7 )
 VALA_MIN_API_VERSION="0.18"
 VALA_USE_DEPEND="vapigen"
 
-inherit autotools db-use eutils flag-o-matic gnome2 java-pkg-opt-2 python vala
+inherit autotools db-use eutils flag-o-matic gnome2 java-pkg-opt-2 python-single-r1 vala
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -63,7 +63,7 @@ RDEPEND="
 	reports? (
 		${PYTHON_DEPS}
 		dev-java/fop
-		dev-python/reportlab )
+		dev-python/reportlab[${PYTHON_USEDEP}] )
 	ssl?      ( dev-libs/openssl:= )
 	>=dev-db/sqlite-3.6.22:3=
 "
@@ -94,7 +94,6 @@ src_prepare() {
 			-i libgda-report/RML/Makefile.{am,in} || die
 
 	# Prevent file collisions with libgda:4
-	epatch "${FILESDIR}/${PN}-4.99.1-gda-browser-help-collision.patch"
 	epatch "${FILESDIR}/${PN}-4.99.1-gda-browser-doc-collision.patch"
 	epatch "${FILESDIR}/${PN}-4.99.1-control-center-icon-collision.patch"
 	# Move files with mv (since epatch can't handle rename diffs) and
