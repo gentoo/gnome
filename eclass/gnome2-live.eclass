@@ -14,7 +14,7 @@
 # Always to be imported *AFTER* gnome2.eclass
 #
 
-inherit autotools gnome2 gnome2-utils libtool git-2
+inherit autotools gnome2 gnome2-utils libtool git-r3
 
 # Stolen from git.eclass
 EXPORTED_FUNCTIONS="src_unpack pkg_postinst"
@@ -78,7 +78,7 @@ gnome2-live_src_unpack() {
 	if test -n "${A}"; then
 		unpack ${A}
 	fi
-	git-2_src_unpack
+	git-r3_src_unpack
 	has src_prepare ${EXPORTED_FUNCTIONS} || gnome2-live_src_prepare
 }
 
@@ -88,9 +88,6 @@ gnome2-live_src_unpack() {
 # Creates blank ChangeLog and necessary macro dirs. Runs various autotools
 # programs if required, and finally runs eautoreconf.
 gnome2-live_src_prepare() {
-	# Blame git.eclass
-	cd "${S}"
-
 	for i in ${PATCHES}; do
 		epatch "${i}"
 	done
