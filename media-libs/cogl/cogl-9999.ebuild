@@ -15,7 +15,7 @@ DESCRIPTION="A library for using 3D graphics hardware to draw pretty pictures"
 HOMEPAGE="http://www.clutter-project.org/"
 
 LICENSE="MIT BSD"
-SLOT="1.0/20" # subslot = .so version
+SLOT="2.0/0" # subslot = .so version
 # doc and profile disable for now due bugs #484750 and #483332
 IUSE="examples gles2 gstreamer +introspection +opengl +pango test" # doc profile
 if [[ ${PV} = 9999 ]]; then
@@ -69,15 +69,15 @@ fi
 src_prepare() {
 	# Do not build examples
 	sed -e "s/^\(SUBDIRS +=.*\)examples\(.*\)$/\1\2/" \
-		-i Makefile.am Makefile.in || die
+		-i Makefile.am || die
 
 	if ! use test ; then
 		# For some reason the configure switch will not completely disable
 		# tests being built
 		sed -e "s/^\(SUBDIRS =.*\)test-fixtures\(.*\)$/\1\2/" \
-    		-e "s/^\(SUBDIRS +=.*\)tests\(.*\)$/\1\2/" \
-    		-e "s/^\(.*am__append.* \)tests\(.*\)$/\1\2/" \
-			-i Makefile.am Makefile.in || die
+			-e "s/^\(SUBDIRS +=.*\)tests\(.*\)$/\1\2/" \
+			-e "s/^\(.*am__append.* \)tests\(.*\)$/\1\2/" \
+			-i Makefile.am || die
 	fi
 
 	gnome2_src_prepare
@@ -95,7 +95,6 @@ src_configure() {
 		--enable-deprecated        \
 		--enable-gdk-pixbuf        \
 		--enable-glib              \
-		--disable-gtk-doc          \
 		$(use_enable opengl glx)   \
 		$(use_enable opengl gl)    \
 		$(use_enable gles2)        \
@@ -107,7 +106,6 @@ src_configure() {
 		$(use_enable pango cogl-pango) \
 		$(use_enable test unit-tests) \
 		--disable-profile
-#		$(use_enable doc gtk-doc)  \
 #		$(use_enable profile)
 }
 
