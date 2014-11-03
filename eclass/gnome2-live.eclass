@@ -100,59 +100,8 @@ gnome2-live_src_prepare() {
 		echo > ChangeLog
 	fi
 
-	# Find and create macro dirs
-	local macro_dirs=($(gnome2-live_get_var AC_CONFIG_MACRO_DIR configure.*))
-	for i in "${macro_dirs[@]}"; do
-		mkdir -p "$i"
-	done
-
-	# We don't run gettextize because that does too much stuff
-	if grep -qe 'GETTEXT' configure.*; then
-		# Generate po/Makefile.in.in if it doesn't exist for packages that use
-		# AM_GNU_GETTEXT and AM_GNU_GETTEXT_VERSION (e.g. media-libs/cogl).
-		# Logic is inspired by gnome-autogen.sh
-		if ! grep -qe '^AM_GLIB_GNU_GETTEXT' configure.* &&
-		   grep -qe '^AM_GNU_GETTEXT_VERSION' configure.* &&
-		   [[ -d po && ! -e po/Makefile.in.in && ! -e po/Makefile.am ]]; then
-			eautopoint --force
-		fi
-		local aux_dir=${S}/$(gnome2-live_get_var AC_CONFIG_AUX_DIR configure.*)
-		mkdir -p "${aux_dir}"
-		test -e "${aux_dir}/config.rpath" || :> "${aux_dir}/config.rpath"
-		test -e "${aux_dir}/ABOUT-NLS" || cp "${ROOT}/usr/share/gettext/ABOUT-NLS" "${aux_dir}"
-	fi
-
-	if grep -qe 'GTK_DOC' configure.*; then
-		ebegin "Running gtkdocize"
-		gtkdocize
-		eend $?
-	fi
-	if grep -qe 'GNOME_DOC_INIT' configure.*; then
-		ebegin "Running gnome-doc-common"
-		gnome-doc-common
-		eend $?
-		ebegin "Running gnome-doc-prepare --automake"
-		gnome-doc-prepare --automake
-		eend $?
-	fi
-	if grep -qe "IT_PROG_INTLTOOL" -e "AC_PROG_INTLTOOL" configure.*; then
-		if grep -qe "AC_PROG_INTLTOOL" configure.*; then
-			eqawarn "This package is using deprecated AC_PROG_INTLTOOL macro."
-			eqawarn "Please fill a bug to the upstream of this package."
-		fi
-		ebegin "Running intltoolize --force"
-		intltoolize --force
-		eend $?
-	fi
-	if test -e m4; then
-		AT_M4DIR=m4 eautoreconf
-	else
-		eautoreconf
-	fi
-
-	# Disable pyc compiling. Doesn't harm if DNE
-	echo > py-compile
-	chmod +x py-compile
+	# eautoreconf is smart enough to run all necessary commands
+	eautoreconf
 
 	### Keep this in-sync with gnome2.eclass!
 
