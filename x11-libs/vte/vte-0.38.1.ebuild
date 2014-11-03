@@ -18,7 +18,7 @@ IUSE="debug glade +introspection vala"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~x64-solaris ~x86-solaris"
 
 PDEPEND=">=x11-libs/gnome-pty-helper-${PV}"
-RDEPEND="
+DEPEND="
 	>=dev-libs/glib-2.40:2
 	>=x11-libs/gtk+-3.8:3[introspection?]
 	>=x11-libs/pango-1.22.0
@@ -36,6 +36,9 @@ DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.35
 	sys-devel/gettext
 	virtual/pkgconfig
+"
+RDEPEND="${RDEPEND}
+	!x11-libs/vte:2.90[glade]
 "
 
 src_prepare() {
