@@ -5,7 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
-PYTHON_COMPAT=( python{2_6,2_7} )
+PYTHON_COMPAT=( python{2_7,3_2,3_3,3_4} )
 
 inherit gnome2 multilib-minimal python-any-r1
 if [[ ${PV} = 9999 ]]; then
