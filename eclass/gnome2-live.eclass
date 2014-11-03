@@ -109,6 +109,9 @@ gnome2-live_src_prepare() {
 	# causes test and introspection-building failures
 	unset DBUS_SESSION_BUS_ADDRESS
 
+	# Prevent assorted access violations and test failures
+	gnome2_environment_reset
+
 	# Prevent scrollkeeper access violations
 	gnome2_omf_fix
 
