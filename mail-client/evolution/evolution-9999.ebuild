@@ -112,14 +112,14 @@ x-scheme-handler/https=firefox.desktop
 file from /usr/share/applications if you use a different browser)."
 
 src_prepare() {
-	# Reason?
+	# Fix relink issues in src_install
 	ELTCONF="--reverse-deps"
 
 	#eautoreconf # See https://bugzilla.gnome.org/701904
 
 	gnome2_src_prepare
 
-	# Fix compilation flags crazyness
+	# Fix compilation flags crazyness, upstream bug #653157
 	sed -e 's/\(AM_CPPFLAGS="\)$WARNING_FLAGS/\1/' \
 		-i configure || die "CPPFLAGS sed failed"
 }
@@ -154,6 +154,16 @@ src_configure() {
 
 src_install() {
 	DOCS="AUTHORS ChangeLog* HACKING MAINTAINERS NEWS* README"
+
+	gnome2_src_install
+
+	# Problems with prelink:
+	# https://bugzilla.gnome.org/show_bug.cgi?id=731680
+	# https://bugzilla.gnome.org/show_bug.cgi?id=732148
+	# https://bugzilla.redhat.com/show_bug.cgi?id=1114538
+	echo PRELINK_PATH_MASK=/usr/bin/evolution > ${T}/99${PN}
+	doenvd "${T}"/99${PN}
+
 	gnome2_src_install
 	readme.gentoo_create_doc
 }
