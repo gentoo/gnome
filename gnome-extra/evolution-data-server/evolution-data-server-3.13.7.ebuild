@@ -94,7 +94,7 @@ src_prepare() {
 
 	gnome2_src_prepare
 
-	# FIXME: Fix compilation flags crazyness
+	# Fix compilation flags crazyness, upstream bug #653157
 	sed 's/^\(AM_CFLAGS="\)$WARNING_FLAGS/\1/' \
 		-i configure || die "sed failed"
 }
