@@ -32,7 +32,7 @@ fi
 # X libs are not needed for OSX (aqua)
 COMMON_DEPEND="
 	>=dev-libs/libxml2-2.5.0:2
-	>=dev-libs/glib-2.39.5:2
+	>=dev-libs/glib-2.40:2
 	>=x11-libs/gtk+-3.14:3[introspection?]
 	>=x11-libs/gtksourceview-3.14:3.0[introspection?]
 	>=dev-libs/libpeas-1.7.0[gtk]
@@ -81,6 +81,8 @@ fi
 src_prepare() {
 	vala_src_prepare
 	gnome2_src_prepare
+
+	python_copy_sources
 }
 
 src_configure() {
