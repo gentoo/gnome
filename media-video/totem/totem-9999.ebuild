@@ -22,7 +22,6 @@ SLOT="0"
 IUSE="+introspection lirc nautilus +python test zeitgeist"
 # see bug #359379
 REQUIRED_USE="
-	flash? ( nsplugin )
 	python? ( introspection ${PYTHON_REQUIRED_USE} )
 	zeitgeist? ( introspection )
 "
@@ -47,7 +46,6 @@ RDEPEND="
 	>=x11-libs/gtk+-3.11.5:3[introspection?]
 	>=dev-libs/totem-pl-parser-3.10.1:0=[introspection?]
 	>=dev-libs/libpeas-1.1.0[gtk]
-	>=x11-themes/gnome-icon-theme-2.16
 	x11-libs/cairo
 	>=dev-libs/libxml2-2.6:2
 	>=media-libs/clutter-1.17.3:1.0[gtk]
@@ -87,7 +85,7 @@ DEPEND="${RDEPEND}
 	app-text/docbook-xml-dtd:4.5
 	app-text/scrollkeeper
 	app-text/yelp-tools
-	dev-util/appdata-tools
+	dev-libs/appstream-glib
 	>=dev-util/gtk-doc-am-1.14
 	>=dev-util/intltool-0.40
 	sys-devel/gettext
@@ -95,7 +93,8 @@ DEPEND="${RDEPEND}
 	x11-proto/xproto
 	virtual/pkgconfig
 
-	test? ( python? ( dev-python/pylint ) )
+	dev-libs/gobject-introspection-common
+	gnome-base/gnome-common
 "
 # docbook-xml-dtd is needed for user doc
 # Prevent dev-python/pylint dep, bug #482538
@@ -131,9 +130,6 @@ src_prepare() {
 }
 
 src_configure() {
-	local myconf=""
-	use nsplugin && DOCS="${DOCS} browser-plugin/README.browser-plugin"
-
 	# Disabled: sample-python, sample-vala
 	local plugins="apple-trailers,autoload-subtitles,brasero-disc-recorder"
 	plugins+=",chapters,im-status,gromit,media-player-keys,ontop"

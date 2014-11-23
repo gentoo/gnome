@@ -75,7 +75,7 @@ DEPEND="${RDEPEND}
 	app-text/docbook-xml-dtd:4.5
 	app-text/scrollkeeper
 	app-text/yelp-tools
-	dev-util/appdata-tools
+	dev-libs/appstream-glib
 	>=dev-util/gtk-doc-am-1.14
 	>=dev-util/intltool-0.40
 	sys-devel/gettext
