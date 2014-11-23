@@ -4,7 +4,7 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
-VALA_MIN_API_VERSION="0.24"
+VALA_MIN_API_VERSION="0.26"
 
 inherit gnome2 vala virtualx
 if [[ ${PV} = 9999 ]]; then
@@ -72,6 +72,11 @@ if [[ ${PV} = 9999 ]]; then
 	DEPEND="${DEPEND}
 		doc? ( >=dev-util/gtk-doc-1.14 )"
 fi
+
+src_prepare() {
+	gnome2-live_src_prepare
+	vala_src_prepare
+}
 
 src_configure() {
 	local myconf=""

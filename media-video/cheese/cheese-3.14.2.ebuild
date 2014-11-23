@@ -4,7 +4,7 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
-VALA_MIN_API_VERSION="0.24"
+VALA_MIN_API_VERSION="0.26"
 
 inherit gnome2 vala virtualx
 
@@ -61,11 +61,6 @@ DEPEND="${COMMON_DEPEND}
 "
 
 src_prepare() {
-	# FIXME: looks like a regression from an underlying library
-	#sed -e 's|\(g_test_add_func.*photo_path.*;\)|/*\1*/|' \
-	#    -e 's|\(g_test_add_func.*video_path.*;\)|/*\1*/|' \
-	#	-i "${S}"/tests/test-libcheese.c || die
-
 	vala_src_prepare
 	gnome2_src_prepare
 }
