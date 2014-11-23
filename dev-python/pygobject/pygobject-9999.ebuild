@@ -5,7 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
-PYTHON_COMPAT=( python{2_7,3_2,3_3} )
+PYTHON_COMPAT=( python{2_7,3_3,3_4} )
 
 inherit gnome2 python-r1 virtualx
 if [[ ${PV} = 9999 ]]; then
@@ -13,7 +13,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="GLib's GObject library bindings for Python"
-HOMEPAGE="http://www.pygtk.org/"
+HOMEPAGE="https://wiki.gnome.org/Projects/PyGObject"
 
 LICENSE="LGPL-2.1+"
 SLOT="3"
@@ -31,7 +31,7 @@ REQUIRED_USE="
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.38:2
-	>=dev-libs/gobject-introspection-1.38
+	>=dev-libs/gobject-introspection-1.39
 	virtual/libffi:=
 	cairo? (
 		>=dev-python/pycairo-1.10.0[${PYTHON_USEDEP}]
@@ -45,7 +45,6 @@ DEPEND="${COMMON_DEPEND}
 		dev-libs/atk[introspection]
 		media-fonts/font-cursor-misc
 		media-fonts/font-misc-misc
-		virtual/python-unittest2[${PYTHON_USEDEP}]
 		x11-libs/cairo[glib]
 		x11-libs/gdk-pixbuf:2[introspection]
 		x11-libs/gtk+:3[introspection]
@@ -72,7 +71,6 @@ src_configure() {
 	# docs disabled by upstream default since they are very out of date
 	python_foreach_impl run_in_build_dir \
 		gnome2_src_configure \
-			--with-ffi \
 			$(use_enable cairo) \
 			$(use_enable threads thread)
 }
