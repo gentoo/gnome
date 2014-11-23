@@ -5,8 +5,9 @@
 EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
+PYTHON_COMPAT=( python{2_7,3_3,3_4} )
 
-inherit autotools eutils gnome2 systemd udev virtualx
+inherit autotools eutils gnome2 python-r1 systemd udev virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -16,9 +17,10 @@ HOMEPAGE="https://git.gnome.org/browse/gnome-settings-daemon"
 
 LICENSE="GPL-2+"
 SLOT="0"
-IUSE="+colord +cups debug input_devices_wacom -openrc-force networkmanager policykit +short-touchpad-timeout smartcard +udev"
+IUSE="+colord +cups debug input_devices_wacom -openrc-force networkmanager policykit +short-touchpad-timeout smartcard test +udev"
 REQUIRED_USE="
 	smartcard? ( udev )
+	test? ( ${PYTHON_REQUIRED_USE} )
 "
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
@@ -65,6 +67,7 @@ COMMON_DEPEND="
 	networkmanager? ( >=net-misc/networkmanager-0.9.9.1 )
 	smartcard? ( >=dev-libs/nss-3.11.2 )
 	udev? ( virtual/libgudev:= )
+	wayland? ( dev-libs/wayland )
 "
 # Themes needed by g-s-d, gnome-shell, gtk+:3 apps to work properly
 # <gnome-color-manager-3.1.1 has file collisions with g-s-d-3.1.x
@@ -83,6 +86,9 @@ RDEPEND="${COMMON_DEPEND}
 # xproto-7.0.15 needed for power plugin
 DEPEND="${COMMON_DEPEND}
 	cups? ( sys-apps/sed )
+	test? (
+		${PYTHON_DEPS}
+		dev-python/pygobject[${PYTHON_USEDEP}] )
 	dev-libs/libxml2:2
 	sys-devel/gettext
 	>=dev-util/intltool-0.40
@@ -120,10 +126,12 @@ src_configure() {
 		$(use_enable networkmanager network-manager) \
 		$(use_enable smartcard smartcard-support) \
 		$(use_enable udev gudev) \
-		$(use_enable input_devices_wacom wacom)
+		$(use_enable input_devices_wacom wacom) \
+		$(use_enable wayland)
 }
 
 src_test() {
+	python_export_best
 	Xemake check
 }
 

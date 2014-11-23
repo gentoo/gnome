@@ -5,17 +5,19 @@
 EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
+PYTHON_COMPAT=( python{2_7,3_3,3_4} )
 
-inherit autotools eutils gnome2 systemd udev virtualx
+inherit autotools eutils gnome2 python-r1 systemd udev virtualx
 
 DESCRIPTION="Gnome Settings Daemon"
 HOMEPAGE="https://git.gnome.org/browse/gnome-settings-daemon"
 
 LICENSE="GPL-2+"
 SLOT="0"
-IUSE="+colord +cups debug input_devices_wacom -openrc-force networkmanager policykit +short-touchpad-timeout smartcard +udev wayland"
+IUSE="+colord +cups debug input_devices_wacom -openrc-force networkmanager policykit +short-touchpad-timeout smartcard test +udev wayland"
 REQUIRED_USE="
 	smartcard? ( udev )
+	test? ( ${PYTHON_REQUIRED_USE} )
 "
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
 
@@ -77,6 +79,9 @@ RDEPEND="${COMMON_DEPEND}
 # xproto-7.0.15 needed for power plugin
 DEPEND="${COMMON_DEPEND}
 	cups? ( sys-apps/sed )
+	test? (
+		${PYTHON_DEPS}
+		dev-python/pygobject[${PYTHON_USEDEP}] )
 	dev-libs/libxml2:2
 	sys-devel/gettext
 	>=dev-util/intltool-0.40
@@ -119,6 +124,7 @@ src_configure() {
 }
 
 src_test() {
+	python_export_best
 	Xemake check
 }
 
