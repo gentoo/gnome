@@ -14,6 +14,13 @@ inherit eutils fdo-mime libtool gnome.org gnome2-utils
 
 case "${EAPI:-0}" in
 	0|1)
+		eqawarn
+		eqawarn "${CATEGORY}/${PF}: EAPI 0/1 support is now deprecated."
+		eqawarn "If you are the package maintainer, please"
+		eqawarn "update this package to a newer EAPI."
+		eqawarn "Support for EAPIs 0 and 1 for gnome2.eclass will be dropped"
+		eqawarn "in a month (around 23rd December)."
+		eqawarn
 		EXPORT_FUNCTIONS src_unpack src_compile src_install pkg_preinst pkg_postinst pkg_postrm
 		;;
 	2|3|4|5)
@@ -21,23 +28,6 @@ case "${EAPI:-0}" in
 		;;
 	*) die "EAPI=${EAPI} is not supported" ;;
 esac
-
-#if [[ "${I_WANT_GNOME_3_3_X}" != "yes" ]]; then
-#	die "
-#
-#The GNOME overlay is switching to GNOME 3.3.x prerelease packages.
-#These are unstable, potentially incompatible with 3.2, and may well
-#break your system in intriguing ways.
-#
-#If you enabled the GNOME overlay to get GNOME 3.2, please disable
-#it now, since GNOME 3.2 is already in portage and unmasked.
-#
-#If you really do want experimental GNOME 3.3.x, please add
-#I_WANT_GNOME_3_3_X=yes
-#to your /etc/make.conf and continue.
-#
-#"
-#fi
 
 # @ECLASS-VARIABLE: G2CONF
 # @DEFAULT_UNSET
@@ -102,17 +92,6 @@ gnome2_src_unpack() {
 # Prepare environment for build, fix build of scrollkeeper documentation,
 # run elibtoolize.
 gnome2_src_prepare() {
-	# Reset various variables inherited via the environment.
-	# Causes test failures, introspection-build failures, and access violations
-	# FIXME: seems to have no effect for exported variables, at least with
-	# portage-2.2.0_alpha74
-	unset DBUS_SESSION_BUS_ADDRESS
-	unset DISPLAY
-	unset GNOME_KEYRING_CONTROL
-	unset GNOME_KEYRING_PID
-	unset XAUTHORITY
-	unset XDG_SESSION_COOKIE
-
 	# Prevent assorted access violations and test failures
 	gnome2_environment_reset
 
