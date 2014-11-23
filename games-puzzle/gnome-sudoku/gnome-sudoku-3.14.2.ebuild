@@ -31,6 +31,7 @@ DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.50
 	sys-devel/gettext
 	virtual/pkgconfig
+	$(vala_depend)
 "
 
 src_prepare() {
