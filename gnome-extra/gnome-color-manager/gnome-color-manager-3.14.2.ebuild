@@ -37,19 +37,21 @@ RDEPEND="${COMMON_DEPEND}"
 DEPEND="${COMMON_DEPEND}
 	app-text/docbook-sgml-dtd:4.1
 	app-text/docbook-sgml-utils
+	dev-libs/appstream-glib
 	dev-libs/libxslt
-	dev-util/appdata-tools
 	>=dev-util/intltool-0.35
 	virtual/pkgconfig
 "
 
 src_configure() {
 	# Always enable tests since they are check_PROGRAMS anyway
+	# appstream does not want to be relax by default !
 	gnome2_src_configure \
 		--disable-static \
 		--enable-tests \
 		$(use_enable packagekit) \
 		$(use_enable raw exiv) \
+		APPSTREAM_UTIL=$(type -P true) \
 		ITSTOOL=$(type -P true)
 }
 
