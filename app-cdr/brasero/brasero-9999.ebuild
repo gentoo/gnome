@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -12,7 +12,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="CD/DVD burning application for the GNOME desktop"
-HOMEPAGE="http://projects.gnome.org/brasero/"
+HOMEPAGE="https://wiki.gnome.org/Apps/Brasero"
 
 LICENSE="GPL-2+ CC-BY-SA-3.0"
 SLOT="0/3.1" # subslot is 3.suffix of libbrasero-burn3
@@ -42,7 +42,7 @@ COMMON_DEPEND="
 		>=dev-libs/libisofs-0.6.4:= )
 	nautilus? ( >=gnome-base/nautilus-2.91.90 )
 	playlist? ( >=dev-libs/totem-pl-parser-2.29.1:= )
-	tracker? ( >=app-misc/tracker-0.12:= )
+	tracker? ( >=app-misc/tracker-0.12:0= )
 "
 RDEPEND="${COMMON_DEPEND}
 	media-libs/gst-plugins-good:1.0
@@ -59,10 +59,8 @@ RDEPEND="${COMMON_DEPEND}
 	packagekit? ( app-admin/packagekit-base )
 "
 DEPEND="${COMMON_DEPEND}
-	app-text/yelp-tools
-	dev-util/intltool
+	>=dev-util/intltool-0.50
 	>=dev-util/gtk-doc-am-1.12
-	gnome-base/gnome-common:3
 	sys-devel/gettext
 	virtual/pkgconfig
 	test? ( app-text/docbook-xml-dtd:4.3 )
