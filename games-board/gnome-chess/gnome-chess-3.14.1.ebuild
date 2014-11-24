@@ -24,6 +24,7 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	$(vala_depend)
 	app-text/yelp-tools
+	dev-util/appdata-tools
 	>=dev-util/intltool-0.50
 	sys-devel/gettext
 	virtual/pkgconfig
@@ -32,4 +33,8 @@ DEPEND="${RDEPEND}
 src_prepare() {
 	vala_src_prepare
 	gnome-games_src_prepare
+}
+
+src_configure() {
+	gnome-games_src_configure APPDATA_VALIDATE=$(type -P true)
 }
