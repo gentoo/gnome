@@ -32,7 +32,7 @@ RDEPEND="${COMMON_DEPEND}
 	dev-libs/gobject-introspection
 	dev-libs/atk[introspection]
 	gnome-base/gnome-menus:3[introspection]
-	>=gnome-base/gnome-shell-3.5.91
+	>=gnome-base/gnome-shell-3.14.2
 	media-libs/clutter:1.0[introspection]
 	net-libs/telepathy-glib[introspection]
 	x11-libs/gdk-pixbuf:2[introspection]
