@@ -7,22 +7,15 @@ GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
 inherit flag-o-matic gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="A window navigation construction kit"
 HOMEPAGE="https://developer.gnome.org/libwnck/stable/"
 
 LICENSE="LGPL-2+"
 SLOT="3"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos ~x64-solaris ~x86-solaris"
+
 IUSE="+introspection startup-notification tools"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-	IUSE="${IUSE} doc"
-else
-	KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc x86 ~amd64-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos ~x64-solaris ~x86-solaris"
-fi
 
 RDEPEND="
 	x11-libs/cairo[X]
@@ -43,12 +36,6 @@ DEPEND="${RDEPEND}
 "
 # eautoreconf needs
 #	gnome-base/gnome-common
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( dev-util/gtk-doc )
-	"
-fi
 
 src_configure() {
 	DOCS="AUTHORS ChangeLog HACKING NEWS README"
