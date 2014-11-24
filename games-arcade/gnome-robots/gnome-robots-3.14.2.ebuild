@@ -28,3 +28,7 @@ DEPEND="${RDEPEND}
 	sys-devel/gettext
 	virtual/pkgconfig
 "
+
+src_configure() {
+	gnome-games_src_configure APPDATA_VALIDATE=$(type -P true)
+}
