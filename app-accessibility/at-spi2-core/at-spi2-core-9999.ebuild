@@ -6,7 +6,7 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
-inherit eutils gnome2
+inherit eutils gnome2 multilib-minimal
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -28,18 +28,18 @@ fi
 # making the dep unneeded or fixing their configure
 # Only libX11 is optional right now
 RDEPEND="
-	>=dev-libs/glib-2.36:2
-	>=sys-apps/dbus-1
-	x11-libs/libSM
-	x11-libs/libXi
-	x11-libs/libXtst
+	>=dev-libs/glib-2.36:2[${MULTILIB_USEDEP}]
+	>=sys-apps/dbus-1[${MULTILIB_USEDEP}]
+	x11-libs/libSM[${MULTILIB_USEDEP}]
+	x11-libs/libXi[${MULTILIB_USEDEP}]
+	x11-libs/libXtst[${MULTILIB_USEDEP}]
 	introspection? ( >=dev-libs/gobject-introspection-0.9.6 )
-	X? ( x11-libs/libX11 )
+	X? ( x11-libs/libX11[${MULTILIB_USEDEP}] )
 "
 DEPEND="${RDEPEND}
 	>=dev-util/gtk-doc-am-1.9
 	>=dev-util/intltool-0.40
-	virtual/pkgconfig
+	virtual/pkgconfig[${MULTILIB_USEDEP}]
 "
 
 if [[ ${PV} == 9999 ]]; then
@@ -54,10 +54,19 @@ src_prepare() {
 	gnome2_src_prepare
 }
 
-src_configure() {
+multilib_src_configure() {
 	# xevie is deprecated/broken since xorg-1.6/1.7
+	ECONF_SOURCE=${S} \
 	gnome2_src_configure \
 		--disable-xevie \
-		$(use_enable introspection) \
+		$(multilib_native_use_enable introspection) \
 		$(use_enable X x11)
+
+	# work-around gtk-doc out-of-source brokedness
+	if multilib_is_native_abi; then
+		ln -s "${S}"/doc/libatspi/html doc/libatspi/html || die
+	fi
 }
+
+multilib_src_compile() { gnome2_src_compile; }
+multilib_src_install() { gnome2_src_install; }
