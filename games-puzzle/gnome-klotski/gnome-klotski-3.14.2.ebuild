@@ -34,3 +34,7 @@ src_prepare() {
 	gnome-games_src_prepare
 	vala_src_prepare
 }
+
+src_configure() {
+	gnome-games_src_configure APPDATA_VALIDATE=$(type -P true)
+}
