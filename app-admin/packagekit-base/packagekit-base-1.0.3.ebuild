@@ -8,7 +8,7 @@ EAPI="5"
 # Future note: use --enable-python3
 PYTHON_COMPAT=( python2_7 )
 
-inherit bash-completion-r1 eutils multilib nsplugins python-single-r1 systemd
+inherit autotools bash-completion-r1 eutils multilib nsplugins python-single-r1 systemd
 
 MY_PN="PackageKit"
 MY_P=${MY_PN}-${PV}
@@ -59,6 +59,13 @@ RDEPEND="${CDEPEND}
 S="${WORKDIR}/${MY_P}"
 
 RESTRICT="test"
+
+src_prepare() {
+	# Fix python backend detection
+	epatch "${FILESDIR}"/${PN}-1.0.3-configure.patch
+
+	eautoreconf
+}
 
 src_configure() {
 	econf \

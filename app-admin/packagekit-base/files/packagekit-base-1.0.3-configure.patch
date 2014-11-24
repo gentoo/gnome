@@ -1,0 +1,11 @@
+--- configure.ac.old	2014-11-25 00:04:23.689888170 +0100
++++ configure.ac	2014-11-25 00:03:08.041580672 +0100
+@@ -464,7 +464,7 @@
+ fi
+ 
+ have_python_backend="no"
+-if test x$enable_entropy = xyes -o x$enable_pisi = xyes -o $enable_portage = xyes; then
++if test x$enable_entropy = xyes -o x$enable_pisi = xyes -o x$enable_portage = xyes; then
+ 	have_python_backend="yes"
+ fi
+ if test x$enable_apt = xyes; then
