@@ -9,7 +9,7 @@ GNOME2_LA_PUNT="yes"
 MY_PN=${PN/-gnome}
 MY_P=${MY_PN}-${PV}
 
-inherit autotools eutils gnome2
+inherit autotools eutils gnome2 multilib-minimal
 
 DESCRIPTION="GNOME plugin for libsoup"
 HOMEPAGE="https://wiki.gnome.org/LibSoup"
@@ -21,16 +21,16 @@ IUSE="debug +introspection"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~x86-solaris"
 
 RDEPEND="
-	~net-libs/libsoup-${PV}[introspection?]
-	dev-db/sqlite:3=
+	~net-libs/libsoup-${PV}[introspection?,${MULTILIB_USEDEP}]
+	dev-db/sqlite:3=[${MULTILIB_USEDEP}]
 	introspection? ( >=dev-libs/gobject-introspection-0.9.5 )
-	>=net-libs/libsoup-2.42.2-r1
+	>=net-libs/libsoup-2.42.2-r1[${MULTILIB_USEDEP}]
 "
 DEPEND="${RDEPEND}
 	>=dev-util/gtk-doc-am-1.10
 	>=dev-util/intltool-0.35
 	sys-devel/gettext
-	virtual/pkgconfig
+	virtual/pkgconfig[${MULTILIB_USEDEP}]
 "
 
 S=${WORKDIR}/${MY_P}
@@ -42,17 +42,21 @@ src_prepare() {
 	gnome2_src_prepare
 }
 
-src_configure() {
+multilib_src_configure() {
 	# FIXME: we need addpredict to workaround bug #324779 until
 	# root cause (bug #249496) is solved
 	addpredict /usr/share/snmp/mibs/.index
 
 	# Disable apache tests until they are usable on Gentoo, bug #326957
+	ECONF_SOURCE=${S} \
 	gnome2_src_configure \
 		--disable-static \
 		--disable-tls-check \
-		$(use_enable introspection) \
+		$(multilib_native_use_enable introspection) \
 		--with-libsoup-system \
 		--with-gnome \
 		--without-apache-httpd
 }
+
+multilib_src_compile() { gnome2_src_compile; }
+multilib_src_install() { gnome2_src_install; }
