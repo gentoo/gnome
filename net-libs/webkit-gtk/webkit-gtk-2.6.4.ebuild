@@ -42,7 +42,7 @@ RDEPEND="
 	>=dev-libs/icu-3.8.1-r1:=
 	>=media-libs/fontconfig-2.8:1.0
 	>=media-libs/freetype-2.4.2:2
-	>=net-libs/libsoup-2.42.0:2.4[introspection?]
+	>=net-libs/libsoup-2.42:2.4[introspection?]
 	>=x11-libs/cairo-1.10.2:=[X]
 	>=x11-libs/gtk+-3.6.0:3[X?,introspection?]
 	dev-db/sqlite:3=
@@ -179,6 +179,7 @@ src_configure() {
 		$(cmake-utils_use_enable geoloc GEOLOCATION)
 		$(cmake-utils_use_enable gstreamer VIDEO)
 		$(cmake-utils_use_enable gstreamer WEB_AUDIO)
+		$(cmake-utils_use_enable introspection)
 		$(cmake-utils_use_enable jit)
 		$(cmake-utils_use_enable libsecret CREDENTIAL_STORAGE)
 		$(cmake-utils_use_enable spell SPELLCHECK SPELLCHECK)
@@ -186,7 +187,6 @@ src_configure() {
 		$(cmake-utils_use_enable webgl WEBGL)
 		$(cmake-utils_use_enable X X11_TARGET)
 		$(cmake-utils_use_find_package egl EGL)
-		$(cmake-utils_use_find_package introspection GobjectIntrospection)
 		$(cmake-utils_use_find_package opengl OpenGL)
 		-DPORT=GTK
 		-DENABLE_GTKDOC=ON
