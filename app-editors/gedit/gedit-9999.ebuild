@@ -21,7 +21,9 @@ LICENSE="GPL-2+ CC-BY-SA-3.0"
 SLOT="0"
 
 IUSE="+introspection +python spell vala"
-REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
+# python-single-r1 would request disabling PYTHON_TARGETS on libpeas
+# we need to fix that
+REQUIRED_USE="python? ( ^^ ( $(python_gen_useflags '*') ) )"
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
@@ -51,14 +53,14 @@ COMMON_DEPEND="
 		>=x11-libs/gtk+-3:3[introspection]
 		>=x11-libs/gtksourceview-3.6:3.0[introspection]
 		dev-python/pycairo[${PYTHON_USEDEP}]
-		>=dev-python/pygobject-3:3[cairo,${PYTHON_USEDEP}] )
+		>=dev-python/pygobject-3:3[cairo,${PYTHON_USEDEP}]
+		dev-libs/libpeas[${PYTHON_USEDEP}] )
 	spell? (
 		>=app-text/enchant-1.2:=
 		>=app-text/iso-codes-0.35 )
 "
 RDEPEND="${COMMON_DEPEND}
 	x11-themes/gnome-icon-theme-symbolic
-	python? ( dev-libs/libpeas[${PYTHON_USEDEP}] )
 "
 DEPEND="${COMMON_DEPEND}
 	${vala_depend}
@@ -78,35 +80,27 @@ if [[ ${PV} = 9999 ]]; then
 		app-text/yelp-tools"
 fi
 
+pkg_setup() {
+	use python && [[ ${MERGE_TYPE} != binary ]] && python_setup
+}
+
 src_prepare() {
 	vala_src_prepare
 	gnome2_src_prepare
-
-	python_copy_sources
 }
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	DOCS="AUTHORS BUGS ChangeLog MAINTAINERS NEWS README"
 
-	local myconf
-	myconf="
-		--disable-deprecations
-		--enable-updater
-		--enable-gvfs-metadata
-		$(use_enable introspection)
-		$(use_enable spell)
-		$(use_enable vala)
-		$(use_enable python)
+	gnome2_src_configure \
+		--disable-deprecations \
+		--enable-updater \
+		--enable-gvfs-metadata \
+		$(use_enable introspection) \
+		$(use_enable spell) \
+		$(use_enable vala) \
+		$(use_enable python) \
 		ITSTOOL=$(type -P true)
-	"
-
-	if use python ; then
-		python_parallel_foreach_impl gnome2_src_configure ${myconf}
-	else
-		gnome2_src_configure ${myconf}
-	fi
 }
 
 src_test() {
@@ -118,9 +112,6 @@ src_test() {
 }
 
 src_install() {
-	if use python ; then
-		python_foreach_impl gnome2_src_install
-	else
-		gnome2_src_install
-	fi
+	# manually set pyoverridesdir due to bug #524018 and AM_PATH_PYTHON limitations
+	gnome2_src_install pyoverridesdir="$(python_get_sitedir)/gi/overrides"
 }
