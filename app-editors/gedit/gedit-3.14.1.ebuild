@@ -18,7 +18,9 @@ LICENSE="GPL-2+ CC-BY-SA-3.0"
 SLOT="0"
 
 IUSE="+introspection +python spell vala"
-REQUIRED_USE="python? ( || ( $(python_gen_useflags 'python3*') ) )"
+# python-single-r1 would request disabling PYTHON_TARGETS on libpeas
+# we need to fix that
+REQUIRED_USE="python? ( ^^ ( $(python_gen_useflags '*') ) )"
 
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux"
 
@@ -66,7 +68,7 @@ DEPEND="${COMMON_DEPEND}
 # yelp-tools, gnome-common needed to eautoreconf
 
 pkg_setup() {
-	use python && python_setup
+	use python && [[ ${MERGE_TYPE} != binary ]] && python_setup
 }
 
 src_prepare() {
