@@ -64,7 +64,6 @@ COMMON_DEPEND="
 		( >=app-crypt/gnupg-2.0.1-r2 x11-libs/libcryptui ${PINENTRY_DEPEND} )
 		=app-crypt/gnupg-1.4* ) )
 	map? (
-		>=app-misc/geoclue-0.12.0:0
 		>=media-libs/libchamplain-0.12:0.12[gtk]
 		>=media-libs/clutter-1.0.0:1.0
 		>=media-libs/clutter-gtk-0.90:1.0
