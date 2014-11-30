@@ -6,7 +6,7 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
-inherit eutils flag-o-matic gnome2 multilib virtualx multilib-minimal
+inherit eutils flag-o-matic autotools gnome2 multilib virtualx multilib-minimal
 
 DESCRIPTION="Gimp ToolKit +"
 HOMEPAGE="http://www.gtk.org/"
@@ -108,6 +108,9 @@ strip_builddir() {
 }
 
 src_prepare() {
+	# see bug #525928
+	epatch "${FILESDIR}/${PN}-non-bash-support.patch"
+
 	# -O3 and company cause random crashes in applications. Bug #133469
 	replace-flags -O3 -O2
 	strip-flags
@@ -128,6 +131,7 @@ src_prepare() {
 		strip_builddir SRC_SUBDIRS examples Makefile.in
 	fi
 
+	eautoreconf
 	gnome2_src_prepare
 }
 
