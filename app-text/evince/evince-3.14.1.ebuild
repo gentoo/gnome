@@ -6,7 +6,7 @@ EAPI="5"
 GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
-inherit eutils gnome2
+inherit eutils autotools gnome2
 
 DESCRIPTION="Simple document viewer for GNOME"
 HOMEPAGE="https://wiki.gnome.org/Apps/Evince"
@@ -67,6 +67,11 @@ DEPEND="${COMMON_DEPEND}
 RESTRICT="test"
 
 src_prepare() {
+	# Fix build with non-bash /bin/sh, see bug #526410
+	epatch "${FILESDIR}/${PN}-non-bash-support.patch"
+
+	eautoreconf
+
 	gnome2_src_prepare
 
 	# Do not depend on adwaita-icon-theme, bug #326855, #391859
