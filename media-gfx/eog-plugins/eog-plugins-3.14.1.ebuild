@@ -5,9 +5,9 @@
 EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
-PYTHON_COMPAT=( python{3_2,3_3} )
+PYTHON_COMPAT=( python{3_3,3_4} )
 
-inherit gnome2 python-single-r1
+inherit gnome2 python-r1
 
 DESCRIPTION="Eye of GNOME plugins"
 HOMEPAGE="https://live.gnome.org/EyeOfGnome/Plugins"
@@ -48,7 +48,7 @@ DEPEND="${RDEPEND}
 "
 
 pkg_setup() {
-	use python && python-single-r1_pkg_setup
+	use python && [[ ${MERGE_TYPE} == binary ]] && python_setup
 }
 
 src_configure() {
