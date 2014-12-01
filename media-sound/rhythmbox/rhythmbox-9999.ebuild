@@ -5,10 +5,10 @@
 EAPI="5"
 GNOME2_LA_PUNT="yes"
 GCONF_DEBUG="no"
-PYTHON_COMPAT=( python3_{2,3} )
+PYTHON_COMPAT=( python3_{3,4} )
 PYTHON_REQ_USE="xml"
 
-inherit eutils gnome2 python-single-r1 multilib virtualx
+inherit eutils gnome2 python-r1 multilib virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -21,9 +21,6 @@ SLOT="0"
 IUSE="cdr daap dbus +libsecret html ipod libnotify lirc mtp nsplugin +python
 test +udev upnp-av visualizer webkit zeitgeist"
 
-# Let people emerge this by default, bug #472932
-IUSE+=" python_single_target_python3_2 +python_single_target_python3_3"
-
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
@@ -35,7 +32,7 @@ REQUIRED_USE="
 	mtp? ( udev )
 	dbus? ( python )
 	webkit? ( python )
-	python? ( ${PYTHON_REQUIRED_USE} )
+	python? ( ^^ ( $(python_gen_useflags '*') ) )
 "
 
 # FIXME: double check what to do with fm-radio plugin
@@ -88,6 +85,7 @@ RDEPEND="${COMMON_DEPEND}
 		>=media-libs/grilo-0.2:0.2
 		>=media-plugins/grilo-plugins-0.2:0.2[upnp-av] )
 	python? (
+		>=dev-libs/libpeas-0.7.3[${PYTHON_USEDEP}]
 		x11-libs/gdk-pixbuf:2[introspection]
 		x11-libs/gtk+:3[introspection]
 		x11-libs/pango[introspection]
@@ -108,7 +106,7 @@ DEPEND="${COMMON_DEPEND}
 "
 
 pkg_setup() {
-	use python && python-single-r1_pkg_setup
+	use python && [[ ${MERGE_TYPE} != binary ]] && python_setup
 }
 
 src_prepare() {
