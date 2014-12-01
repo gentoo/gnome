@@ -5,7 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes" # plugins are dlopened
-PYTHON_COMPAT=( python3_{2,3} )
+PYTHON_COMPAT=( python3_{3,4} )
 PYTHON_REQ_USE="xml"
 
 inherit eutils gnome2 multilib python-r1
@@ -19,12 +19,13 @@ SLOT="0"
 
 IUSE_plugins="charmap git terminal zeitgeist"
 IUSE="+python ${IUSE_plugins}"
+# python-single-r1 would request disabling PYTHON_TARGETS on libpeas
 REQUIRED_USE="
 	charmap? ( python )
 	git? ( python )
+	python? ( ^^ ( $(python_gen_useflags '*') ) )
 	terminal? ( python )
 	zeitgeist? ( python )
-	python? ( ${REQUIRED_PYTHON_USE} )
 "
 
 RDEPEND="
@@ -55,6 +56,10 @@ DEPEND="${RDEPEND}
 	sys-devel/gettext
 	virtual/pkgconfig
 "
+
+pkg_setup() {
+	use python && [[ ${MERGE_TYPE} != binary ]] && python_setup
+}
 
 src_configure() {
 	gnome2_src_configure \
