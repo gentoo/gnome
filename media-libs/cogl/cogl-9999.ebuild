@@ -17,7 +17,7 @@ HOMEPAGE="http://www.cogl3d.org/"
 LICENSE="MIT BSD"
 SLOT="2.0/0" # subslot = .so version
 # doc and profile disable for now due bugs #484750 and #483332
-IUSE="examples gles2 gstreamer +introspection +opengl +pango test wayland" # doc profile
+IUSE="examples gles2 gstreamer +introspection +kms +opengl +pango test wayland" # doc profile
 REQUIRED_USE="wayland? ( gles2 )"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
@@ -30,7 +30,6 @@ COMMON_DEPEND="
 	>=dev-libs/glib-2.32:2
 	x11-libs/cairo:=
 	>=x11-libs/gdk-pixbuf-2:2
-	x11-libs/libdrm:=
 	x11-libs/libX11
 	>=x11-libs/libXcomposite-0.4
 	x11-libs/libXdamage
@@ -44,6 +43,9 @@ COMMON_DEPEND="
 		media-libs/gst-plugins-base:1.0 )
 
 	introspection? ( >=dev-libs/gobject-introspection-1.34.2 )
+	kms? (
+		media-libs/mesa[gbm]
+		x11-libs/libdrm:= )
 	pango? ( >=x11-libs/pango-1.20.0[introspection?] )
 	wayland? (
 		>=dev-libs/wayland-1.1.90
@@ -90,7 +92,7 @@ src_prepare() {
 }
 
 src_configure() {
-	# TODO: think about kms-egl, quartz, sdl
+	# TODO: think about quartz, sdl
 	# Prefer gl over gles2 if both are selected
 	# Profiling needs uprof, which is not available in portage yet, bug #484750
 	# FIXME: Doesn't provide prebuilt docs, but they can neither be rebuilt, bug #483332
@@ -109,6 +111,7 @@ src_configure() {
 		$(usex gles2 --with-default-driver=$(usex opengl gl gles2)) \
 		$(use_enable gstreamer cogl-gst)    \
 		$(use_enable introspection) \
+		$(use_enable kms kms-egl-platform) \
 		$(use_enable pango cogl-pango) \
 		$(use_enable test unit-tests) \
 		$(use_enable wayland wayland-egl-platform) \
