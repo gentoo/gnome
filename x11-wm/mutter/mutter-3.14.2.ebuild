@@ -5,23 +5,22 @@
 EAPI="5"
 GCONF_DEBUG="yes"
 
-inherit eutils gnome2
+inherit autotools eutils gnome2
 
 DESCRIPTION="GNOME 3 compositing window manager based on Clutter"
 HOMEPAGE="http://git.gnome.org/browse/mutter/"
 
 LICENSE="GPL-2+"
 SLOT="0"
-IUSE="+introspection test"
+IUSE="+introspection +kms test wayland"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
-# FIXME: automagic on systemd/libinput/wayland
 COMMON_DEPEND="
 	>=x11-libs/pango-1.2[X,introspection?]
 	>=x11-libs/cairo-1.10[X]
 	>=x11-libs/gtk+-3.9.11:3[X,introspection?]
 	>=dev-libs/glib-2.36.0:2
-	>=media-libs/clutter-1.19.5:1.0[egl,introspection?]
+	>=media-libs/clutter-1.19.5:1.0[introspection?]
 	>=media-libs/cogl-1.17.1:1.0=[introspection?]
 	>=media-libs/libcanberra-0.26[gtk3]
 	>=x11-libs/startup-notification-0.7
@@ -30,7 +29,6 @@ COMMON_DEPEND="
 	gnome-base/gnome-desktop:3=
 	>sys-power/upower-0.99
 
-	>=media-libs/mesa-10.3[gbm]
 	x11-libs/libICE
 	x11-libs/libSM
 	x11-libs/libX11
@@ -51,6 +49,18 @@ COMMON_DEPEND="
 	gnome-extra/zenity
 
 	introspection? ( >=dev-libs/gobject-introspection-0.9.5 )
+	kms? (
+		dev-libs/libinput
+		media-libs/clutter[egl]
+		media-libs/cogl:1.0=[kms]
+		>=media-libs/mesa-10.3[gbm]
+		sys-apps/systemd
+		virtual/libgudev
+		x11-libs/libdrm:= )
+	wayland? (
+		>=dev-libs/wayland-1.5.90
+		media-libs/clutter[wayland]
+		x11-base/xorg-server[wayland] )
 "
 DEPEND="${COMMON_DEPEND}
 	>=dev-util/gtk-doc-am-1.15
@@ -68,8 +78,12 @@ RDEPEND="${COMMON_DEPEND}
 
 src_prepare() {
 	# Compat with Ubuntu metacity themes (e.g. x11-themes/light-themes)
-	epatch "${FILESDIR}/${PN}-3.2.1-ignore-shadow-and-padding.patch"
+	epatch "${FILESDIR}"/${PN}-3.2.1-ignore-shadow-and-padding.patch
 
+	# Automagic fixes
+	epatch "${FILESDIR}"/${PN}-3.14.2-automagic.patch
+
+	eautoreconf
 	gnome2_src_prepare
 }
 
@@ -80,5 +94,7 @@ src_configure() {
 		--enable-startup-notification \
 		--enable-verbose-mode \
 		--with-libcanberra \
-		$(use_enable introspection)
+		$(use_enable introspection) \
+		$(use_enable kms native-backend) \
+		$(use_enable wayland)
 }
