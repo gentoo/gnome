@@ -25,6 +25,7 @@ RDEPEND="
 	>=net-libs/libsoup-2.44:2.4
 	>=gnome-extra/evolution-data-server-3.8
 	>=x11-libs/gtk+-3.12.2:3
+	x11-misc/xdg-utils
 "
 DEPEND="${RDEPEND}
 	$(vala_depend)
