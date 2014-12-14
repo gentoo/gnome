@@ -105,6 +105,10 @@ RDEPEND="${COMMON_DEPEND}
 	!<gnome-base/gail-1000
 	!<x11-libs/vte-0.31.0:2.90
 	X? ( !<x11-base/xorg-server-1.11.4 )
+	abi_x86_32? (
+		!<=app-emulation/emul-linux-x86-gtklibs-20140508-r3
+		!app-emulation/emul-linux-x86-gtklibs[-abi_x86_32(-)]
+	)
 "
 PDEPEND="vim-syntax? ( app-vim/gtk-syntax )"
 
@@ -122,6 +126,9 @@ strip_builddir() {
 }
 
 src_prepare() {
+	# see bug #525928
+	epatch "${FILESDIR}/${PN}-non-bash-support.patch"
+
 	# -O3 and company cause random crashes in applications. Bug #133469
 	replace-flags -O3 -O2
 	strip-flags
@@ -174,6 +181,7 @@ multilib_src_configure() {
 		--enable-gtk2-dependency \
 		--with-xml-catalog="${EPREFIX}"/etc/xml/catalog \
 		--libdir="${EPREFIX}"/usr/$(get_libdir) \
+		CUPS_CONFIG="${EPREFIX}/usr/bin/${CHOST}-cups-config" \
 		${myconf}
 
 	# work-around gtk-doc out-of-source brokedness
