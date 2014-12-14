@@ -34,7 +34,7 @@ REQUIRED_USE="
 RDEPEND="
 	>=app-i18n/enca-1.9
 	>=dev-db/sqlite-3.7.16:=
-	>=dev-libs/glib-2.38:2
+	>=dev-libs/glib-2.40:2
 	>=dev-libs/gobject-introspection-0.9.5
 	>=dev-libs/icu-4.8.1.1:=
 	|| (
@@ -173,17 +173,18 @@ src_configure() {
 		--enable-abiword \
 		--enable-artwork \
 		--enable-dvi \
+		--enable-enca \
+		--enable-guarantee-metadata \
 		--enable-icon \
-		--enable-ps \
-		--enable-text \
 		--enable-introspection \
-		--enable-libpng \
 		--enable-libmediaart \
+		--enable-libpng \
 		--enable-miner-apps \
 		--enable-miner-user-guides \
+		--enable-ps \
+		--enable-text \
 		--enable-tracker-fts \
 		--enable-tracker-writeback \
-		--enable-enca \
 		--with-unicode-support=libicu \
 		$(use_enable cue libcue) \
 		$(use_enable eds miner-evolution) \
