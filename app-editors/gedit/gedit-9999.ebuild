@@ -5,7 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes" # plugins are dlopened
-PYTHON_COMPAT=( python3_{2,3} )
+PYTHON_COMPAT=( python3_{3,4} )
 VALA_MIN_API_VERSION="0.26"
 VALA_USE_DEPEND="vapigen"
 
@@ -98,8 +98,8 @@ src_configure() {
 		--enable-gvfs-metadata \
 		$(use_enable introspection) \
 		$(use_enable spell) \
-		$(use_enable vala) \
 		$(use_enable python) \
+		$(use_enable vala) \
 		ITSTOOL=$(type -P true)
 }
 
