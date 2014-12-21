@@ -36,7 +36,7 @@ COMMON_DEPEND="
 	>=dev-libs/libxml2-2.5:2
 	sys-libs/zlib:=
 	x11-libs/gdk-pixbuf:2
-	>=x11-libs/gtk+-3.12:3[introspection?]
+	>=x11-libs/gtk+-3.14:3[introspection?]
 	gnome-base/gsettings-desktop-schemas
 	>=x11-libs/cairo-1.10:=
 	>=app-text/poppler-0.24:=[cairo]
@@ -76,13 +76,15 @@ if [[ ${PV} = 9999 ]]; then
 		doc? ( >=dev-util/gtk-doc-1.13 )"
 fi
 
-ELTCONF="--portage"
-
 # Needs dogtail and pyspi from http://fedorahosted.org/dogtail/
 # Releases: http://people.redhat.com/zcerza/dogtail/releases/
 RESTRICT="test"
 
 src_prepare() {
+	# Fix build with non-bash /bin/sh, see bug #526410
+	epatch "${FILESDIR}"/${PN}-3.14.0-non-bash-support.patch
+
+	eautoreconf
 	gnome2_src_prepare
 
 	# Do not depend on adwaita-icon-theme, bug #326855, #391859
@@ -112,5 +114,6 @@ src_configure() {
 		$(use_enable t1lib) \
 		$(use_enable tiff) \
 		$(use_enable xps) \
+		BROWSER_PLUGIN_DIR="${EPREFIX}"/usr/$(get_libdir)/nsbrowser/plugins \
 		${myconf}
 }
