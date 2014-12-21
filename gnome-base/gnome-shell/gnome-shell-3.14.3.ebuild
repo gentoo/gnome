@@ -43,7 +43,7 @@ COMMON_DEPEND="
 	>=sys-auth/polkit-0.100[introspection]
 	>=x11-libs/libXfixes-5.0
 	x11-libs/libXtst
-	>=x11-wm/mutter-3.14.2[introspection]
+	>=x11-wm/mutter-3.14.3[introspection]
 	>=x11-libs/startup-notification-0.11
 
 	${PYTHON_DEPS}
@@ -127,9 +127,6 @@ src_prepare() {
 	# Fix silent bluetooth linking failure with ld.gold, bug #503952
 	# https://bugzilla.gnome.org/show_bug.cgi?id=726435
 	epatch "${FILESDIR}/${PN}-3.14.0-bluetooth-gold.patch"
-
-	# Fix build with non-bash /bin/sh, see bug #526408
-	epatch "${FILESDIR}/${PN}-3.14.2-build-Workaround-quoting-issues-in-configure-script.patch"
 
 	epatch_user
 
