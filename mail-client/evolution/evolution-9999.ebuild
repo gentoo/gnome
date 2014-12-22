@@ -6,7 +6,7 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
-inherit eutils flag-o-matic readme.gentoo gnome2 #autotools
+inherit eutils flag-o-matic readme.gentoo gnome2
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -38,7 +38,7 @@ COMMON_DEPEND="
 	>=app-crypt/gcr-3.4
 	>=app-text/enchant-1.1.7
 	>=dev-libs/dbus-glib-0.6
-	>=dev-libs/glib-2.36:2
+	>=dev-libs/glib-2.40:2
 	>=dev-libs/libgdata-0.10:=
 	>=dev-libs/libxml2-2.7.3:2
 	>=gnome-base/gnome-desktop-2.91.3:3=
@@ -114,8 +114,6 @@ src_prepare() {
 	# Fix relink issues in src_install
 	ELTCONF="--reverse-deps"
 
-	#eautoreconf # See https://bugzilla.gnome.org/701904
-
 	gnome2_src_prepare
 
 	# Fix compilation flags crazyness, upstream bug #653157
@@ -163,7 +161,6 @@ src_install() {
 	echo PRELINK_PATH_MASK=/usr/bin/evolution > ${T}/99${PN}
 	doenvd "${T}"/99${PN}
 
-	gnome2_src_install
 	readme.gentoo_create_doc
 }
 
