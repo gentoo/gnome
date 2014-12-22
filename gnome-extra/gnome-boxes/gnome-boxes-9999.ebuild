@@ -77,11 +77,13 @@ If you have an AMD Processor, run:
 # modprobe kvm-amd"
 
 pkg_pretend() {
-	linux_config_exists
+	linux-info_get_any_version
 
-	if ! { linux_chkconfig_present KVM_AMD || \
-		linux_chkconfig_present KVM_INTEL; }; then
-		ewarn "You need KVM support in your kernel to use GNOME Boxes!"
+	if linux_config_exists; then
+		if ! { linux_chkconfig_present KVM_AMD || \
+			linux_chkconfig_present KVM_INTEL; }; then
+			ewarn "You need KVM support in your kernel to use GNOME Boxes!"
+		fi
 	fi
 }
 
