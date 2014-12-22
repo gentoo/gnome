@@ -4,7 +4,7 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
-PYTHON_COMPAT=( python{2_7,3_2,3_3} )
+PYTHON_COMPAT=( python{2_7,3_2,3_3,3_4} )
 
 inherit eutils gnome2 python-r1
 if [[ ${PV} = 9999 ]]; then
@@ -25,9 +25,6 @@ else
 fi
 IUSE="" # test
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
-
-# test suite is obsolete (at-spi-1.x era) and unpassable
-RESTRICT="test"
 
 COMMON_DEPEND="
 	>=dev-libs/atk-2.11.2
