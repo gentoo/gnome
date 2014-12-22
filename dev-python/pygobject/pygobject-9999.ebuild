@@ -58,7 +58,8 @@ DEPEND="${COMMON_DEPEND}
 # slot 3 will collide with them.
 RDEPEND="${COMMON_DEPEND}
 	!<dev-python/pygtk-2.13
-	!<dev-python/pygobject-2.28.6-r50:2[introspection]"
+	!<dev-python/pygobject-2.28.6-r50:2[introspection]
+"
 
 src_prepare() {
 	gnome2_src_prepare
