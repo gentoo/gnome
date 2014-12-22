@@ -4,9 +4,8 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
-# python3 not really supported, bug #478678
-PYTHON_COMPAT=( python2_7 pypy pypy2_0 )
-VALA_MIN_API_VERSION="0.18"
+PYTHON_COMPAT=( python2_7 python3_4 pypy pypy2_0 )
+VALA_MIN_API_VERSION="0.22" # upstream bug #741557
 VALA_USE_DEPEND="vapigen"
 
 inherit db-use flag-o-matic gnome2 python-any-r1 vala virtualx
@@ -15,7 +14,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="Evolution groupware backend"
-HOMEPAGE="http://projects.gnome.org/evolution/arch.shtml"
+HOMEPAGE="https://wiki.gnome.org/Apps/Evolution"
 
 # Note: explicitly "|| ( LGPL-2 LGPL-3 )", not "LGPL-2+".
 LICENSE="|| ( LGPL-2 LGPL-3 ) BSD Sleepycat"
@@ -62,6 +61,7 @@ RDEPEND="
 "
 DEPEND="${RDEPEND}
 	${PYTHON_DEPS}
+	dev-util/gdbus-codegen
 	dev-util/gperf
 	>=dev-util/gtk-doc-am-1.14
 	>=dev-util/intltool-0.35.5
