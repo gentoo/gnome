@@ -58,6 +58,7 @@ src_configure() {
 	# --enable-udev is only for rules.d file install
 	gnome2_src_configure \
 		--disable-static \
+		$(use_enable doc gtk-doc) \
 		$(use_enable test tests) \
 		$(use_enable introspection) \
 		$(use_enable vala) \
