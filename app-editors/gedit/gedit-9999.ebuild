@@ -112,6 +112,9 @@ src_test() {
 }
 
 src_install() {
+	local args=()
 	# manually set pyoverridesdir due to bug #524018 and AM_PATH_PYTHON limitations
-	gnome2_src_install pyoverridesdir="$(python_get_sitedir)/gi/overrides"
+	use python && args+=( pyoverridesdir="$(python_get_sitedir)/gi/overrides" )
+
+	gnome2_src_install "${args[@]}"
 }
