@@ -5,7 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="no"
 PYTHON_COMPAT=( python2_7 python3_4 pypy pypy2_0 )
-VALA_MIN_API_VERSION="0.22" # upstream bug #741557
+VALA_MIN_API_VERSION="0.22"
 VALA_USE_DEPEND="vapigen"
 
 inherit db-use flag-o-matic gnome2 python-any-r1 vala virtualx
