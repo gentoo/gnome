@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -27,7 +27,7 @@ fi
 
 # We need a graphical pinentry frontend to be able to ask for the GPG
 # password from inside evolution, bug 160302
-PINENTRY_DEPEND="|| ( app-crypt/pinentry[gtk] app-crypt/pinentry-qt app-crypt/pinentry[qt4] )"
+PINENTRY_DEPEND="|| ( app-crypt/pinentry[gtk] app-crypt/pinentry[qt4] )"
 
 # glade-3 support is for maintainers only per configure.ac
 # pst is not mature enough and changes API/ABI frequently
@@ -61,7 +61,7 @@ COMMON_DEPEND="
 	x11-themes/gnome-icon-theme
 
 	crypt? ( || (
-		( >=app-crypt/gnupg-2.0.1-r2 x11-libs/libcryptui ${PINENTRY_DEPEND} )
+		( >=app-crypt/gnupg-2.0.1-r2 ${PINENTRY_DEPEND} )
 		=app-crypt/gnupg-1.4* ) )
 	map? (
 		>=media-libs/libchamplain-0.12:0.12[gtk]
