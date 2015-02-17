@@ -116,9 +116,6 @@ src_prepare() {
 
 	gnome2_src_prepare
 
-	# Fix compilation flags crazyness, upstream bug #653157
-	sed -e 's/\(AM_CPPFLAGS="\)$WARNING_FLAGS/\1/' \
-		-i configure || die "CPPFLAGS sed failed"
 }
 
 src_configure() {
@@ -132,15 +129,15 @@ src_configure() {
 		--disable-installed-tests \
 		--disable-pst-import \
 		--enable-canberra \
-		$(use_enable bogofilter) \
 		$(use_enable crypt libcryptui) \
 		$(use_enable highlight text-highlight) \
 		$(use_enable map contact-maps) \
-		$(use_enable spamassassin) \
 		$(use_enable spell gtkspell) \
 		$(use_enable ssl nss) \
 		$(use_enable ssl smime) \
+		$(use_with bogofilter) \
 		$(use_with ldap openldap) \
+		$(use_with spamassassin) \
 		$(usex ssl --enable-nss=yes "--without-nspr-libs
 			--without-nspr-includes
 			--without-nss-libs
