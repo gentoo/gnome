@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -22,7 +22,9 @@ if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
+	#need x11-libs/libcryptui keyworded
+	#KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
+	KEYWORDS="~amd64 ~x86 ~x86-fbsd"
 fi
 
 # We need a graphical pinentry frontend to be able to ask for the GPG
@@ -60,9 +62,11 @@ COMMON_DEPEND="
 	x11-libs/libICE
 	x11-themes/gnome-icon-theme
 
-	crypt? ( || (
-		( >=app-crypt/gnupg-2.0.1-r2 ${PINENTRY_DEPEND} )
-		=app-crypt/gnupg-1.4* ) )
+	crypt? (
+		x11-libs/libcryptui:=
+		|| (
+			( >=app-crypt/gnupg-2.0.1-r2 ${PINENTRY_DEPEND} )
+			=app-crypt/gnupg-1.4* ) )
 	map? (
 		>=media-libs/libchamplain-0.12:0.12[gtk]
 		>=media-libs/clutter-1.0.0:1.0
