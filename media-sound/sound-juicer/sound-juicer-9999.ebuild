@@ -69,7 +69,7 @@ src_prepare() {
 }
 
 src_configure() {
-	gnome2_src_configure ITSTOOLS="$(type -P true)"
+	gnome2_src_configure ITSTOOL="$(type -P true)"
 }
 
 pkg_postinst() {
