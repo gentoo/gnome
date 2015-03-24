@@ -109,6 +109,7 @@ src_configure() {
 		$(use_enable introspection) \
 		$(use_enable ipv6) \
 		$(use_with kerberos krb5 "${EPREFIX}"/usr) \
+		$(use_with kerberos krb5-libs "${EPREFIX}"/usr/$(get_libdir)) \
 		$(use_with ldap openldap) \
 		$(use_enable vala vala-bindings) \
 		$(use_enable weather) \
