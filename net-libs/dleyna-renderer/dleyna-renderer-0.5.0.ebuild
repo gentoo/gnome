@@ -15,7 +15,7 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
 
-RDEPEND="
+COMMON_DEPEND="
 	>=dev-libs/glib-2.28:2
 	>=media-libs/gupnp-dlna-0.9.4:2.0
 	>=net-libs/dleyna-core-0.5
@@ -24,7 +24,10 @@ RDEPEND="
 	>=net-libs/gupnp-av-0.11.5
 	>=net-libs/libsoup-2.28.2:2.4
 "
-DEPEND="${DEPEND}
+RDEPEND="${COMMON_DEPEND}
+	net-libs/dleyna-connector-dbus
+"
+DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 "
 
