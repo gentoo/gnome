@@ -45,7 +45,7 @@ RDEPEND="
 	>=dev-libs/nss-3.9:=
 	>=sys-libs/db-4:=
 
-	dev-libs/icu
+	dev-libs/icu:=
 	sys-libs/zlib:=
 	virtual/libiconv
 
