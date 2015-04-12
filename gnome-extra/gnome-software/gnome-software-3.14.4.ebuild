@@ -13,7 +13,7 @@ HOMEPAGE="http://wiki.gnome.org/Apps/Software"
 LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="" # test
+IUSE="test"
 
 RDEPEND="
 	>=app-admin/packagekit-base-1
@@ -26,11 +26,14 @@ RDEPEND="
 	>=x11-libs/gtk+-3.14.1:3
 "
 DEPEND="${DEPEND}
+	app-text/docbook-xml-dtd:4.2
 	dev-libs/libxslt
 	>=dev-util/intltool-0.35
 	virtual/pkgconfig
 "
-#	test? ( dev-util/valgrind )
+#	test? (
+#		dev-python/dogtail
+#		dev-util/valgrind )
 
 src_prepare() {
 	# valgrind fails with SIGTRAP
@@ -44,6 +47,7 @@ src_configure() {
 	gnome2_src_configure \
 		--enable-man \
 		--disable-dogtail
+#		$(use_enable test dogtail)
 }
 
 src_test() {
