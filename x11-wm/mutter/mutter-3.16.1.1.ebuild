@@ -1,14 +1,11 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/x11-wm/mutter/mutter-3.14.4.ebuild,v 1.1 2015/03/28 09:21:51 pacho Exp $
 
 EAPI="5"
 GCONF_DEBUG="yes"
 
 inherit eutils gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="GNOME 3 compositing window manager based on Clutter"
 HOMEPAGE="http://git.gnome.org/browse/mutter/"
@@ -16,25 +13,23 @@ HOMEPAGE="http://git.gnome.org/browse/mutter/"
 LICENSE="GPL-2+"
 SLOT="0"
 IUSE="+introspection +kms test wayland"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
+# libXi-1.7.4 or newer needed per:
+# https://bugzilla.gnome.org/show_bug.cgi?id=738944
 COMMON_DEPEND="
 	>=x11-libs/pango-1.2[X,introspection?]
 	>=x11-libs/cairo-1.10[X]
 	>=x11-libs/gtk+-3.9.11:3[X,introspection?]
-	>=dev-libs/glib-2.36.0:2
-	>=media-libs/clutter-1.19.5:1.0[introspection?]
+	>=dev-libs/glib-2.36.0:2[dbus]
+	>=media-libs/clutter-1.21.3:1.0[introspection?]
 	>=media-libs/cogl-1.17.1:1.0=[introspection?]
 	>=media-libs/libcanberra-0.26[gtk3]
 	>=x11-libs/startup-notification-0.7
 	>=x11-libs/libXcomposite-0.2
-	>=gnome-base/gsettings-desktop-schemas-3.7.3[introspection?]
+	>=gnome-base/gsettings-desktop-schemas-3.15.92[introspection?]
 	gnome-base/gnome-desktop:3=
-	>sys-power/upower-0.99
+	>sys-power/upower-0.99:=
 
 	x11-libs/libICE
 	x11-libs/libSM
@@ -44,7 +39,7 @@ COMMON_DEPEND="
 	x11-libs/libXdamage
 	x11-libs/libXext
 	x11-libs/libXfixes
-	>=x11-libs/libXi-1.7
+	>=x11-libs/libXi-1.7.4
 	x11-libs/libXinerama
 	x11-libs/libXrandr
 	x11-libs/libXrender
@@ -55,10 +50,10 @@ COMMON_DEPEND="
 
 	gnome-extra/zenity
 
-	introspection? ( >=dev-libs/gobject-introspection-0.9.5 )
+	introspection? ( >=dev-libs/gobject-introspection-1.42:= )
 	kms? (
 		dev-libs/libinput
-		media-libs/clutter[egl]
+		>=media-libs/clutter-1.20[egl]
 		media-libs/cogl:1.0=[kms]
 		>=media-libs/mesa-10.3[gbm]
 		sys-apps/systemd
@@ -66,7 +61,7 @@ COMMON_DEPEND="
 		x11-libs/libdrm:= )
 	wayland? (
 		>=dev-libs/wayland-1.5.90
-		media-libs/clutter[wayland]
+		>=media-libs/clutter-1.20[wayland]
 		x11-base/xorg-server[wayland] )
 "
 DEPEND="${COMMON_DEPEND}
