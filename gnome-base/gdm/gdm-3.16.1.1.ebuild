@@ -1,15 +1,12 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/gnome-base/gdm/gdm-3.14.1-r1.ebuild,v 1.3 2015/03/15 13:22:01 pacho Exp $
 
 EAPI="5"
 GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
 inherit autotools eutils gnome2 pam readme.gentoo systemd user
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="GNOME Display Manager for managing graphical display servers and user logins"
 HOMEPAGE="https://wiki.gnome.org/Projects/GDM"
@@ -26,11 +23,7 @@ LICENSE="
 SLOT="0"
 IUSE="accessibility audit branding fprint +introspection ipv6 plymouth selinux smartcard +systemd tcpd test wayland xinerama"
 REQUIRED_USE="wayland? ( systemd )"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86"
 
 # NOTE: x11-base/xorg-server dep is for X_SERVER_PATH etc, bug #295686
 # nspr used by smartcard extension
@@ -104,11 +97,6 @@ DEPEND="${COMMON_DEPEND}
 	xinerama? ( x11-proto/xineramaproto )
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools"
-fi
-
 DOC_CONTENTS="
 	To make GDM start at boot, run:\n
 	# systemctl enable gdm.service\n
@@ -151,18 +139,13 @@ src_prepare() {
 	# Show logo when branding is enabled
 	use branding && epatch "${FILESDIR}/${PN}-3.8.4-logo.patch"
 
-	if [[ ${PV} != 9999 ]]; then
-		eautoreconf
-	fi
+	eautoreconf
 
 	gnome2_src_prepare
 }
 
 src_configure() {
-	local myconf=""
-
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
-
+	local myconf
 	# PAM is the only auth scheme supported
 	# even though configure lists shadow and crypt
 	# they don't have any corresponding code.
@@ -193,6 +176,7 @@ src_configure() {
 		$(use_with tcpd tcp-wrappers) \
 		$(use_enable wayland wayland-support) \
 		$(use_with xinerama) \
+		ITSTOOL=$(type -P true) \
 		${myconf}
 }
 
@@ -203,9 +187,9 @@ src_install() {
 		rm "${ED}"/usr/share/gdm/greeter/autostart/orca-autostart.desktop || die
 	fi
 
-	insinto /etc/X11/xinit/xinitrc.d
-	newins "${FILESDIR}/49-keychain-r1" 49-keychain
-	newins "${FILESDIR}/50-ssh-agent-r1" 50-ssh-agent
+	exeinto /etc/X11/xinit/xinitrc.d
+	newexe "${FILESDIR}/49-keychain-r1" 49-keychain
+	newexe "${FILESDIR}/50-ssh-agent-r1" 50-ssh-agent
 
 	# gdm user's home directory
 	keepdir /var/lib/gdm
