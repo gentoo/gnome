@@ -110,7 +110,10 @@ RDEPEND="${COMMON_DEPEND}
 		!app-emulation/emul-linux-x86-gtklibs[-abi_x86_32(-)]
 	)
 "
-PDEPEND="vim-syntax? ( app-vim/gtk-syntax )"
+# librsvg for svg icons (PDEPEND to avoid circular dep), bug #547710
+PDEPEND="gnome-base/librsvg[${MULTILIB_USEDEP}]
+	vim-syntax? ( app-vim/gtk-syntax )
+"
 
 MULTILIB_CHOST_TOOLS=(
 	/usr/bin/gtk-query-immodules-3.0
