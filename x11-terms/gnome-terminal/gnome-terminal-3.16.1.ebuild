@@ -1,15 +1,12 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/x11-terms/gnome-terminal/gnome-terminal-3.14.3.ebuild,v 1.1 2015/03/28 09:38:20 pacho Exp $
 
 EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
 inherit gnome2 readme.gentoo
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="The Gnome Terminal"
 HOMEPAGE="https://wiki.gnome.org/Apps/Terminal/"
@@ -17,11 +14,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Terminal/"
 LICENSE="GPL-3+"
 SLOT="0"
 IUSE="debug +gnome-shell +nautilus"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux"
 
 # FIXME: automagic dependency on gtk+[X]
 RDEPEND="
@@ -51,22 +44,15 @@ DOC_CONTENTS="To get previous working directory inherited in new opened
 	. /etc/profile.d/vte.sh"
 
 src_configure() {
-	local myconf=""
-
-	if [[ ${PV} != 9999 ]]; then
-		myconf="${myconf}
-			ITSTOOL=$(type -P true)
-			XMLLINT=$(type -P true)
-		"
-	fi
-
 	gnome2_src_configure \
 		--disable-static \
-		--enable-migration \
+		--disable-migration \
 		$(use_enable debug) \
 		$(use_enable gnome-shell search-provider) \
 		$(use_with nautilus nautilus-extension) \
-		${myconf}
+		VALAC=$(type -P true)
+		ITSTOOL=$(type -P true) \
+		XMLLINT=$(type -P true)
 }
 
 src_install() {
