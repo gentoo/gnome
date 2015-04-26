@@ -1,16 +1,12 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/x11-libs/vte/vte-0.38.3.ebuild,v 1.6 2015/03/29 11:19:29 jer Exp $
 
 EAPI="5"
-GCONF_DEBUG="yes"
+GCONF_DEBUG="no"
 VALA_USE_DEPEND="vapigen"
-VALA_MIN_API_VERSION="0.18"
 
 inherit eutils gnome2 vala
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Library providing a virtual terminal emulator widget"
 HOMEPAGE="https://wiki.gnome.org/action/show/Apps/Terminal/VTE"
@@ -18,14 +14,9 @@ HOMEPAGE="https://wiki.gnome.org/action/show/Apps/Terminal/VTE"
 LICENSE="LGPL-2+"
 SLOT="2.91"
 IUSE="+crypt debug glade +introspection vala"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-	IUSE="${IUSE} doc"
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~x64-solaris ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~x64-solaris ~x86-solaris"
 
-PDEPEND="x11-libs/gnome-pty-helper"
+PDEPEND=">=x11-libs/gnome-pty-helper-${PV}"
 RDEPEND="
 	>=dev-libs/glib-2.40:2
 	>=x11-libs/gtk+-3.8:3[introspection?]
@@ -48,13 +39,9 @@ DEPEND="${RDEPEND}
 
 	crypt?  ( >=net-libs/gnutls-3.2.0 )
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		dev-libs/libxml2
-		doc? ( >=dev-util/gtk-doc-1.13 )
-	"
-fi
+RDEPEND="${RDEPEND}
+	!x11-libs/vte:2.90[glade]
+"
 
 src_prepare() {
 	vala_src_prepare
