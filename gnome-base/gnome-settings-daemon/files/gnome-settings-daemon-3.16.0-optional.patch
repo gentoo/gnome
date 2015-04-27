@@ -1,6 +1,6 @@
-From b9515b8ef35915fd1a9721e2eb6ca4e1272d0f47 Mon Sep 17 00:00:00 2001
-From: Sobhan Mohammadpour <sobhanmohammadpour1@yahoo.fr>
-Date: Tue, 10 Dec 2013 00:27:27 +0100
+From 8b526c757f0e977eeda9285762e137deba0a31f4 Mon Sep 17 00:00:00 2001
+From: Ole Reifschneider <mail@ole-reifschneider.de>
+Date: Sat, 11 Apr 2015 23:10:21 +0200
 Subject: [PATCH] Make colord and wacom support optional
 
 ---
@@ -9,10 +9,10 @@ Subject: [PATCH] Make colord and wacom support optional
  2 files changed, 35 insertions(+), 7 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index c42ea8b..26ccd36 100644
+index 50a6bb1..a42ec20 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -225,7 +225,20 @@ dnl ---------------------------------------------------------------------------
+@@ -236,7 +236,20 @@ dnl ---------------------------------------------------------------------------
  dnl - color
  dnl ---------------------------------------------------------------------------
  
@@ -34,7 +34,7 @@ index c42ea8b..26ccd36 100644
  
  dnl ---------------------------------------------------------------------------
  dnl - datetime
-@@ -256,15 +269,25 @@ case $host_os in
+@@ -267,15 +280,25 @@ case $host_os in
      if test "$host_cpu" = s390 -o "$host_cpu" = s390x; then
        have_wacom=no
      else
@@ -66,7 +66,7 @@ index c42ea8b..26ccd36 100644
      ;;
    *)
 diff --git a/plugins/Makefile.am b/plugins/Makefile.am
-index 7bb01f0..7cc3655 100644
+index 7365953..779b5d9 100644
 --- a/plugins/Makefile.am
 +++ b/plugins/Makefile.am
 @@ -4,7 +4,6 @@ enabled_plugins =	\
@@ -74,10 +74,10 @@ index 7bb01f0..7cc3655 100644
  	a11y-settings	\
  	clipboard	\
 -	color		\
- 	cursor		\
  	datetime	\
  	dummy		\
-@@ -22,6 +21,12 @@ enabled_plugins =	\
+ 	power		\
+@@ -21,6 +20,12 @@ enabled_plugins =	\
  
  disabled_plugins = $(NULL)
  
@@ -91,5 +91,5 @@ index 7bb01f0..7cc3655 100644
  enabled_plugins += smartcard
  else
 -- 
-2.1.2
+2.0.5
 
