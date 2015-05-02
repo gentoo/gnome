@@ -18,7 +18,7 @@ IUSE="test"
 RDEPEND="
 	>=app-admin/packagekit-base-1
 	dev-db/sqlite:3
-	>=dev-libs/appstream-glib-0.3.2
+	>=dev-libs/appstream-glib-0.3.4
 	>=dev-libs/glib-2.39.1:2
 	gnome-base/gnome-desktop:3
 	>=gnome-base/gsettings-desktop-schemas-3.11.5
@@ -30,10 +30,9 @@ DEPEND="${DEPEND}
 	dev-libs/libxslt
 	>=dev-util/intltool-0.35
 	virtual/pkgconfig
+	test? ( dev-python/dogtail )
 "
-#	test? (
-#		dev-python/dogtail
-#		dev-util/valgrind )
+# test? ( dev-util/valgrind )
 
 src_prepare() {
 	# valgrind fails with SIGTRAP
@@ -46,8 +45,7 @@ src_prepare() {
 src_configure() {
 	gnome2_src_configure \
 		--enable-man \
-		--disable-dogtail
-#		$(use_enable test dogtail)
+		$(use_enable test dogtail)
 }
 
 src_test() {
