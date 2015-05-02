@@ -17,13 +17,13 @@ IUSE=""
 
 RDEPEND="
 	dev-libs/gjs
-	>=dev-libs/glib-2.41:2
+	>=dev-libs/glib-2.43.4:2
 	>=dev-libs/gobject-introspection-0.9.6
 	net-libs/telepathy-glib[introspection]
-	>=x11-libs/gtk+-3.13.4:3[introspection]
+	>=x11-libs/gtk+-3.15.6:3[introspection]
 "
 DEPEND="${RDEPEND}
-	dev-util/appdata-tools
+	dev-libs/appstream-glib
 	>=dev-util/intltool-0.50
 	virtual/pkgconfig
 "
