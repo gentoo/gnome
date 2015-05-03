@@ -20,7 +20,7 @@ COMMON_DEPEND="
 	dev-libs/gjs
 	dev-libs/glib:2
 	x11-libs/gdk-pixbuf:2
-	>=x11-libs/gtk+-3.9.4:3[introspection]
+	>=x11-libs/gtk+-3.12:3[introspection]
 "
 RDEPEND="${COMMON_DEPEND}
 	media-libs/gstreamer:1.0[introspection]
