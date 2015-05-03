@@ -16,9 +16,9 @@ KEYWORDS="~amd64"
 IUSE=""
 
 RDEPEND="
-	>=dev-libs/glib-2.39.90:2
+	>=dev-libs/glib-2.43.90:2
 	sys-apps/systemd
-	>=x11-libs/gtk+-3.13.4:3
+	>=x11-libs/gtk+-3.15.7:3
 "
 DEPEND="${RDEPEND}
 	~app-text/docbook-xml-dtd-4.3
