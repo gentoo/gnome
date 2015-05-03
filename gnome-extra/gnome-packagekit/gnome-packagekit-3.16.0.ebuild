@@ -20,7 +20,7 @@ IUSE="systemd test udev"
 RDEPEND="
 	>=dev-libs/glib-2.32:2
 	x11-libs/gdk-pixbuf:2
-	>=x11-libs/gtk+-2.91.0:3
+	>=x11-libs/gtk+-3.15.3:3
 	>=x11-libs/libnotify-0.7.0:=
 	x11-libs/pango
 	>=dev-libs/dbus-glib-0.73
@@ -39,6 +39,7 @@ RDEPEND="
 "
 DEPEND="${RDEPEND}
 	app-text/docbook-sgml-utils
+	dev-libs/appstream-glib
 	>=dev-util/gtk-doc-am-1.9
 	>=dev-util/intltool-0.35
 	dev-libs/libxslt
