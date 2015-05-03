@@ -1,0 +1,42 @@
+From fa38519e8b0785199a1181e5cc7287190a29fc44 Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Sun, 3 May 2015 17:54:15 +0200
+Subject: [PATCH 07/12] Simplify _get_metadata
+
+---
+ backends/portage/portageBackend.py | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
+
+diff --git a/backends/portage/portageBackend.py b/backends/portage/portageBackend.py
+index 773256a..fc2d45a 100755
+--- a/backends/portage/portageBackend.py
++++ b/backends/portage/portageBackend.py
+@@ -497,19 +497,15 @@ class PackageKitPortageMixin(object):
+         If in_dict is True, metadata is returned in a dict object.
+         If add_cache_keys is True, cached keys are added to keys in parameter.
+         '''
+-        if self._is_installed(cpv):
+-            aux_get = self.pvar.vardb.aux_get
+-            if add_cache_keys:
+-                keys.extend(list(self.pvar.vardb._aux_cache_keys))
+-        else:
+-            aux_get = self.pvar.portdb.aux_get
+-            if add_cache_keys:
+-                keys.extend(list(self.pvar.portdb._aux_cache_keys))
++        db = self.pvar.vardb if self._is_installed(cpv) else self.pvar.portdb
++
++        if add_cache_keys:
++            keys.extend(list(db._aux_cache_keys))
+ 
+         if in_dict:
+-            return dict(izip(keys, aux_get(cpv, keys)))
++            return dict(izip(keys, db.aux_get(cpv, keys)))
+         else:
+-            return aux_get(cpv, keys)
++            return db.aux_get(cpv, keys)
+ 
+     def _get_size(self, cpv):
+         '''
+-- 
+2.3.6
+

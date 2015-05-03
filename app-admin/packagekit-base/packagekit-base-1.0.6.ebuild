@@ -18,13 +18,21 @@ HOMEPAGE="http://www.packagekit.org/"
 SRC_URI="http://www.freedesktop.org/software/${MY_PN}/releases/${MY_P}.tar.xz"
 
 LICENSE="GPL-2"
-SLOT="0"
+SLOT="0/18"
 KEYWORDS="~alpha ~amd64 ~arm ~mips ~ppc ~ppc64 ~x86"
-IUSE="bash-completion connman cron command-not-found +introspection networkmanager nsplugin entropy systemd test"
+IUSE="connman cron command-not-found +introspection networkmanager nsplugin entropy systemd test"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
+# While not strictly needed, consolekit is the alternative to systemd-login
+# to get current session's user.
 CDEPEND="
-	bash-completion? ( >=app-shells/bash-completion-2.0 )
+	>=app-shells/bash-completion-2
+	dev-db/sqlite:3
+	>=dev-libs/dbus-glib-0.74
+	>=dev-libs/glib-2.32.0:2[${PYTHON_USEDEP}]
+	>=sys-auth/polkit-0.98
+	>=sys-apps/dbus-1.3.0
+	${PYTHON_DEPS}
 	connman? ( net-misc/connman )
 	introspection? ( >=dev-libs/gobject-introspection-0.9.9[${PYTHON_USEDEP}] )
 	networkmanager? ( >=net-misc/networkmanager-0.6.4 )
@@ -34,26 +42,21 @@ CDEPEND="
 		>=x11-libs/gtk+-2.14.0:2
 		x11-libs/pango
 	)
-	dev-db/sqlite:3
-	>=dev-libs/dbus-glib-0.74
-	>=dev-libs/glib-2.32.0:2[${PYTHON_USEDEP}]
-	>=sys-auth/polkit-0.98
-	>=sys-apps/dbus-1.3.0
-	${PYTHON_DEPS}
+	systemd? ( >=sys-apps/systemd-204 )
 "
 DEPEND="${CDEPEND}
-	dev-util/gtk-doc-am
-	nsplugin? ( >=net-misc/npapi-sdk-0.27 )
-	systemd? ( >=sys-apps/systemd-204 )
 	dev-libs/libxslt[${PYTHON_USEDEP}]
+	>=dev-util/gtk-doc-am-1.11
 	>=dev-util/intltool-0.35.0
-	virtual/pkgconfig
 	sys-devel/gettext
+	virtual/pkgconfig
+	nsplugin? ( >=net-misc/npapi-sdk-0.27 )
 "
 RDEPEND="${CDEPEND}
-	entropy? ( >=sys-apps/entropy-234[${PYTHON_USEDEP}] )
-	>=app-portage/layman-1.2.3[${PYTHON_USEDEP}]
+	>=app-portage/layman-2[${PYTHON_USEDEP}]
 	>=sys-apps/portage-2.2[${PYTHON_USEDEP}]
+	entropy? ( >=sys-apps/entropy-234[${PYTHON_USEDEP}] )
+	!systemd? ( sys-auth/consolekit ) 
 "
 
 S="${WORKDIR}/${MY_P}"
@@ -62,7 +65,8 @@ RESTRICT="test"
 
 src_prepare() {
 	# Fix python backend detection
-	epatch "${FILESDIR}"/${PN}-1.0.3-configure.patch
+	# Make portage backend work with newer layman/portage
+	epatch "${FILESDIR}"/*
 
 	eautoreconf
 }
@@ -74,11 +78,11 @@ src_configure() {
 		--disable-gtk-module \
 		--disable-schemas-compile \
 		--disable-static \
+		--enable-bash-completion \
 		--enable-man-pages \
 		--enable-nls \
 		--enable-portage \
 		--localstatedir=/var \
-		$(use_enable bash-completion) \
 		$(use_enable command-not-found) \
 		$(use_enable connman) \
 		$(use_enable cron) \
@@ -87,9 +91,9 @@ src_configure() {
 		$(use_enable networkmanager) \
 		$(use_enable nsplugin browser-plugin) \
 		$(use_enable systemd) \
-		$(use_enable test local) \
 		$(use_enable test daemon-tests) \
 		$(systemd_with_unitdir)
+		#$(use_enable test local)
 }
 
 src_install() {

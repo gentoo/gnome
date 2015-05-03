@@ -1,0 +1,72 @@
+From 6d62155472c3ae1f85a756518e9014425354511d Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Sun, 3 May 2015 12:08:43 +0200
+Subject: [PATCH 02/12] Sort imports according to PEP8
+
+---
+ backends/portage/portageBackend.py | 39 ++++++++++++++++++--------------------
+ 1 file changed, 18 insertions(+), 21 deletions(-)
+
+diff --git a/backends/portage/portageBackend.py b/backends/portage/portageBackend.py
+index 82bf6cd..f403986 100755
+--- a/backends/portage/portageBackend.py
++++ b/backends/portage/portageBackend.py
+@@ -22,37 +22,34 @@
+ # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ 
+ import os
++import re
++import signal
++import sys
+ import traceback
++from itertools import izip
+ 
+-
++# layman imports
++import layman.config
++import layman.db
+ # packagekit imports
++from packagekit.backend import (
++    PackageKitBaseBackend,
++    get_package_id,
++    split_package_id,
++)
+ from packagekit.enums import *
+-
+-from packagekit.backend import PackageKitBaseBackend, \
+-    get_package_id, split_package_id
+-from packagekit.progress import *
+ from packagekit.package import PackagekitPackage
+-
++from packagekit.progress import *
+ # portage imports
+-import portage
+-import portage.versions
+-import portage.dep
++import _emerge.AtomArg
+ import _emerge.actions
+-import _emerge.stdout_spinner
+ import _emerge.create_depgraph_params
+-import _emerge.AtomArg
++import _emerge.stdout_spinner
++import portage
++import portage.dep
++import portage.versions
+ from portage.exception import InvalidAtom
+ 
+-# layman imports
+-import layman.db
+-import layman.config
+-
+-# misc imports
+-import sys
+-import signal
+-import re
+-from itertools import izip
+-
+ # NOTES:
+ #
+ # Package IDs description:
+-- 
+2.3.6
+

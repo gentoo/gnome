@@ -1,0 +1,25 @@
+From ff0e2a1fe4f32def11b74e9eb7ffa7989e3061d8 Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Sun, 3 May 2015 18:37:24 +0200
+Subject: [PATCH 01/12] Fix typo python backend detection
+
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 655507f..844c454 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -454,7 +454,7 @@ if test x$enable_hif = xyes; then
+ fi
+ 
+ have_python_backend="no"
+-if test x$enable_entropy = xyes -o x$enable_pisi = xyes -o $enable_portage = xyes; then
++if test x$enable_entropy = xyes -o x$enable_pisi = xyes -o x$enable_portage = xyes; then
+ 	have_python_backend="yes"
+ fi
+ AM_CONDITIONAL(HAVE_PYTHON_BACKEND, test x$have_python_backend = xyes)
+-- 
+2.3.6
+
