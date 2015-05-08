@@ -6,20 +6,13 @@ EAPI="5"
 GCONF_DEBUG="no"
 
 inherit gnome2 virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Color profile manager for the GNOME desktop"
 HOMEPAGE="https://git.gnome.org/browse/gnome-color-manager"
 
 LICENSE="GPL-2+"
 SLOT="0"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86"
-fi
+KEYWORDS="~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86"
 IUSE="packagekit raw"
 
 # Need gtk+-3.3.8 for https://bugzilla.gnome.org/show_bug.cgi?id=673331
@@ -50,15 +43,7 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools"
-fi
-
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
-
 	# Always enable tests since they are check_PROGRAMS anyway
 	# appstream does not want to be relax by default !
 	gnome2_src_configure \
@@ -67,7 +52,7 @@ src_configure() {
 		$(use_enable packagekit) \
 		$(use_enable raw exiv) \
 		APPSTREAM_UTIL=$(type -P true) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
 
 src_test() {
