@@ -6,9 +6,6 @@ EAPI="5"
 GCONF_DEBUG="no"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Font viewer for GNOME"
 HOMEPAGE="https://git.gnome.org/browse/gnome-font-viewer"
@@ -16,11 +13,7 @@ HOMEPAGE="https://git.gnome.org/browse/gnome-font-viewer"
 LICENSE="GPL-2+ LGPL-2.1+"
 SLOT="0"
 IUSE=""
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.35.1:2
