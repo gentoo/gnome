@@ -10,9 +10,6 @@ VALA_MIN_API_VERSION="0.26"
 VALA_USE_DEPEND="vapigen"
 
 inherit eutils gnome2 multilib python-r1 vala virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="A text editor for the GNOME desktop"
 HOMEPAGE="https://wiki.gnome.org/Apps/Gedit"
@@ -27,12 +24,8 @@ REQUIRED_USE="
 	python? ( introspection )
 	python? ( ^^ ( $(python_gen_useflags '*') ) )
 "
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux"
-fi
+
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux"
 
 # X libs are not needed for OSX (aqua)
 COMMON_DEPEND="
@@ -73,12 +66,6 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 "
 # yelp-tools, gnome-common needed to eautoreconf
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1 )
-		app-text/yelp-tools"
-fi
 
 pkg_setup() {
 	use python && [[ ${MERGE_TYPE} != binary ]] && python_setup
