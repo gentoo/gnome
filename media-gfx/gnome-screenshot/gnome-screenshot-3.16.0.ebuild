@@ -6,9 +6,6 @@ EAPI="5"
 GCONF_DEBUG="no"
 
 inherit gnome2 readme.gentoo
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Screenshot utility for GNOME"
 HOMEPAGE="https://git.gnome.org/browse/gnome-screenshot"
@@ -16,11 +13,7 @@ HOMEPAGE="https://git.gnome.org/browse/gnome-screenshot"
 LICENSE="GPL-2+"
 SLOT="0"
 IUSE=""
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux"
 
 # libcanberra 0.26-r2 is needed for gtk+:3 fixes
 COMMON_DEPEND="
