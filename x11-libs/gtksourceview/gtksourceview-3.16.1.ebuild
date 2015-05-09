@@ -8,9 +8,6 @@ VALA_MIN_API_VERSION="0.24"
 VALA_USE_DEPEND="vapigen"
 
 inherit gnome2 vala virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="A text widget implementing syntax highlighting and other features"
 HOMEPAGE="https://wiki.gnome.org/Projects/GtkSourceView"
@@ -19,12 +16,7 @@ LICENSE="GPL-2+ LGPL-2.1+"
 SLOT="3.0/3"
 IUSE="glade +introspection vala"
 REQUIRED_USE="vala? ( introspection )"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x86-solaris"
 
 # Note: has native OSX support, prefix teams, attack!
 RDEPEND="
@@ -41,11 +33,6 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	vala? ( $(vala_depend) )
 "
-
-if [[ ${PV} = 9999 ]]; then
-	 DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.18 )"
-fi
 
 src_prepare() {
 	use vala && vala_src_prepare
