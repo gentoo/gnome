@@ -24,11 +24,10 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86
 # FIXME: introspection data is built against system installation of gtk+:3
 # NOTE: cairo[svg] dep is due to bug 291283 (not patched to avoid eautoreconf)
 COMMON_DEPEND="
-	>=dev-libs/atk-2.15[introspection?,${MULTILIB_USEDEP}]
-	>=dev-libs/glib-2.43.4:2[${MULTILIB_USEDEP}]
+	>=dev-libs/atk-2.12[introspection?,${MULTILIB_USEDEP}]
+	>=dev-libs/glib-2.41.2:2[${MULTILIB_USEDEP}]
 	media-libs/fontconfig[${MULTILIB_USEDEP}]
-	>=media-libs/libepoxy-1.0[${MULTILIB_USEDEP}]
-	>=x11-libs/cairo-1.14[aqua?,glib,svg,X?,${MULTILIB_USEDEP}]
+	>=x11-libs/cairo-1.12[aqua?,glib,svg,X?,${MULTILIB_USEDEP}]
 	>=x11-libs/gdk-pixbuf-2.30:2[introspection?,X?,${MULTILIB_USEDEP}]
 	>=x11-libs/pango-1.36.7[introspection?,${MULTILIB_USEDEP}]
 	x11-misc/shared-mime-info
@@ -65,7 +64,7 @@ DEPEND="${COMMON_DEPEND}
 	dev-libs/gobject-introspection-common
 	>=dev-util/gdbus-codegen-2.38.2
 	>=dev-util/gtk-doc-am-1.20
-	>=sys-devel/gettext-0.18.3[${MULTILIB_USEDEP}]
+	sys-devel/gettext
 	virtual/pkgconfig[${MULTILIB_USEDEP}]
 	X? (
 		x11-proto/xextproto[${MULTILIB_USEDEP}]
@@ -77,7 +76,6 @@ DEPEND="${COMMON_DEPEND}
 	test? (
 		media-fonts/font-misc-misc
 		media-fonts/font-cursor-misc )
-	examples? ( media-libs/libcanberra[gtk3] )
 "
 # gtk+-3.2.2 breaks Alt key handling in <=x11-libs/vte-0.30.1:2.90
 # gtk+-3.3.18 breaks scrolling in <=x11-libs/vte-0.31.0:2.90
@@ -114,6 +112,9 @@ strip_builddir() {
 }
 
 src_prepare() {
+	# https://bugzilla.gnome.org/show_bug.cgi?id=738835
+	epatch "${FILESDIR}"/${PN}-non-bash-support.patch
+
 	# -O3 and company cause random crashes in applications. Bug #133469
 	replace-flags -O3 -O2
 	strip-flags
@@ -121,10 +122,7 @@ src_prepare() {
 	if ! use test ; then
 		# don't waste time building tests
 		strip_builddir SRC_SUBDIRS testsuite Makefile.{am,in}
-
-		# the tests dir needs to be build now because since commit
-		# 7ff3c6df80185e165e3bf6aa31bd014d1f8bf224 tests/gtkgears.o needs to be there
-		# strip_builddir SRC_SUBDIRS tests Makefile.{am,in}
+		strip_builddir SRC_SUBDIRS tests Makefile.{am,in}
 	fi
 
 	if ! use examples; then
@@ -132,9 +130,6 @@ src_prepare() {
 		strip_builddir SRC_SUBDIRS demos Makefile.{am,in}
 		strip_builddir SRC_SUBDIRS examples Makefile.{am,in}
 	fi
-
-	# Do no build and install gtk-update-icon-cache which is done by gtk+:2
-	epatch "${FILESDIR}"/${P}-remove_update-icon-cache.patch
 
 	epatch_user
 
@@ -162,8 +157,8 @@ multilib_src_configure() {
 		$(use_enable X xrandr) \
 		$(use_enable xinerama) \
 		--disable-papi \
-		--disable-mir-backend \
 		--enable-man \
+		--enable-gtk2-dependency \
 		--with-xml-catalog="${EPREFIX}"/etc/xml/catalog \
 		--libdir="${EPREFIX}"/usr/$(get_libdir) \
 		CUPS_CONFIG="${EPREFIX}/usr/bin/${CHOST}-cups-config"
