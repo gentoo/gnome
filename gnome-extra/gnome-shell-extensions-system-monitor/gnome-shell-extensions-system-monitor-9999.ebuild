@@ -2,12 +2,12 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="3"
-PYTHON_DEPEND="2"
+EAPI="5"
+GCONF_DEBUG="no"
 
 EGIT_REPO_URI="git://github.com/paradoxxxzero/gnome-shell-system-monitor-applet"
 
-inherit gnome2-utils gnome2-live python
+inherit eutils gnome2-utils gnome2-live
 
 DESCRIPTION="System monitor extension for GNOME Shell"
 HOMEPAGE="https://github.com/paradoxxxzero/gnome-shell-system-monitor-applet"
@@ -19,45 +19,45 @@ KEYWORDS="" #"~amd64 ~x86"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.26
-	>=gnome-base/gnome-desktop-3:3
-	app-admin/eselect-gnome-shell-extensions"
+	app-eselect/eselect-gnome-shell-extensions
+"
 RDEPEND="${COMMON_DEPEND}
-	gnome-base/gnome-desktop:3[introspection]
 	gnome-base/gnome-shell
+	gnome-base/libgtop[introspection]
 	media-libs/clutter:1.0[introspection]
-	net-libs/telepathy-glib[introspection]
+	net-misc/networkmanager[introspection]
 	x11-libs/gtk+:3[introspection]
-	x11-libs/pango[introspection]"
+"
 DEPEND="${COMMON_DEPEND}
-	sys-devel/gettext
 	>=dev-util/intltool-0.26
+	sys-devel/gettext
 	virtual/pkgconfig
-	gnome-base/gnome-common"
+	gnome-base/gnome-common
+"
 
-src_prepare() {
-	python_convert_shebangs 2 *.py
-}
+src_prepare() { :; }
 
-src_configure() {
-	:
-}
+src_configure() { :; }
 
 src_compile() {
-	:
+	local locale
+	for locale in ${LINGUAS}
+	do
+		[[ ! -d po/${locale} ]] && continue
+		mkdir -p locale/${locale}/LC_MESSAGES
+		msgfmt po/${locale}/system-monitor.po -o locale/${locale}/LC_MESSAGES/system-monitor.mo || die
+	done
 }
 
 src_install()	{
-	insinto /usr/share/gnome-shell/extensions
-	doins -r system-monitor@paradoxxx.zero.gmail.com || die
+	insinto /usr/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com
+	doins system-monitor@paradoxxx.zero.gmail.com/*.{css,js,json}
+
+	insinto /usr/share
+	doins -r "${S}"/locale
 
 	insinto /usr/share/glib-2.0/schemas
-	doins org.gnome.shell.extensions.system-monitor.gschema.xml || die
-
-	mv system-monitor-applet-config{.py,}
-	dobin system-monitor-applet-config || die
-
-	insinto /usr/share/applications
-	doins system-monitor-applet-config.desktop || die
+	doins system-monitor@paradoxxx.zero.gmail.com/schemas/*.gschema.xml
 }
 
 pkg_postinst() {
