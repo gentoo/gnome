@@ -61,6 +61,11 @@ if [[ ${GCONF_DEBUG} != "no" ]]; then
 	IUSE="debug"
 fi
 
+# Need to catch all offenders before switching behavior
+if [[ -z ${GCONF_DEBUG} ]] ; then
+	eqawarn "GCONF_DEBUG not set, please review documentation at https://wiki.gentoo.org/wiki/Project:GNOME/Gnome_Team_Ebuild_Policies#GCONF_DEBUG"
+fi
+
 # @FUNCTION: gnome2_src_unpack
 # @DESCRIPTION:
 # Stub function for old EAPI.
