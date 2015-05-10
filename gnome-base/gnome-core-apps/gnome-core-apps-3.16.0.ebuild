@@ -25,7 +25,7 @@ RDEPEND="
 	>=gnome-base/gnome-settings-daemon-${PV}[cups?]
 	>=gnome-base/gnome-control-center-${PV}[cups?]
 
-	>=app-crypt/gcr-${PV}
+	>=app-crypt/gcr-3.12
 	>=gnome-base/nautilus-${PV}
 	>=gnome-base/gnome-keyring-${PV}
 	>=gnome-extra/evolution-data-server-3.16
@@ -35,7 +35,7 @@ RDEPEND="
 	>=app-text/evince-${PV}
 	>=gnome-extra/gnome-contacts-${PV}
 	>=media-gfx/eog-${PV}
-	>=media-video/totem-${PV}
+	>=media-video/totem-3.14
 	>=net-im/empathy-3.12.9
 	>=x11-terms/gnome-terminal-${PV}
 
