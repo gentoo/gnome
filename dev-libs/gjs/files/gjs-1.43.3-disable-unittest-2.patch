@@ -1,4 +1,4 @@
-From da18a2676477138693e893d3245316f987d74497 Mon Sep 17 00:00:00 2001
+From c9d63c7531a29418c64dc44556519d7bd1664ce4 Mon Sep 17 00:00:00 2001
 From: Gilles Dartiguelongue <eva@gentoo.org>
 Date: Sun, 12 Oct 2014 21:57:45 +0200
 Subject: [PATCH 2/2] Comment broken JS unittest
@@ -31,5 +31,5 @@ index b086a66..0c5abb1 100644
  function testToLocaleLowerCase() {
      JSUnit.assertEquals("aaa", "AAA".toLocaleLowerCase());
 -- 
-2.1.2
+2.3.6
 
