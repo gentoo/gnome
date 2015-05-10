@@ -6,10 +6,7 @@ EAPI="5"
 GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
-inherit eutils gnome2 pax-utils versionator virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+inherit autotools eutils gnome2 pax-utils versionator virtualx
 
 DESCRIPTION="GNOME webbrowser based on Webkit"
 HOMEPAGE="https://wiki.gnome.org/Apps/Web"
@@ -18,11 +15,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Web"
 LICENSE="GPL-2"
 SLOT="0"
 IUSE="+jit +nss test"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 COMMON_DEPEND="
 	>=app-crypt/gcr-3.5.5
@@ -55,27 +48,33 @@ RDEPEND="${COMMON_DEPEND}
 # paxctl needed for bug #407085
 # eautoreconf requires gnome-common-3.5.5
 DEPEND="${COMMON_DEPEND}
+	>=gnome-base/gnome-common-3.6
 	>=dev-util/intltool-0.50
 	sys-apps/paxctl
 	sys-devel/gettext
 	virtual/pkgconfig
 "
-if [[ ${PV} == 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools
-		>=gnome-base/gnome-common-3.6"
-fi
+
+src_prepare() {
+	# Fix missing symbol in webextension.so, bug #728972
+	epatch "${FILESDIR}"/${PN}-3.14.0-missing-symbol.patch
+
+	# Fix unittests
+	epatch "${FILESDIR}"/${PN}-3.16.0-unittest-1.patch
+	epatch "${FILESDIR}"/${PN}-3.14.0-unittest-2.patch
+
+	eautoreconf
+	gnome2_src_prepare
+}
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		--enable-shared \
 		--disable-static \
 		--with-distributor-name=Gentoo \
 		$(use_enable nss) \
 		$(use_enable test tests) \
-		${myconf}
+		ITSTOOL=$(type -P true)
 }
 
 src_compile() {
