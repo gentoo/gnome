@@ -1,10 +1,9 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
 EAPI="5"
 GCONF_DEBUG="no"
-GNOME2_LA_PUNT="yes"
 
 inherit gnome2
 if [[ ${PV} = 9999 ]]; then
@@ -27,7 +26,7 @@ fi
 RDEPEND="
 	>=mail-client/evolution-${PV}:2.0
 	>=gnome-extra/evolution-data-server-${PV}
-	>=dev-libs/glib-2.34:2
+	>=dev-libs/glib-2.40:2
 	>=x11-libs/gtk+-3:3
 	>=net-libs/libmapi-2
 "
