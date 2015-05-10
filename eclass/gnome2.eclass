@@ -26,11 +26,6 @@ esac
 # Extra configure opts passed to econf
 G2CONF=${G2CONF:-""}
 
-# Deprecated for a long time now, see Gnome team policies
-if [[ -n ${G2CONF} ]] ; then
-	eqawarn "G2CONF set, please review documentation at https://wiki.gentoo.org/wiki/Project:GNOME/Gnome_Team_Ebuild_Policies#G2CONF_and_src_configure"
-fi
-
 # @ECLASS-VARIABLE: GNOME2_LA_PUNT
 # @DESCRIPTION:
 # Should we delete ALL the .la files?
@@ -67,11 +62,6 @@ if [[ ${GCONF_DEBUG} != "no" ]]; then
 	IUSE="debug"
 fi
 
-# Need to catch all offenders before switching behavior
-if [[ -z ${GCONF_DEBUG} ]] ; then
-	eqawarn "GCONF_DEBUG not set, please review documentation at https://wiki.gentoo.org/wiki/Project:GNOME/Gnome_Team_Ebuild_Policies#GCONF_DEBUG"
-fi
-
 # @FUNCTION: gnome2_src_unpack
 # @DESCRIPTION:
 # Stub function for old EAPI.
@@ -103,6 +93,16 @@ gnome2_src_prepare() {
 # @DESCRIPTION:
 # Gnome specific configure handling
 gnome2_src_configure() {
+	# Need to catch all offenders before switching behavior
+	if [[ -z ${GCONF_DEBUG} ]] ; then
+		eqawarn "GCONF_DEBUG not set, please review documentation at https://wiki.gentoo.org/wiki/Project:GNOME/Gnome_Team_Ebuild_Policies#GCONF_DEBUG"
+	fi
+
+	# Deprecated for a long time now, see Gnome team policies
+	if [[ -n ${G2CONF} ]] ; then
+		eqawarn "G2CONF set, please review documentation at https://wiki.gentoo.org/wiki/Project:GNOME/Gnome_Team_Ebuild_Policies#G2CONF_and_src_configure"
+	fi
+
 	local g2conf=()
 
 	# Update the GNOME configuration options
