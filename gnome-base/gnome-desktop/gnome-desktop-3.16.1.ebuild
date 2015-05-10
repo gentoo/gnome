@@ -61,8 +61,5 @@ src_configure() {
 }
 
 src_test() {
-	# Makes unittest fail without this locale installed
-	rm "${S}"/tests/he_IL* || die
-
 	Xemake check
 }
