@@ -7,23 +7,15 @@ GCONF_DEBUG="no"
 PYTHON_COMPAT=( python{2_7,3_3,3_4} )
 
 inherit gnome2 multilib python-r1 virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="A GObject plugins library"
 HOMEPAGE="http://developer.gnome.org/libpeas/stable/"
 
 LICENSE="LGPL-2+"
 SLOT="0"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux"
 IUSE="+gtk glade jit lua +python"
 REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} ?? ( $(python_gen_useflags 'python3*') ) )"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux"
-fi
 
 RDEPEND="
 	>=dev-libs/glib-2.38:2
@@ -43,10 +35,6 @@ DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.40
 	virtual/pkgconfig
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND} doc? ( >=dev-util/gtk-doc-1.11 )"
-fi
 
 src_configure() {
 	# Wtf, --disable-gcov, --enable-gcov=no, --enable-gcov, all enable gcov
