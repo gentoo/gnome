@@ -4,27 +4,21 @@
 
 EAPI=5
 GCONF_DEBUG="no"
+WANT_AUTOMAKE="1.12"
 VALA_MIN_API_VERSION="0.14"
 VALA_USE_DEPEND="vapigen"
+
 PYTHON_COMPAT=( python2_7 )
 
 inherit autotools eutils multibuild python-single-r1 vala
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Set of GObject and Gtk objects for connecting to Spice servers and a client GUI"
 HOMEPAGE="http://spice-space.org http://gitorious.org/spice-gtk"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-if [[ ${PV} = 9999 ]]; then
-	EGIT_REPO_URI="git://anongit.freedesktop.org/spice/${PN}"
-	KEYWORDS=""
-else
-	SRC_URI="http://spice-space.org/download/gtk/${P}.tar.bz2"
-	KEYWORDS="~alpha ~amd64 ~arm ~ppc ~ppc64 ~x86"
-fi
+SRC_URI="http://spice-space.org/download/gtk/${P}.tar.bz2"
+KEYWORDS="~alpha ~amd64 ~arm ~ppc ~ppc64 ~x86"
 IUSE="dbus gstreamer gtk2 gtk3 +introspection lz4 policykit pulseaudio python sasl smartcard static-libs usbredir vala webdav"
 REQUIRED_USE="
 	python? ( gtk2 ${PYTHON_REQUIRED_USE} )
@@ -81,12 +75,9 @@ DEPEND="${RDEPEND}
 	vala? ( $(vala_depend) )
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		$(vala_depend)
-		dev-lang/perl
-		dev-perl/Text-CSV"
-fi
+# Hard-deps while building from git:
+# dev-lang/vala:0.14
+# dev-lang/perl
 
 src_prepare() {
 	epatch_user
