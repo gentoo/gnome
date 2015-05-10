@@ -4,7 +4,6 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
-GNOME2_LA_PUNT="yes"
 
 inherit eutils flag-o-matic readme.gentoo gnome2
 if [[ ${PV} = 9999 ]]; then
@@ -22,8 +21,8 @@ if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
 else
-	#need x11-libs/libcryptui keyworded
-	#KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
+	# Needs x11-libs/libcryptui keyworded
+	#KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc x86 ~x86-fbsd"
 	KEYWORDS="~amd64 ~x86 ~x86-fbsd"
 fi
 
@@ -33,13 +32,13 @@ PINENTRY_DEPEND="|| ( app-crypt/pinentry[gtk] app-crypt/pinentry[qt4] )"
 
 # glade-3 support is for maintainers only per configure.ac
 # pst is not mature enough and changes API/ABI frequently
+# dconf explicitely needed for backup plugin
 # google tasks requires >=libgdata-0.15.1
 # gnome-desktop support is optional with --enable-gnome-desktop
 # gnome-autoar (currently disabled because no release has been made)
 COMMON_DEPEND="
 	>=app-crypt/gcr-3.4
 	>=app-text/enchant-1.1.7
-	>=dev-libs/dbus-glib-0.6
 	>=dev-libs/glib-2.40:2
 	>=dev-libs/libgdata-0.10:=
 	>=dev-libs/libxml2-2.7.3:2
@@ -48,25 +47,24 @@ COMMON_DEPEND="
 	>=gnome-extra/evolution-data-server-${PV}:=[gtk,weather?]
 	>=media-libs/libcanberra-0.25[gtk3]
 	>=net-libs/libsoup-2.42:2.4
-	>=net-libs/webkit-gtk-2.2.0:3
+	>=net-libs/webkit-gtk-2.2:3
 	>=x11-libs/cairo-1.9.15:=[glib]
 	>=x11-libs/gdk-pixbuf-2.24:2
-	>=x11-libs/gtk+-3.10.0:3
+	>=x11-libs/gtk+-3.10:3
 	>=x11-libs/libnotify-0.7:=
 	>=x11-misc/shared-mime-info-0.22
 
-	app-text/iso-codes
+	>=app-text/iso-codes-0.49
 	dev-libs/atk
 	gnome-base/dconf
+	dev-libs/libical:=
 	x11-libs/libSM
 	x11-libs/libICE
-	x11-themes/gnome-icon-theme
 
 	crypt? (
-		x11-libs/libcryptui:=
-		|| (
-			( >=app-crypt/gnupg-2.0.1-r2 ${PINENTRY_DEPEND} )
-			=app-crypt/gnupg-1.4* ) )
+		>=app-crypt/gnupg-1.4
+		${PINENTRY_DEPEND}
+		x11-libs/libcryptui )
 	map? (
 		>=media-libs/libchamplain-0.12:0.12[gtk]
 		>=media-libs/clutter-1.0.0:1.0
