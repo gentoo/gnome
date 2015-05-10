@@ -67,7 +67,7 @@ RDEPEND="
 	tracker? (
 		>=app-misc/tracker-1.2
 		>=gnome-extra/gnome-documents-${PV}
-		>=media-gfx/gnome-photos-${PV}
+		>=media-gfx/gnome-photos-3.14
 		>=media-sound/gnome-music-${PV} )
 "
 DEPEND=""
