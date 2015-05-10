@@ -8,24 +8,22 @@ VALA_USE_DEPEND="vapigen"
 VALA_MIN_API_VERSION="0.26"
 
 inherit linux-info gnome2 readme.gentoo vala
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Simple GNOME 3 application to access remote or virtual systems"
 HOMEPAGE="https://wiki.gnome.org/Apps/Boxes"
 
 LICENSE="LGPL-2"
 SLOT="0"
-IUSE="bindist smartcard usbredir"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64" # qemu-kvm[spice] is 64bit-only
-fi
+
+# We force 'bindist' due to licenses from gnome-boxes-nonfree
+IUSE="smartcard usbredir" #bindist
+KEYWORDS="~amd64" # qemu-kvm[spice] is 64bit-only
 
 # NOTE: sys-fs/* stuff is called via exec()
 # FIXME: ovirt is not available in tree
+# FIXME: use vala.eclass but only because of libgd not being able
+#        to use its pre-generated files so do not copy all the
+#        vala deps like live ebuild has.
 RDEPEND="
 	>=app-arch/libarchive-3:=
 	>=dev-libs/glib-2.38:2
@@ -49,25 +47,17 @@ RDEPEND="
 	sys-fs/fuseiso
 	sys-fs/mtools
 	virtual/libgudev:=
-	!bindist? ( gnome-extra/gnome-boxes-nonfree )
 "
+#	!bindist? ( gnome-extra/gnome-boxes-nonfree )
+
 DEPEND="${RDEPEND}
+	$(vala_depend)
 	app-text/yelp-tools
 	dev-util/desktop-file-utils
 	>=dev-util/intltool-0.40
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		$(vala_depend)
-		sys-libs/libosinfo[introspection,vala]
-		app-emulation/libvirt-glib[introspection,vala]
-		net-libs/gtk-vnc[introspection,vala]
-		net-misc/spice-gtk[introspection,vala]
-		net-libs/rest:0.7[introspection]"
-fi
 
 DISABLE_AUTOFORMATTING="yes"
 DOC_CONTENTS="Before running gnome-boxes, you will need to load the KVM modules.
@@ -91,7 +81,7 @@ pkg_pretend() {
 src_prepare() {
 	# Do not change CFLAGS, wondering about VALA ones but appears to be
 	# needed as noted in configure comments below
-	sed 's/CFLAGS="$CFLAGS -O0 -ggdb3"//' -i configure.ac || die
+	sed 's/CFLAGS="$CFLAGS -O0 -ggdb3"//' -i configure{.ac,} || die
 
 	vala_src_prepare
 	gnome2_src_prepare
