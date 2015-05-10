@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -51,7 +51,7 @@ RDEPEND="
 
 	gtk? (
 		>=app-crypt/gcr-3.4[gtk]
-		>=x11-libs/gtk+-3.2:3
+		>=x11-libs/gtk+-3.6:3
 	)
 	gnome-online-accounts? ( >=net-libs/gnome-online-accounts-3.8 )
 	introspection? ( >=dev-libs/gobject-introspection-0.9.12 )
@@ -68,7 +68,8 @@ DEPEND="${RDEPEND}
 	>=gnome-base/gnome-common-3.5.5
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
-	vala? ( $(vala_depend) )"
+	vala? ( $(vala_depend) )
+"
 # eautoreconf needs:
 #	>=gnome-base/gnome-common-2
 
