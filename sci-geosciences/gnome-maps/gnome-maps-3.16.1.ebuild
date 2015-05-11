@@ -25,7 +25,7 @@ RDEPEND="
 	media-libs/clutter-gtk:1.0[introspection]
 	media-libs/clutter:1.0[introspection]
 	media-libs/cogl:1.0[introspection]
-	>=media-libs/libchamplain-0.12.9:0.12[introspection]
+	>=media-libs/libchamplain-0.12.10-r1:0.12[gtk,introspection]
 	net-libs/libsoup:2.4[introspection]
 	>=sci-geosciences/geocode-glib-3.15.2[introspection]
 	x11-libs/gdk-pixbuf:2[introspection]
