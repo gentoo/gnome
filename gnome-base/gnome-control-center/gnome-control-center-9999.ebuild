@@ -16,7 +16,7 @@ HOMEPAGE="https://git.gnome.org/browse/gnome-control-center/"
 
 LICENSE="GPL-2+"
 SLOT="2"
-IUSE="+bluetooth +colord +cups +gnome-online-accounts +i18n input_devices_wacom kerberos v4l"
+IUSE="+bluetooth +colord +cups +gnome-online-accounts +i18n input_devices_wacom kerberos networkmanager v4l wayland"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
@@ -31,13 +31,13 @@ QA_CONFIGURE_OPTIONS=".*"
 
 # kerberos unfortunately means mit-krb5; build fails with heimdal
 
-# FIXME: modemmanager is not optional
-#        networkmanager is not optional
+# udev could be made optional, only conditions gsd-device-panel
+# (mouse, keyboards, touchscreen, etc)
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.39.91:2[dbus]
 	>=x11-libs/gdk-pixbuf-2.23.0:2
-	>=x11-libs/gtk+-3.15:3
+	>=x11-libs/gtk+-3.15:3[X,wayland?]
 	>=gnome-base/gsettings-desktop-schemas-3.15.4
 	>=gnome-base/gnome-desktop-3.11.3:3=
 	>=gnome-base/gnome-settings-daemon-3.8.3[colord?,policykit]
@@ -52,10 +52,6 @@ COMMON_DEPEND="
 	>=sys-auth/polkit-0.97
 	>=sys-power/upower-0.99:=
 	>=x11-libs/libnotify-0.7.3:0=
-
-	>=gnome-extra/nm-applet-0.9.7.995
-	>=net-misc/networkmanager-0.9.8[modemmanager]
-	>=net-misc/modemmanager-0.7.990
 
 	virtual/libgudev
 	virtual/opengl
@@ -75,9 +71,13 @@ COMMON_DEPEND="
 		|| ( >=net-fs/samba-3.6.14-r1[smbclient] >=net-fs/samba-4.0.0[client] ) )
 	gnome-online-accounts? (
 		>=media-libs/grilo-0.2.6:0.2
-		>=net-libs/gnome-online-accounts-3.9.90 )
+		>=net-libs/gnome-online-accounts-3.15.1 )
 	i18n? ( >=app-i18n/ibus-1.5.2 )
 	kerberos? ( app-crypt/mit-krb5 )
+	networkmanager? (
+		>=gnome-extra/nm-applet-0.9.7.995
+		>=net-misc/networkmanager-0.9.8[modemmanager]
+		>=net-misc/modemmanager-0.7.990 )
 	v4l? (
 		media-libs/gstreamer:1.0
 		media-libs/clutter-gtk:1.0
@@ -130,9 +130,9 @@ src_prepare() {
 	# Make some panels and dependencies optional; requires eautoreconf
 	# https://bugzilla.gnome.org/686840, 697478, 700145
 	epatch "${FILESDIR}"/${PN}-3.14.0-optional.patch
-
-	# Make wayland support optional
 	epatch "${FILESDIR}"/${PN}-3.16.0-make-wayland-optional.patch
+	epatch "${FILESDIR}"/${PN}-3.16.0-keep-panels-optional.patch
+	epatch "${FILESDIR}"/${PN}-3.16.0-networkmanager.patch
 
 	# Fix some absolute paths to be appropriate for Gentoo
 	epatch "${FILESDIR}"/${PN}-3.10.2-gentoo-paths.patch
@@ -154,8 +154,10 @@ src_configure() {
 		$(use_enable gnome-online-accounts goa) \
 		$(use_enable i18n ibus) \
 		$(use_enable kerberos) \
+		$(use_enable networkmanager) \
 		$(use_with v4l cheese) \
-		$(use_enable input_devices_wacom wacom)
+		$(use_enable input_devices_wacom wacom) \
+		$(use_enable wayland)
 }
 
 src_install() {
