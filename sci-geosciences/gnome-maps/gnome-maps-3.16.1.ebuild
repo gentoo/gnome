@@ -21,7 +21,7 @@ RDEPEND="
 	>=dev-libs/gjs-1.43.3
 	>=dev-libs/gobject-introspection-0.6.3
 	>=dev-libs/glib-2.39.3:2
-	>=dev-libs/libgee-0.16:0.8[introspection
+	>=dev-libs/libgee-0.16:0.8[introspection]
 	media-libs/clutter-gtk:1.0[introspection]
 	media-libs/clutter:1.0[introspection]
 	media-libs/cogl:1.0[introspection]
