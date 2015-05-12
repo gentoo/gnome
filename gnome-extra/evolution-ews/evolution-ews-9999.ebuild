@@ -20,7 +20,7 @@ if [[ ${PV} = 9999 ]]; then
 else
 	KEYWORDS="~amd64 ~x86"
 fi
-IUSE=""
+IUSE="test"
 
 RDEPEND="
 	dev-db/sqlite:3=

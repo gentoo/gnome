@@ -13,7 +13,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Evolution"
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE=""
+IUSE="test"
 
 RDEPEND="
 	dev-db/sqlite:3=
