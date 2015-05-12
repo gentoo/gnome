@@ -30,7 +30,7 @@ COMMON_DEPEND="
 	>=app-crypt/gnupg-2
 	>=app-crypt/p11-kit-0.19
 	>=dev-libs/glib-2.38:2
-	>=dev-libs/libgcrypt-1.4.5:0=
+	>=dev-libs/libgcrypt-1.2.2:0=
 	>=dev-libs/libtasn1-1:=
 	>=sys-apps/dbus-1
 	gtk? ( >=x11-libs/gtk+-3.10:3[X,introspection?] )
