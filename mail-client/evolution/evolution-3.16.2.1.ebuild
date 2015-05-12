@@ -4,6 +4,7 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
+GNOME2_LA_PUNT="yes"
 
 inherit eutils flag-o-matic readme.gentoo gnome2
 
@@ -36,7 +37,7 @@ COMMON_DEPEND="
 	>=dev-libs/libxml2-2.7.3:2
 	>=gnome-base/gnome-desktop-2.91.3:3=
 	>=gnome-base/gsettings-desktop-schemas-2.91.92
-	>=gnome-extra/evolution-data-server-${PV}:=[gtk,weather?]
+	>=gnome-extra/evolution-data-server-3.16:=[gtk,weather?]
 	>=media-libs/libcanberra-0.25[gtk3]
 	>=net-libs/libsoup-2.42:2.4
 	>=net-libs/webkit-gtk-2.2:3

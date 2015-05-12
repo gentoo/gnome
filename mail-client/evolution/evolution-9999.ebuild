@@ -4,6 +4,7 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
+GNOME2_LA_PUNT="yes"
 
 inherit eutils flag-o-matic readme.gentoo gnome2
 if [[ ${PV} = 9999 ]]; then
