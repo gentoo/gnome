@@ -75,6 +75,9 @@ src_prepare() {
 	sed -e 's/^\(SUBDIRS =\)[^\]*/\1  accessibility conform/g' \
 		-i tests/Makefile.in || die "in tests sed failed"
 
+	# Fix init issues when run under Xvfb for example, upstream #749256 (master)
+	epatch "${FILESDIR}"/${PN}-1.22.0-init-fixes.patch
+
 	gnome2_src_prepare
 }
 
@@ -105,5 +108,5 @@ src_configure() {
 }
 
 src_test() {
-	Xemake check -C tests/conform
+	LIBGL_DRIVERS_PATH="${EROOT}/usr/$(get_libdir)/mesa" Xemake check -C tests/conform
 }
