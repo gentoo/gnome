@@ -1,6 +1,6 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/media-libs/clutter/clutter-1.20.0.ebuild,v 1.4 2015/03/15 13:28:34 pacho Exp $
+# $Header: $
 
 EAPI="5"
 GCONF_DEBUG="no"
@@ -75,9 +75,6 @@ src_prepare() {
 	sed -e 's/^\(SUBDIRS =\)[^\]*/\1  accessibility conform/g' \
 		-i tests/Makefile.in || die "in tests sed failed"
 
-	# Fix init issues when run under Xvfb for example, upstream #749256 (master)
-	epatch "${FILESDIR}"/${PN}-1.22.0-init-fixes.patch
-
 	gnome2_src_prepare
 }
 
@@ -108,5 +105,5 @@ src_configure() {
 }
 
 src_test() {
-	LIBGL_DRIVERS_PATH="${EROOT}/usr/$(get_libdir)/mesa" Xemake check -C tests/conform
+	Xemake check -C tests/conform
 }

@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -28,28 +28,27 @@ else
 fi
 
 # NOTE: glx flavour uses libdrm + >=mesa-7.3
-# XXX: uprof needed for profiling
 # >=libX11-1.3.1 needed for X Generic Event support
 # do not depend on tslib, it does not build and is disable by default upstream
 RDEPEND="
-	>=dev-libs/glib-2.37.3:2
+	>=dev-libs/glib-2.39.0:2
 	>=dev-libs/atk-2.5.3[introspection?]
 	>=dev-libs/json-glib-0.12[introspection?]
-	>=media-libs/cogl-1.17.5:1.0=[introspection?,pango,wayland?]
-	>=x11-libs/cairo-1.12:=[aqua?,glib]
+	>=media-libs/cogl-1.20.0:1.0=[introspection?,pango,wayland?]
+	>=x11-libs/cairo-1.14:=[aqua?,glib]
 	>=x11-libs/pango-1.30[introspection?]
 
 	virtual/opengl
 	x11-libs/libdrm:=
 
 	egl? (
-		>=dev-libs/libinput-0.4
+		>=dev-libs/libinput-0.8
 		media-libs/cogl[gles2,kms]
 		>=virtual/libgudev-136
 		x11-libs/libxkbcommon
 	)
 	gtk? ( >=x11-libs/gtk+-3.3.18:3[aqua?] )
-	introspection? ( >=dev-libs/gobject-introspection-0.9.6 )
+	introspection? ( >=dev-libs/gobject-introspection-1.39 )
 	X? (
 		media-libs/fontconfig
 		>=x11-libs/libX11-1.3.1
@@ -89,11 +88,11 @@ src_prepare() {
 src_configure() {
 	# XXX: Conformance test suite (and clutter itself) does not work under Xvfb
 	# (GLX error blabla)
-	# XXX: Profiling, coverage disabled for now
+	# XXX: coverage disabled for now
 	# XXX: What about cex100/win32 backends?
 	gnome2_src_configure \
-		--disable-profile \
 		--disable-maintainer-flags \
+		--disable-mir-backend \
 		--disable-gcov \
 		--disable-cex100-backend \
 		--disable-win32-backend \
