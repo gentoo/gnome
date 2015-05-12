@@ -1,6 +1,6 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/x11-terms/gnome-terminal/gnome-terminal-3.14.3.ebuild,v 1.1 2015/03/28 09:38:20 pacho Exp $
+# $Header: $
 
 EAPI="5"
 GCONF_DEBUG="no"
@@ -20,7 +20,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~
 RDEPEND="
 	>=dev-libs/glib-2.40:2[dbus]
 	>=x11-libs/gtk+-3.10:3[X]
-	>=x11-libs/vte-0.40:2.91
+	>=x11-libs/vte-0.40.2:2.91
 	>=gnome-base/dconf-0.14
 	>=gnome-base/gsettings-desktop-schemas-0.1.0
 	sys-apps/util-linux
@@ -29,11 +29,9 @@ RDEPEND="
 	gnome-shell? ( gnome-base/gnome-shell )
 	nautilus? ( >=gnome-base/nautilus-3 )
 "
-# gtk+:2 needed for gtk-builder-convert, bug 356239
 DEPEND="${RDEPEND}
 	app-text/yelp-tools
 	dev-util/gdbus-codegen
-	dev-util/gtk-builder-convert
 	>=dev-util/intltool-0.50
 	sys-devel/gettext
 	virtual/pkgconfig
@@ -50,7 +48,7 @@ src_configure() {
 		$(use_enable debug) \
 		$(use_enable gnome-shell search-provider) \
 		$(use_with nautilus nautilus-extension) \
-		VALAC=$(type -P true)
+		VALAC=$(type -P true) \
 		ITSTOOL=$(type -P true) \
 		XMLLINT=$(type -P true)
 }

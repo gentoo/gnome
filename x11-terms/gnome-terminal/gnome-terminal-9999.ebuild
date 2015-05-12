@@ -27,7 +27,7 @@ fi
 RDEPEND="
 	>=dev-libs/glib-2.40:2[dbus]
 	>=x11-libs/gtk+-3.10:3[X]
-	>=x11-libs/vte-0.40:2.91
+	>=x11-libs/vte-0.40.2:2.91
 	>=gnome-base/dconf-0.14
 	>=gnome-base/gsettings-desktop-schemas-0.1.0
 	sys-apps/util-linux
@@ -36,11 +36,9 @@ RDEPEND="
 	gnome-shell? ( gnome-base/gnome-shell )
 	nautilus? ( >=gnome-base/nautilus-3 )
 "
-# gtk+:2 needed for gtk-builder-convert, bug 356239
 DEPEND="${RDEPEND}
 	app-text/yelp-tools
 	dev-util/gdbus-codegen
-	dev-util/gtk-builder-convert
 	>=dev-util/intltool-0.50
 	sys-devel/gettext
 	virtual/pkgconfig
@@ -55,6 +53,7 @@ src_configure() {
 
 	if [[ ${PV} != 9999 ]]; then
 		myconf="${myconf}
+			VALAC=$(type -P true)
 			ITSTOOL=$(type -P true)
 			XMLLINT=$(type -P true)
 		"
@@ -62,7 +61,7 @@ src_configure() {
 
 	gnome2_src_configure \
 		--disable-static \
-		--enable-migration \
+		--disable-migration \
 		$(use_enable debug) \
 		$(use_enable gnome-shell search-provider) \
 		$(use_with nautilus nautilus-extension) \
