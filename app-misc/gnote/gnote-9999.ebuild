@@ -4,6 +4,7 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
+GNOME2_LA_PUNT="yes"
 
 inherit gnome2 readme.gentoo
 if [[ ${PV} = 9999 ]]; then
@@ -20,7 +21,7 @@ if [[ ${PV} = 9999 ]]; then
 else
 	KEYWORDS="~amd64 ~x86"
 fi
-IUSE="debug +X"
+IUSE="debug X"
 
 # Automagic glib-2.32 dep
 COMMON_DEPEND="
