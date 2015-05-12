@@ -55,9 +55,6 @@ DEPEND="${RDEPEND}
 # see if tests can forget about display (use eclass for that ?)
 
 src_prepare() {
-	# Regenerate marshalers for <glib-2.31 compat
-	rm -v src/gpk-marshal.{c,h} || die
-
 	# * disable tests with graphical dialogs and that require packagekitd
 	#   to be run with the dummy backend and installed .ui files
 	# * disable tests that fails every time packagekit developers make a
