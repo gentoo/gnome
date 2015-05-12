@@ -149,7 +149,7 @@ src_prepare() {
 	fi
 
 	# Do no build and install gtk-update-icon-cache which is done by gtk+:2
-	epatch "${FILESDIR}"/${P}-remove_update-icon-cache.patch
+	epatch "${FILESDIR}"/${PN}-3.16.2-remove_update-icon-cache.patch
 
 	epatch_user
 
