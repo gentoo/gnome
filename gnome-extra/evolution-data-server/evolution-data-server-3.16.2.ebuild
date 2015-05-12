@@ -4,6 +4,7 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
+GNOME2_LA_PUNT="yes"
 PYTHON_COMPAT=( python2_7 python3_4 pypy pypy2_0 )
 VALA_MIN_API_VERSION="0.22"
 VALA_USE_DEPEND="vapigen"
