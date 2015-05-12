@@ -7,7 +7,7 @@ GCONF_DEBUG="yes"
 VALA_MIN_API_VERSION="0.16"
 VALA_USE_DEPEND="vapigen"
 
-inherit gnome2 vala
+inherit gnome2 vala virtualx
 
 DESCRIPTION="Unicode character map viewer and library"
 HOMEPAGE="http://live.gnome.org/Gucharmap"
@@ -35,4 +35,8 @@ DEPEND="${RDEPEND}
 
 src_configure() {
 	gnome2_src_configure $(use_enable test dogtail)
+}
+
+src_test() {
+	Xemake check
 }
