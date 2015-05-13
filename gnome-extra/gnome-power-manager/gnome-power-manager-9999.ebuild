@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -19,7 +19,7 @@ IUSE="test"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
+	KEYWORDS=" ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86 ~x86-fbsd"
 fi
 
 COMMON_DEPEND="
@@ -34,8 +34,7 @@ RDEPEND="${COMMON_DEPEND}
 DEPEND="${COMMON_DEPEND}
 	app-text/docbook-sgml-dtd:4.1
 	app-text/docbook-sgml-utils
-	>=app-text/gnome-doc-utils-0.3.2
-	app-text/scrollkeeper
+	dev-libs/appstream-glib
 	>=dev-util/intltool-0.50
 	sys-devel/gettext
 	x11-proto/randrproto
