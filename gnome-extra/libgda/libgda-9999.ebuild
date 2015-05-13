@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -7,6 +7,7 @@ GNOME2_LA_PUNT="yes"
 GCONF_DEBUG="yes"
 PYTHON_COMPAT=( python2_7 )
 VALA_MIN_API_VERSION="0.18"
+VALA_MAX_API_VERSION="0.26"
 VALA_USE_DEPEND="vapigen"
 
 inherit autotools db-use eutils flag-o-matic gnome2 java-pkg-opt-2 python-single-r1 vala
@@ -18,11 +19,10 @@ DESCRIPTION="GNOME database access library"
 HOMEPAGE="http://www.gnome-db.org/"
 LICENSE="GPL-2+ LGPL-2+"
 
-IUSE="berkdb bindist canvas firebird gtk graphviz http +introspection json ldap libsecret mdb mysql oci8 postgres reports sourceview ssl vala"
+IUSE="berkdb canvas firebird gtk graphviz http +introspection json ldap libsecret mdb mysql oci8 postgres reports sourceview ssl vala"
 REQUIRED_USE="
 	reports? ( ${PYTHON_REQUIRED_USE} )
 	canvas? ( gtk )
-	firebird? ( !bindist )
 	graphviz? ( gtk )
 	sourceview? ( gtk )
 	vala? ( introspection )
@@ -44,8 +44,8 @@ RDEPEND="
 	dev-libs/libxslt
 	sys-libs/readline:=
 	sys-libs/ncurses:=
-	berkdb?   ( sys-libs/db )
-	!bindist? ( firebird? ( dev-db/firebird ) )
+	berkdb?   ( sys-libs/db:= )
+	firebird? ( dev-db/firebird )
 	gtk? (
 		>=x11-libs/gtk+-3.0.0:3
 		canvas? ( x11-libs/goocanvas:2.0= )
@@ -59,17 +59,18 @@ RDEPEND="
 	libsecret? ( app-crypt/libsecret )
 	mdb?      ( >app-office/mdbtools-0.5:= )
 	mysql?    ( virtual/mysql:= )
-	postgres? ( dev-db/postgresql-base:= )
+	postgres? ( dev-db/postgresql:= )
 	reports? (
 		${PYTHON_DEPS}
 		dev-java/fop
 		dev-python/reportlab[${PYTHON_USEDEP}] )
 	ssl?      ( dev-libs/openssl:= )
 	>=dev-db/sqlite-3.6.22:3=
+	vala? ( dev-libs/libgee:0.8 )
 "
 DEPEND="${RDEPEND}
-	>=app-text/gnome-doc-utils-0.9
-	dev-util/gtk-doc-am
+	app-text/yelp-tools
+	>=dev-util/gtk-doc-am-1.14
 	>=dev-util/intltool-0.40.6
 	virtual/pkgconfig
 	java? ( virtual/jdk:1.6 )
