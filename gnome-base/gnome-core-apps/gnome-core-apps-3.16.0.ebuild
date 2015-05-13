@@ -12,7 +12,7 @@ IUSE="+bluetooth +cdr cups"
 
 # when unmasking for an arch
 # double check none of the deps are still masked !
-KEYWORDS="amd64 ~arm ~ia64 ~ppc ~ppc64 x86"
+KEYWORDS="~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86"
 
 # Note to developers:
 # This is a wrapper for the core apps tightly integrated with GNOME 3
@@ -25,12 +25,12 @@ RDEPEND="
 	>=gnome-base/gnome-settings-daemon-${PV}[cups?]
 	>=gnome-base/gnome-control-center-${PV}[cups?]
 
-	>=app-crypt/gcr-3.12
+	>=app-crypt/gcr-${PV}
 	>=gnome-base/nautilus-${PV}
 	>=gnome-base/gnome-keyring-${PV}
 	>=gnome-extra/evolution-data-server-3.16
 
-	>=app-crypt/seahorse-3.14
+	>=app-crypt/seahorse-${PV}
 	>=app-editors/gedit-${PV}
 	>=app-text/evince-${PV}
 	>=gnome-extra/gnome-contacts-${PV}
