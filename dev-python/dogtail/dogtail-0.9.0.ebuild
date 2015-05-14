@@ -8,7 +8,7 @@ PYTHON_COMPAT=( python2_7 )
 
 inherit distutils-r1 gnome2-utils fdo-mime
 
-DESCRIPTION=""
+DESCRIPTION="GUI test tool and automation framework using accessibility framework"
 HOMEPAGE="https://fedorahosted.org/dogtail/"
 SRC_URI="https://fedorahosted.org/released/${PN}/${P}.tar.gz"
 
