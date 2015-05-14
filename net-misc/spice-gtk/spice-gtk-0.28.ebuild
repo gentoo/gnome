@@ -37,12 +37,12 @@ RDEPEND="
 	>=x11-libs/pixman-0.17.7
 	>=media-libs/celt-0.5.1.1:0.5.1
 	media-libs/opus
-	dev-libs/openssl
+	dev-libs/openssl:=
 	gtk2? ( x11-libs/gtk+:2[introspection?] )
 	gtk3? ( x11-libs/gtk+:3[introspection?] )
 	>=dev-libs/glib-2.28:2
 	>=x11-libs/cairo-1.2
-	virtual/jpeg
+	virtual/jpeg:=
 	sys-libs/zlib
 	introspection? ( dev-libs/gobject-introspection )
 	lz4? ( app-arch/lz4 )
