@@ -1,6 +1,6 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/gnome-extra/zenity/zenity-3.14.0.ebuild,v 1.3 2015/03/15 13:27:28 pacho Exp $
+# $Header: $
 
 EAPI="5"
 GCONF_DEBUG="yes"
@@ -25,8 +25,7 @@ RDEPEND="
 	webkit? ( >=net-libs/webkit-gtk-1.4.0:3 )
 "
 DEPEND="${RDEPEND}
-	>=dev-util/intltool-0.40
-	>=sys-devel/gettext-0.14
+	>=sys-devel/gettext-0.19.4
 	virtual/pkgconfig
 	test? ( app-text/yelp-tools )
 "
