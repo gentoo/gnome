@@ -5,7 +5,7 @@
 EAPI="5"
 GCONF_DEBUG="no"
 
-inherit gnome2
+inherit gnome2 virtualx
 
 DESCRIPTION="Access, organize and share your photos on GNOME"
 HOMEPAGE="https://wiki.gnome.org/Apps/Photos"
@@ -50,4 +50,8 @@ src_configure() {
 	gnome2_src_configure \
 		$(use_enable test dogtail) \
 		ITSTOOL=$(type -P true)
+}
+
+src_test() {
+	Xemake check
 }
