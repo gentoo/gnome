@@ -6,7 +6,7 @@ EAPI=5
 
 inherit eutils
 
-DESCRIPTION="library for implementing services that allow clients to discover, browse and manipulate Digital Media Servers"
+DESCRIPTION="library for implementing services that allow clients to discover, browse and manipulate DLNA Servers"
 HOMEPAGE="https://01.org/dleyna/"
 SRC_URI="https://01.org/sites/default/files/downloads/dleyna/${P}.tar.gz"
 
