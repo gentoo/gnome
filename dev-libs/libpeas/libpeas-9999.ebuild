@@ -32,8 +32,8 @@ RDEPEND="
 	gtk? ( >=x11-libs/gtk+-3:3[introspection] )
 	lua? (
 		dev-lua/lgi
-		jit? ( >=dev-lang/luajit-2 )
-		!jit? ( >=dev-lang/lua-5.1 ) )
+		jit? ( >=dev-lang/luajit-2:2 )
+		!jit? ( >=dev-lang/lua-5.1:0 ) )
 	python? (
 		${PYTHON_DEPS}
 		>=dev-python/pygobject-3.2:3[${PYTHON_USEDEP}] )
