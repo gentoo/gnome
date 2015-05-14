@@ -17,7 +17,7 @@ SRC_URI="http://dev.gentoo.org/~eva/distfiles/${PN}/${PN}-0.3.0-c9bbc81.tar.bz2 
 
 LICENSE="|| ( GPL-3 LGPL-3 )"
 SLOT="0.3"
-KEYWORDS="alpha amd64 ~arm hppa ia64 ~mips ppc ppc64 sparc x86 ~amd64-fbsd ~amd64-linux ~arm-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~x64-solaris ~x86-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~amd64-fbsd ~amd64-linux ~arm-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~x64-solaris ~x86-solaris"
 
 IUSE="cairo cpu_flags_x86_mmx cpu_flags_x86_sse debug ffmpeg +introspection jpeg jpeg2k lcms lensfun libav openexr png raw sdl svg umfpack vala v4l webp"
 REQUIRED_IUSE="vala? ( introspection )"
@@ -37,12 +37,12 @@ RDEPEND="
 	introspection? (
 		>=dev-libs/gobject-introspection-1.32
 		>=dev-python/pygobject-3.2:3 )
-	jpeg? ( virtual/jpeg )
+	jpeg? ( virtual/jpeg:= )
 	jpeg2k? ( >=media-libs/jasper-1.900.1 )
 	lcms? ( >=media-libs/lcms-2.2:2 )
 	lensfun? ( >=media-libs/lensfun-0.2.5 )
 	openexr? ( media-libs/openexr )
-	png? ( media-libs/libpng )
+	png? ( media-libs/libpng:= )
 	raw? ( =media-libs/libopenraw-0.0.9 )
 	sdl? ( media-libs/libsdl )
 	svg? ( >=gnome-base/librsvg-2.14:2 )
