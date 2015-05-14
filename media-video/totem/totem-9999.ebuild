@@ -8,7 +8,7 @@ GNOME2_LA_PUNT="yes" # plugins are dlopened
 PYTHON_COMPAT=( python2_7 )
 PYTHON_REQ_USE="threads"
 
-inherit autotools eutils gnome2 multilib python-single-r1
+inherit eutils gnome2 multilib python-single-r1
 if [[ ${PV} = 9999 ]]; then
 	VALA_MIN_API_VERSION="0.14"
 	inherit gnome2-live vala
