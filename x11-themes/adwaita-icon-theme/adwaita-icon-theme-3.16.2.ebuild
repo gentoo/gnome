@@ -59,7 +59,7 @@ src_configure() {
 src_install() {
 	gnome2_src_install
 	# Buggy directory due to drop of intltool usage
-	rm -rf ${D}/usr/locale
+	rm -rf "${D}"/usr/locale
 }
 
 pkg_postinst() {
