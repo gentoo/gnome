@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -56,7 +56,7 @@ RDEPEND="${CDEPEND}
 	>=app-portage/layman-2[${PYTHON_USEDEP}]
 	>=sys-apps/portage-2.2[${PYTHON_USEDEP}]
 	entropy? ( >=sys-apps/entropy-234[${PYTHON_USEDEP}] )
-	!systemd? ( sys-auth/consolekit ) 
+	!systemd? ( sys-auth/consolekit )
 "
 
 S="${WORKDIR}/${MY_P}"
