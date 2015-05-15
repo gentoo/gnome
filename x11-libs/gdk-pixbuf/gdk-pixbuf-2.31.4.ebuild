@@ -70,6 +70,11 @@ multilib_src_configure() {
 		$(multilib_native_use_enable introspection) \
 		$(use_with X x11) \
 		--with-libpng
+
+	# work-around gtk-doc out-of-source brokedness
+	if multilib_is_native_abi; then
+		ln -s "${S}"/docs/reference/${PN}/html docs/reference/${PN}/html || die
+	fi
 }
 
 multilib_src_install() {
