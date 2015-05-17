@@ -36,7 +36,6 @@ else
 	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux"
 fi
 
-
 RDEPEND="
 	!<dev-util/gdbus-codegen-${PV}
 	>=virtual/libiconv-0-r1[${MULTILIB_USEDEP}]
