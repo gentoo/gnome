@@ -46,7 +46,7 @@ RDEPEND="
 	samba? ( || ( >=net-fs/samba-3.4.6[smbclient] >=net-fs/samba-4[client] ) )
 	systemd? ( sys-apps/systemd:0= )
 	udev? (
-		cdda? ( || ( dev-libs/libcdio-paranoia <dev-libs/libcdio-0.90[-minimal] ) )
+		cdda? ( dev-libs/libcdio-paranoia )
 		virtual/libgudev:=
 		virtual/libudev:= )
 	udisks? ( >=sys-fs/udisks-1.97:2 )
@@ -85,7 +85,6 @@ src_prepare() {
 		# Uncomment when eautoreconf stops being needed always
 		eautoreconf
 	fi
-
 
 	gnome2_src_prepare
 }
