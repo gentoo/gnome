@@ -37,7 +37,6 @@ DEPEND="${RDEPEND}
 #	dev-libs/gobject-introspection-common
 #	gnome-base/gnome-common
 
-
 # FIXME: need network #424719, recheck
 # need various locales to be present
 RESTRICT="test"
