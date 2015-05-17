@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -11,7 +11,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="Playlist parsing library"
-HOMEPAGE="http://projects.gnome.org/totem/ http://developer.gnome.org/totem-pl-parser/stable/"
+HOMEPAGE="http://developer.gnome.org/totem-pl-parser/stable/"
 
 LICENSE="LGPL-2+"
 SLOT="0/18"
@@ -28,7 +28,7 @@ RDEPEND="
 	dev-libs/gmime:2.6
 	>=net-libs/libsoup-2.43:2.4
 	archive? ( >=app-arch/libarchive-3 )
-	crypt? ( dev-libs/libgcrypt )
+	crypt? ( dev-libs/libgcrypt:0 )
 	introspection? ( >=dev-libs/gobject-introspection-0.9.5 )
 	quvi? ( >=media-libs/libquvi-0.9.1:0= )
 "
