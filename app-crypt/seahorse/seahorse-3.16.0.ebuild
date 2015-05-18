@@ -25,7 +25,11 @@ COMMON_DEPEND="
 
 	net-misc/openssh
 	>=app-crypt/gpgme-1
-	>=app-crypt/gnupg-1.4
+	|| (
+		=app-crypt/gnupg-2.0
+		=app-crypt/gnupg-1.6
+		=app-crypt/gnupg-1.4
+	)
 
 	ldap? ( net-nds/openldap:= )
 	zeroconf? ( >=net-dns/avahi-0.6:= )
