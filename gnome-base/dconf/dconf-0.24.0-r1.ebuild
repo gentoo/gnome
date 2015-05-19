@@ -14,15 +14,20 @@ LICENSE="LGPL-2.1+"
 SLOT="0"
 
 # TODO: coverage ?
-IUSE="test"
+IUSE="test X"
 
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~arm-linux ~x86-linux"
 
-RDEPEND="
+COMMON_DEPEND="
 	>=dev-libs/glib-2.39.1:2
 	sys-apps/dbus
 "
-DEPEND="${RDEPEND}
+
+RDEPEND="${COMMON_DEPEND}
+	X? ( gnome-base/dconf-editor )
+"
+
+DEPEND="${COMMON_DEPEND}
 	dev-libs/libxslt
 	dev-util/gdbus-codegen
 	>=dev-util/gtk-doc-am-1.15
