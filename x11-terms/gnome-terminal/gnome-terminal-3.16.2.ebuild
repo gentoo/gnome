@@ -29,9 +29,11 @@ RDEPEND="
 	gnome-shell? ( gnome-base/gnome-shell )
 	nautilus? ( >=gnome-base/nautilus-3 )
 "
+# itstool required for help/* with non-en LINGUAS, see bug #549358
 DEPEND="${RDEPEND}
 	app-text/yelp-tools
 	dev-util/gdbus-codegen
+	dev-util/itstool
 	>=dev-util/intltool-0.50
 	sys-devel/gettext
 	virtual/pkgconfig
@@ -49,7 +51,6 @@ src_configure() {
 		$(use_enable gnome-shell search-provider) \
 		$(use_with nautilus nautilus-extension) \
 		VALAC=$(type -P true) \
-		ITSTOOL=$(type -P true) \
 		XMLLINT=$(type -P true)
 }
 
