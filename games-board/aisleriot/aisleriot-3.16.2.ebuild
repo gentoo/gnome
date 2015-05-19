@@ -63,7 +63,6 @@ src_configure() {
 		--with-pysol-card-theme-path="${EPREFIX}${GAMES_DATADIR}"/pysolfc \
 		GUILE=$(type -P guile-2.0) \
 		ITSTOOL=$(type -P true) \
-		XMLLINT=$(type -P true) \
 		${myconf}
 }
 
