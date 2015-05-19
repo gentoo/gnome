@@ -30,8 +30,10 @@ RDEPEND="
 	nautilus? ( >=gnome-base/nautilus-3 )
 "
 # itstool required for help/* with non-en LINGUAS, see bug #549358
+# xmllint required for glib-compile-resources, see bug #549304
 DEPEND="${RDEPEND}
 	app-text/yelp-tools
+	dev-libs/libxml2
 	dev-util/gdbus-codegen
 	dev-util/itstool
 	>=dev-util/intltool-0.50
@@ -50,8 +52,7 @@ src_configure() {
 		$(use_enable debug) \
 		$(use_enable gnome-shell search-provider) \
 		$(use_with nautilus nautilus-extension) \
-		VALAC=$(type -P true) \
-		XMLLINT=$(type -P true)
+		VALAC=$(type -P true)
 }
 
 src_install() {
