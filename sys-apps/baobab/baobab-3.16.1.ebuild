@@ -26,6 +26,7 @@ RDEPEND="${COMMON_DEPEND}
 "
 # ${PN} was part of gnome-utils before 3.4
 DEPEND="${COMMON_DEPEND}
+	dev-libs/libxml2
 	>=dev-util/intltool-0.40
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
@@ -34,7 +35,6 @@ DEPEND="${COMMON_DEPEND}
 src_configure() {
 	gnome2_src_configure   \
 		ITSTOOL=$(type -P true) \
-		XMLLINT=$(type -P true) \
 		VALAC=$(type -P true)  \
 		VAPIGEN=$(type -P true)
 }
