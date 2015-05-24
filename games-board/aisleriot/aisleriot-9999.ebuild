@@ -20,7 +20,7 @@ if [[ ${PV} = 9999 ]]; then
 else
 	KEYWORDS="~amd64 ~x86"
 fi
-IUSE="gnome"
+IUSE="gnome qt4"
 
 # FIXME: quartz support?
 # Does not build with guile-2.0.0 or 2.0.1
@@ -32,6 +32,7 @@ COMMON_DEPEND="
 	>=x11-libs/cairo-1.10
 	>=x11-libs/gtk+-3.4:3
 	gnome? ( >=gnome-base/gconf-2.0:2 )
+	qt4? ( >=dev-qt/qtsvg-4.4:4 )
 "
 DEPEND="${COMMON_DEPEND}
 	app-arch/gzip
@@ -53,24 +54,36 @@ src_prepare() {
 }
 
 src_configure() {
-	local myconf
+	local myconf=()
 
 	if use gnome; then
-		myconf="--with-platform=gnome --with-help-method=ghelp"
+		myconf+=(
+			--with-platform=gnome
+			--with-help-method=ghelp
+		)
 	else
-		myconf="--with-platform=gtk-only --with-help-method=library"
+		myconf+=(
+			--with-platform=gtk-only
+			--with-help-method=library
+		)
+	fi
+
+	if use qt4 ; then
+		myconf+=(
+			--with-card-theme-formats=all
+			--with-kde-card-theme-path="${EPREFIX}"/usr/share/apps/carddecks
+		)
+	else
+		myconf+=( --with-card-theme-formats=svg,fixed,pysol )
 	fi
 
 	gnome2_src_configure \
 		--with-gtk=3.0 \
 		--with-guile=2.0 \
 		--enable-sound \
-		--with-card-theme-formats=all \
-		--with-kde-card-theme-path="${EPREFIX}"/usr/share/apps/carddecks \
 		--with-pysol-card-theme-path="${EPREFIX}${GAMES_DATADIR}"/pysolfc \
 		GUILE=$(type -P guile-2.0) \
-		ITSTOOL=$(type -P true) \
-		${myconf}
+		${myconf[@]}
 }
 
 pkg_postinst() {
