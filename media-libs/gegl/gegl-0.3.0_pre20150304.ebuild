@@ -118,6 +118,7 @@ src_configure() {
 		--disable-profile \
 		--disable-silent-rules \
 		--disable-workshop \
+		--program-suffix=-${SLOT} \
 		--with-gdk-pixbuf \
 		--with-pango \
 		--without-libspiro \
