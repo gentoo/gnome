@@ -10,7 +10,7 @@ VALA_USE_DEPEND="vapigen"
 
 PYTHON_COMPAT=( python2_7 )
 
-inherit autotools eutils multibuild python-single-r1 vala
+inherit autotools eutils multibuild python-r1 vala
 
 DESCRIPTION="Set of GObject and Gtk objects for connecting to Spice servers and a client GUI"
 HOMEPAGE="http://spice-space.org http://gitorious.org/spice-gtk"
@@ -87,6 +87,14 @@ src_prepare() {
 	use vala && vala_src_prepare
 }
 
+filter_combination() {
+	if [[ ${MULTIBUILD_VARIANT} = "2.0" ]] && use python ; then
+		python_foreach_impl $@
+	else
+		$@
+	fi
+}
+
 src_configure() {
 	local myconf
 	local audio="no"
@@ -104,7 +112,6 @@ src_configure() {
 		$(use_enable static-libs static) \
 		$(use_enable introspection) \
 		--with-audio=${audio} \
-		$(use_with python) \
 		$(use_with sasl) \
 		$(use_enable smartcard) \
 		$(use_enable usbredir) \
@@ -124,25 +131,37 @@ src_configure() {
 	use gtk3 && MULTIBUILD_VARIANTS+=( 3.0 )
 
 	configure() {
-		[[ ${MULTIBUILD_VARIANT} != "2.0" ]] && myconf+=( --with-python )
-		myconf+=( --with-gtk=${MULTIBUILD_VARIANT} )
-		ECONF_SOURCE="${S}" econf ${myconf[@]}
+		local myconf=()
+
+		if [[ ${MULTIBUILD_ID} =~ "python" ]] ; then
+			myconf+=(
+				$(use_with python)
+				--with-gtk=${MULTIBUILD_VARIANT[1]}
+			)
+		else
+			myconf+=(
+				--without-python
+				--with-gtk=${MULTIBUILD_VARIANT}
+			)
+		fi
+
+		ECONF_SOURCE="${S}" econf $@ ${myconf[@]}
 	}
-	multibuild_foreach_variant run_in_build_dir configure
+	multibuild_foreach_variant filter_combination run_in_build_dir configure ${myconf}
 }
 
 src_compile() {
-	multibuild_foreach_variant run_in_build_dir default
+	multibuild_foreach_variant filter_combination run_in_build_dir default
 }
 
 src_test() {
-	multibuild_foreach_variant run_in_build_dir default
+	multibuild_foreach_variant filter_combination run_in_build_dir default
 }
 
 src_install() {
 	dodoc AUTHORS ChangeLog NEWS README THANKS TODO
 
-	multibuild_foreach_variant run_in_build_dir default
+	multibuild_foreach_variant filter_combination run_in_build_dir default
 
 	# Remove .la files if they're not needed
 	use static-libs || prune_libtool_files
