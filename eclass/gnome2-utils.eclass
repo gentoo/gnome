@@ -95,18 +95,6 @@ gnome2_environment_reset() {
 
 	# GST_REGISTRY is to work around gst utilities trying to read/write /root
 	export GST_REGISTRY="${T}/registry.xml"
-
-	# XXX: code for resetting XDG_* directories should probably be moved into
-	# a separate function in a non-gnome eclass
-	export XDG_DATA_HOME="${T}/.local/share"
-	export XDG_CONFIG_HOME="${T}/.config"
-	export XDG_CACHE_HOME="${T}/.cache"
-	export XDG_RUNTIME_DIR="${T}/run"
-	mkdir -p "${XDG_DATA_HOME}" "${XDG_CONFIG_HOME}" "${XDG_CACHE_HOME}" \
-		"${XDG_RUNTIME_DIR}"
-	# This directory needs to be owned by the user, and chmod 0700
-	# http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
-	chmod 0700 "${XDG_RUNTIME_DIR}"
 }
 
 # @FUNCTION: gnome2_gconf_savelist
