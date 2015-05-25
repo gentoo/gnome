@@ -20,7 +20,7 @@ RDEPEND="
 	>=dev-libs/glib-2.39.3:2
 	gnome-base/gnome-desktop:3=
 	>=gnome-base/librsvg-2.26.0
-	>=dev-libs/libgdata-0.15.2
+	>=dev-libs/libgdata-0.15.2:0=
 	media-libs/babl
 	>=media-libs/gegl-0.3:0.3
 	>=media-libs/grilo-0.2.6:0.2
