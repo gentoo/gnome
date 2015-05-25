@@ -38,7 +38,7 @@ DEPEND="${RDEPEND}
 	dev-util/desktop-file-utils
 	>=dev-util/intltool-0.50.1
 	virtual/pkgconfig
-	test? ( dev-python/dogtail )
+	test? ( dev-util/dogtail )
 "
 # eautoreconf
 #	app-text/yelp-tools

@@ -30,7 +30,7 @@ DEPEND="${DEPEND}
 	dev-libs/libxslt
 	>=dev-util/intltool-0.35
 	virtual/pkgconfig
-	test? ( dev-python/dogtail )
+	test? ( dev-util/dogtail )
 "
 # test? ( dev-util/valgrind )
 

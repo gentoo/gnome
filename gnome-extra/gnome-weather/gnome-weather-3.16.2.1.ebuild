@@ -26,7 +26,7 @@ DEPEND="${RDEPEND}
 	dev-util/appdata-tools
 	>=dev-util/intltool-0.26
 	virtual/pkgconfig
-	test? ( dev-python/dogtail )
+	test? ( dev-util/dogtail )
 "
 
 src_configure() {
