@@ -1,6 +1,12 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
+
+# Gilles Dartiguelongue <eva@gentoo.org> (25 May 2015)
+# webkit fails to build with USE=wayland, bug #549228
+# https://bugs.webkit.org/show_bug.cgi?id=142879
+# https://bugs.webkit.org/show_bug.cgi?id=136831
+net-libs/webkit-gtk wayland
 
 # Gilles Dartiguelongue <eva@gentoo.org> (26 Apr 2014)
 # Gnome 3.12 requires upower-0.99 but this is not ported yet
