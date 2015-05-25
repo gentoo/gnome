@@ -169,6 +169,9 @@ src_configure() {
 		append-cppflags "-D__STDC_LIMIT_MACROS"
 	fi
 
+	# Multiple rendering bugs on youtube, github, etc without this, bug #547224
+	append-flags $(test-flags -fno-strict-aliasing)
+
 	local ruby_interpreter=""
 
 	if has_version "virtual/rubygems[ruby_targets_ruby22]"; then
