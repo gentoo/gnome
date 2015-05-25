@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -20,8 +20,8 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86
 RDEPEND="
 	>=dev-libs/glib-2.28:2
 	>=x11-libs/gdk-pixbuf-2.21:2
-	!<x11-libs/gtk+-2.24.27-r2:2
-	!<x11-libs/gtk+-3.14.13:3
+	!<x11-libs/gtk+-2.24.28-r1:2
+	!<x11-libs/gtk+-3.14.13-r1:3
 "
 DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.50.1
