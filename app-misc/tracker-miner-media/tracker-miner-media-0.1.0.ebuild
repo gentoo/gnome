@@ -17,7 +17,7 @@ IUSE=""
 
 RDEPEND="
 	app-misc/tracker:0=
-	>=dev-libs/libgdata-0.17
+	>=dev-libs/libgdata-0.17:0=
 "
 DEPEND="${DEPEND}
 	>=dev-util/intltool-0.40
