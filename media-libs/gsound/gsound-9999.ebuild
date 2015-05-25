@@ -8,13 +8,20 @@ VALA_USE_DEPEND="vapigen"
 VALA_MIN_API_VERSION="0.20"
 
 inherit gnome2 vala
+if [[ ${PV} = 9999 ]]; then
+	inherit gnome2-live
+fi
 
-DESCRIPTION="thin wrapper around the libcanberra C library"
+DESCRIPTION="Thin GObject wrapper around the libcanberra sound event library"
 HOMEPAGE="https://wiki.gnome.org/Projects/GSound"
 
-LICENSE="GPL-2+"
+LICENSE="LGPL-2.1+"
 SLOT="0"
-KEYWORDS="~amd64"
+if [[ ${PV} = 9999 ]]; then
+	KEYWORDS=""
+else
+	KEYWORDS="~amd64 ~x86"
+fi
 IUSE="+introspection"
 
 # vala setup required for vapigen check
