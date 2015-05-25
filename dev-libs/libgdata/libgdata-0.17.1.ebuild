@@ -8,9 +8,6 @@ VALA_MIN_API_VERSION="0.20"
 VALA_USE_DEPEND="vapigen"
 
 inherit gnome2 vala
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="GLib-based library for accessing online service APIs using the GData protocol"
 HOMEPAGE="https://wiki.gnome.org/Projects/libgdata"
@@ -18,12 +15,7 @@ HOMEPAGE="https://wiki.gnome.org/Projects/libgdata"
 LICENSE="LGPL-2.1+"
 SLOT="0/22" # subslot = libgdata soname version
 IUSE="gnome +introspection static-libs test vala"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 REQUIRED_IUSE="vala? ( introspection )"
 
 # gtk+ is needed for gdk
@@ -48,11 +40,6 @@ DEPEND="${RDEPEND}
 	test? ( net-libs/uhttpmock )
 	vala? ( $(vala_depend) )
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.14 )"
-fi
 
 src_prepare() {
 	vala_src_prepare
