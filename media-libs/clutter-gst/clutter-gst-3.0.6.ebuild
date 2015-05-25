@@ -41,24 +41,6 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 "
 
-src_prepare() {
-	# Make doc parallel installable
-	#cd "${S}"/doc/reference
-	#sed -e "s/\(DOC_MODULE.*=\).*/\1${PN}-${SLOT}/" \
-#		-e "s/\(DOC_MAIN_SGML_FILE.*=\).*/\1${PN}-docs-${SLOT}.sgml/" \
-#		-i Makefile.am Makefile.in || die
-#	sed -e "s/\(<book.*name=\"\)clutter-gst/\1${PN}-${SLOT}/" \
-#		-i html/clutter-gst.devhelp2 || die
-#	mv clutter-gst-docs{,-${SLOT}}.sgml || die
-#	mv clutter-gst-overrides{,-${SLOT}}.txt || die
-#	mv clutter-gst-sections{,-${SLOT}}.txt || die
-#	mv clutter-gst{,-${SLOT}}.types || die
-#	mv html/clutter-gst{,-${SLOT}}.devhelp2
-
-#	cd "${S}"
-	gnome2_src_prepare
-}
-
 src_configure() {
 	gnome2_src_configure \
 		--disable-maintainer-flags \
