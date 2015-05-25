@@ -6,7 +6,7 @@ EAPI=5
 
 PYTHON_COMPAT=( python2_7 )
 
-inherit distutils-r1 gnome2-utils fdo-mime
+inherit eutils distutils-r1 gnome2-utils fdo-mime
 
 DESCRIPTION="GUI test tool and automation framework using accessibility framework"
 HOMEPAGE="https://fedorahosted.org/dogtail/"
@@ -14,7 +14,7 @@ SRC_URI="https://fedorahosted.org/released/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 RDEPEND="
@@ -34,6 +34,11 @@ DEPEND="${DEPEND}"
 src_prepare() {
 	# Install docs in one place
 	sed "s:doc/${PN}:doc/${PF}:" -i setup.py || die
+
+	# Upstream loads resources relative to __file__, which doesn't work with
+	# gentoo's dev-lang/python-exec. So we need to add hard-coded paths.
+	epatch "${FILESDIR}"/${PN}-0.9.0-gentoo-paths.patch
+	sed -e "s:@EPREFIX_USR@:'${EPREFIX}/usr':" -i sniff/sniff || die "sed failed"
 
 	distutils-r1_src_prepare
 }
