@@ -47,7 +47,7 @@ RDEPEND="
 	>=x11-libs/cairo-1.10.2:=
 	>=x11-libs/gtk+-3.14:3[introspection?]
 	x11-libs/libnotify
-	>=x11-libs/pango-1.30.0.0
+	>=x11-libs/pango-1.30.0
 
 	>=x11-libs/gtk+-2.24.10:2
 
@@ -145,7 +145,7 @@ src_configure() {
 	# Arches without JIT support also need this to really disable it in all places
 	use jit || append-cppflags -DENABLE_JIT=0 -DENABLE_YARR_JIT=0 -DENABLE_ASSEMBLER=0
 
-	# It doesn't compile on alpha without this in LDFLAGS
+	# It does not compile on alpha without this in LDFLAGS
 	# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=648761
 	use alpha && append-ldflags "-Wl,--no-relax"
 
