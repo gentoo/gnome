@@ -1,0 +1,42 @@
+--- a/data/Makefile.am	2014-12-23 12:12:18.000000000 +0100
++++ b/data/Makefile.am	2015-05-26 00:31:19.087162440 +0200
+@@ -18,7 +18,8 @@
+ @INTLTOOL_DESKTOP_RULE@
+ 
+ %.desktop.in: %.desktop.in.in
+-	@sed -e "s|@datadir[@]|$(datadir)|" $< > $@
++	@sed -e "s|@libexecdir[@]|${libexecdir}|" \
++	     -e "s|@datadir[@]|$(datadir)|" $< > $@
+ 
+ miner_descdir = $(datadir)/tracker/miners
+ miner_desc_DATA = \
+--- a/data/org.freedesktop.Tracker1.Miner.Media.service.in	2014-12-23 12:12:18.000000000 +0100
++++ b/data/org.freedesktop.Tracker1.Miner.Media.service.in	2015-05-26 00:29:03.137330587 +0200
+@@ -1,3 +1,8 @@
+ [D-BUS Service]
+ Name=org.freedesktop.Tracker1.Miner.Media
+ Exec=@libexecdir@/tracker-miner-media
++
++# Miner details needed for tracker-control
++Path=/org/freedesktop/Tracker1/Miner/Media
++DisplayName=Media
++Comment=Media files miner
+--- a/data/tracker-miner-media.desktop.in.in	2014-12-23 12:12:18.000000000 +0100
++++ b/data/tracker-miner-media.desktop.in.in	2015-05-26 00:30:41.951481510 +0200
+@@ -1,5 +1,14 @@
+ [Desktop Entry]
+ _Name=Media Files
+ _Comment=Online data extractor for media files
+-DBusName=org.freedesktop.Tracker1.Miner.Media
+-DBusPath=/org/freedesktop/Tracker1/Miner/Media
++Icon=
++Exec=@libexecdir@/tracker-miner-media
++Terminal=false
++Type=Application
++Categories=Utility;
++X-GNOME-Autostart-enabled=false
++X-KDE-autostart-after=panel
++X-KDE-StartupNotify=false
++X-KDE-UniqueApplet=true
++NoDisplay=true
++OnlyShowIn=GNOME;KDE;XFCE;Unity;
