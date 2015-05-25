@@ -7,12 +7,3 @@
 # https://bugs.webkit.org/show_bug.cgi?id=142879
 # https://bugs.webkit.org/show_bug.cgi?id=136831
 net-libs/webkit-gtk wayland
-
-# Gilles Dartiguelongue <eva@gentoo.org> (26 Apr 2014)
-# Gnome 3.12 requires upower-0.99 but this is not ported yet
-net-im/telepathy-mission-control upower
-
-# Gilles Dartiguelongue <eva@gentoo.org> (25 Nov 2013)
-# gjs: tests fail and support for it was purely and simply removed in master/1.9
-# python2_6: unit tests fail for this abi, must report usptream
-dev-libs/libpeas gjs python_targets_python2_6
