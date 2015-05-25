@@ -21,7 +21,8 @@ RDEPEND="
 	${PYTHON_DEPS}
 	>=dev-libs/gjs-1.42
 	>=dev-libs/glib-2.44:2
-	>=dev-libs/libgit2-glib-0.22.6
+	dev-libs/libgit2[ssh,threads]
+	>=dev-libs/libgit2-glib-0.22.6[ssh]
 	>=dev-libs/libxml2-2.9
 	dev-python/pygobject:3
 	>=dev-util/devhelp-3.16
