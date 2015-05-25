@@ -48,6 +48,9 @@ DEPEND="${RDEPEND}
 "
 
 src_prepare() {
+	# Fix RDP initialization with recent FreeRDP (from 'master')
+	epatch "${FILESDIR}"/${PN}-3.16.1-freerdp.patch
+
 	vala_src_prepare
 	gnome2_src_prepare
 }
