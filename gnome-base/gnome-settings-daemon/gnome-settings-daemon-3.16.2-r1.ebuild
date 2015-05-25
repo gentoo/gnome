@@ -103,6 +103,9 @@ src_prepare() {
 	# Make colord and wacom optional; requires eautoreconf
 	epatch "${FILESDIR}"/${PN}-3.16.0-optional.patch
 
+	# Fix segfault, https://bugzilla.gnome.org/show_bug.cgi?id=749844
+	epatch "${FILESDIR}"/${PN}-3.16.2-settings_set_display.patch
+
 	epatch_user
 	eautoreconf
 
