@@ -6,7 +6,7 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
-inherit gnome2 readme.gentoo
+inherit eutils gnome2 readme.gentoo
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -16,7 +16,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Terminal/"
 
 LICENSE="GPL-3+"
 SLOT="0"
-IUSE="debug +gnome-shell +nautilus"
+IUSE="debug +gnome-shell +nautilus vanilla"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
@@ -51,6 +51,16 @@ DEPEND="${RDEPEND}
 DOC_CONTENTS="To get previous working directory inherited in new opened
 	tab you will need to add the following line to your ~/.bashrc:\n
 	. /etc/profile.d/vte.sh"
+
+src_prepare() {
+	gnome2_src_prepare
+	if ! use vanilla; then
+		# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=695371
+		epatch "${FILESDIR}"/${PN}-3.16.2-restore-transparency.patch
+		# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=721932
+		epatch "${FILESDIR}"/${PN}-3.16.2-restore-dark.patch
+	fi
+}
 
 src_configure() {
 	local myconf=""
