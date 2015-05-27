@@ -6,7 +6,7 @@ EAPI="5"
 GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
-inherit eutils gnome2
+inherit gnome2
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -83,10 +83,6 @@ fi
 #RESTRICT="test"
 
 src_prepare() {
-	# Fix build with non-bash /bin/sh, see bug #526410
-	epatch "${FILESDIR}"/${PN}-3.14.0-non-bash-support.patch
-
-	eautoreconf
 	gnome2_src_prepare
 
 	# Do not depend on adwaita-icon-theme, bug #326855, #391859
