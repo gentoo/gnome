@@ -28,7 +28,7 @@ COMMON_DEPEND="
 	>=media-libs/lcms-2.2:2
 	>=media-libs/libcanberra-0.10[gtk3]
 	media-libs/libexif
-	media-libs/tiff:=
+	media-libs/tiff:0=
 
 	>=x11-libs/gtk+-3.3.8:3
 	>=x11-libs/vte-0.25.1:2.91
