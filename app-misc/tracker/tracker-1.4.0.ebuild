@@ -130,6 +130,9 @@ pkg_setup() {
 }
 
 src_prepare() {
+	# Fix position of AM_CONDITIONAL, bug #550910, upstream bug #750368
+	epatch "${FILESDIR}"/${PN}-1.4.0-have-gstreamer-fix.patch
+
 	# Don't run 'firefox --version' or 'thunderbird --version'; it results in
 	# access violations on some setups (bug #385347, #385495).
 	create_version_script "www-client/firefox" "Mozilla Firefox" firefox-version.sh
@@ -209,7 +212,7 @@ src_configure() {
 		$(use_enable pdf poppler) \
 		$(use_enable playlist) \
 		$(use_enable rss miner-rss) \
-		$(use_enable stemmer) \
+		$(use_enable stemmer libstemmer) \
 		$(use_enable test functional-tests) \
 		$(use_enable test unit-tests) \
 		$(use_enable thunderbird miner-thunderbird) \
