@@ -35,6 +35,10 @@ src_prepare() {
 	# Install docs in one place
 	sed "s:doc/${PN}:doc/${PF}:" -i setup.py || die
 
+	# Fix current user detection, upstream bug #46
+	# Also, respect TMPDIR
+	epatch "${FILESDIR}"/${PN}-0.9.0-get-user.patch
+
 	# Upstream loads resources relative to __file__, which doesn't work with
 	# gentoo's dev-lang/python-exec. So we need to add hard-coded paths.
 	epatch "${FILESDIR}"/${PN}-0.9.0-gentoo-paths.patch
