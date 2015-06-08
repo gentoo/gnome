@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -23,7 +23,7 @@ RDEPEND="
 	gnome-base/gnome-desktop:3
 	>=gnome-base/gsettings-desktop-schemas-3.11.5
 	net-libs/libsoup:2.4
-	>=x11-libs/gtk+-3.14.1:3
+	>=x11-libs/gtk+-3.16:3
 "
 DEPEND="${DEPEND}
 	app-text/docbook-xml-dtd:4.2
