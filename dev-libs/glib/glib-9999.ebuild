@@ -110,11 +110,6 @@ src_prepare() {
 	# Prevent build failure in stage3 where pkgconfig is not available, bug #481056
 	mv -f "${WORKDIR}"/pkg-config-*/pkg.m4 "${S}"/m4macros/ || die
 
-	# Fix gmodule issues on fbsd; bug #184301, upstream bug #107626
-	# Upstream doesn't even know if this is needed, looks like openBSD
-	# people is not needing it
-	#epatch "${FILESDIR}"/${PN}-2.12.12-fbsd.patch
-
 	if use test; then
 		# Do not try to remove files on live filesystem, upstream bug #619274
 		sed 's:^\(.*"/desktop-app-info/delete".*\):/*\1*/:' \
