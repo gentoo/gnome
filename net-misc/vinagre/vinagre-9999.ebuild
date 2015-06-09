@@ -4,9 +4,9 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
-VALA_MIN_API_VERSION=0.18
+VALA_MIN_API_VERSION="0.18"
 
-inherit gnome2 vala
+inherit gnome2 linux-info vala
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -21,7 +21,7 @@ if [[ ${PV} = 9999 ]]; then
 else
 	KEYWORDS="~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86"
 fi
-IUSE="avahi rdp +ssh spice +telepathy"
+IUSE="rdp +ssh spice +telepathy zeroconf"
 
 # cairo used in vinagre-tab
 # gdk-pixbuf used all over the place
@@ -35,7 +35,6 @@ RDEPEND="
 	x11-libs/gdk-pixbuf:2
 	x11-themes/hicolor-icon-theme
 
-	avahi? ( >=net-dns/avahi-0.6.26[dbus,gtk3] )
 	rdp? ( net-misc/freerdp )
 	ssh? ( >=x11-libs/vte-0.20:2.91 )
 	spice? (
@@ -44,6 +43,7 @@ RDEPEND="
 	telepathy? (
 		dev-libs/dbus-glib
 		>=net-libs/telepathy-glib-0.11.6 )
+	zeroconf? ( >=net-dns/avahi-0.6.26[dbus,gtk3] )
 "
 DEPEND="${RDEPEND}
 	>=dev-lang/perl-5
@@ -60,6 +60,12 @@ if [[ ${PV} = 9999 ]]; then
 		gnome-base/gnome-common"
 fi
 
+pkg_pretend() {
+	# Needed for VNC ssh tunnel, bug #518574
+	CONFIG_CHECK="~IPV6"
+	check_extra_config
+}
+
 src_prepare() {
 	vala_src_prepare
 	gnome2_src_prepare
@@ -70,10 +76,10 @@ src_configure() {
 	[[ ${PV} = 9999 ]] || myconf="ITSTOOL=$(type -P true)"
 	DOCS="AUTHORS ChangeLog ChangeLog.pre-git NEWS README"
 	gnome2_src_configure \
-		$(use_with avahi) \
 		$(use_enable rdp) \
 		$(use_enable ssh) \
 		$(use_enable spice) \
 		$(use_with telepathy) \
+		$(use_with zeroconf avahi) \
 		${myconf}
 }
