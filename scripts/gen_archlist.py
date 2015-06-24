@@ -63,7 +63,6 @@ STABLE = True
 ###############
 # Preparation #
 ###############
-ALL_CPV_KWS = []
 
 ARCHES = None
 if STABLE:
@@ -299,10 +298,15 @@ def kws_wanted(current_kws, target_kws):
     return wanted
 
 
-def gen_cpv_kws(cpv, kws_aim, depgraph):
-    depgraph.add(cpv)
-    cpv_kw_list = [[cpv, kws_wanted(get_kws(cpv, arches=ALL_ARCHES), kws_aim)]]
-    if not cpv_kw_list[0][1]:
+def gen_cpv_kws(cpv, kws_aim, depgraph, check_dependencies, new_release):
+    """Build a list of CPV-Keywords.
+
+    If `check_dependencies` is True, append dependencies that need to be
+    updated to the list.
+    """
+    wanted = kws_wanted(get_kws(cpv, arches=ALL_ARCHES), kws_aim)
+
+    if not wanted:
         # This happens when cpv has less keywords than kws_aim
         # Usually happens when a dep was an || dep, or under a USE-flag
         # which is masked in some profiles. We make all deps strict in
@@ -313,23 +317,33 @@ def gen_cpv_kws(cpv, kws_aim, depgraph):
             debug('MEH')
             nothing_to_be_done(cpv, type='dep')
             return None
+
         wanted = get_kws(cpv, arches=make_unstable(kws_aim))
-        cpv_kw_list = [[cpv, wanted]]
-    if CHECK_DEPS and not issystempackage(cpv):
-        deps = get_best_deps(cpv, cpv_kw_list[0][1], release=NEW_REL)
+
+    cpv_kw_list = [(cpv, wanted)]
+
+    if check_dependencies and not issystempackage(cpv):
+        deps = get_best_deps(cpv, wanted, release=new_release)
         if EXTREME_DEBUG:
             debug('The deps of %s are %s' % (cpv, deps))
+
         for dep in deps:
             if dep in depgraph:
+                # XXX: assumes that `kws_aim` of previously added cpv is
+                #      larger than current
                 continue
+
             depgraph.add(dep)
-            # Assumes that keyword deps are OK if STABLE
-            dep_deps = gen_cpv_kws(dep, cpv_kw_list[0][1], depgraph)
+            # XXX: Assumes that dependencies are keyworded the same than cpv
+            dep_deps = gen_cpv_kws(dep, wanted, depgraph, check_dependencies,
+                                   new_release)
             dep_deps.reverse()
-            for i in dep_deps:
-                # Make sure we don't already have the same [cpv, [kws]]
-                if i not in ALL_CPV_KWS and i not in cpv_kw_list:
-                    cpv_kw_list.append(i)
+
+            for cpv_kw_tuple in dep_deps:
+                # Make sure we don't already have the same [(cpv, kws)]
+                if cpv_kw_tuple not in cpv_kw_list:
+                    cpv_kw_list.append(cpv_kw_tuple)
+
     cpv_kw_list.reverse()
     return cpv_kw_list
 
@@ -533,7 +547,10 @@ def main():
                 nothing_to_be_done(cpv)
                 continue
 
-            ALL_CPV_KWS += fix_nesting(gen_cpv_kws(cpv, kws_missing, set()))
+            ALL_CPV_KWS += fix_nesting(
+                gen_cpv_kws(cpv, kws_missing, set([cpv]),
+                            args.check_dependencies, args.new_version)
+            )
             if args.check_dependencies:
                 ALL_CPV_KWS.append(LINE_SEP)
 
