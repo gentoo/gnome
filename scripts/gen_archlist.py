@@ -10,10 +10,10 @@
 # You can use test-data/package-list to test the script out.
 #
 # NOTE: This script assumes that there are no broken keyword deps
-# 
+#
 # BUGS:
-# * belongs_release() is a very primitive function, which means usage of old/new
-#   release numbers gives misleading output
+# * belongs_release() is a very primitive function, which means usage of
+#   old/new release numbers gives misleading output
 # * Will show multiple versions of the same package in the output sometimes.
 #   This happens when a cp is specified in the cpv list, and is resolved as
 #   a dependency as well.
@@ -22,25 +22,29 @@
 #
 
 from __future__ import division
-import os, sys
+
+import os
+import sys
+
 import portage
 
-###############
-## Constants ##
-###############
-#GNOME_OVERLAY = PORTDB.getRepositoryPath('gnome')
+#############
+# Constants #
+#############
+# GNOME_OVERLAY = PORTDB.getRepositoryPath('gnome')
 portage.portdb.porttrees = [portage.settings['PORTDIR']]
 STABLE_ARCHES = ('alpha', 'amd64', 'arm', 'hppa', 'ia64', 'm68k', 'ppc',
-        'ppc64', 's390', 'sh', 'sparc', 'x86')
-UNSTABLE_ARCHES = ('~alpha', '~amd64', '~arm', '~hppa', '~ia64', '~m68k', '~ppc',
-        '~ppc64', '~s390', '~sh', '~sparc', '~x86', '~x86-fbsd')
-ALL_ARCHES = STABLE_ARCHES+UNSTABLE_ARCHES
+                 'ppc64', 's390', 'sh', 'sparc', 'x86')
+UNSTABLE_ARCHES = ('~alpha', '~amd64', '~arm', '~hppa', '~ia64', '~m68k',
+                   '~ppc', '~ppc64', '~s390', '~sh', '~sparc', '~x86',
+                   '~x86-fbsd')
+ALL_ARCHES = STABLE_ARCHES + UNSTABLE_ARCHES
 SYSTEM_PACKAGES = []
 LINE_SEP = ''
 
-##############
-## Settings ##
-##############
+############
+# Settings #
+############
 DEBUG = False
 EXTREME_DEBUG = False
 CHECK_DEPS = False
@@ -48,40 +52,45 @@ APPEND_SLOTS = False
 # Check for stable keywords
 STABLE = True
 
-#################
-## Preparation ##
-#################
+###############
+# Preparation #
+###############
 ALL_CPV_KWS = []
 OLD_REL = None
 NEW_REL = None
+
 if __name__ == "__main__":
     try:
-        CP_FILE = sys.argv[1] # File which has the cp list
+        CP_FILE = sys.argv[1]  # File which has the cp list
     except IndexError:
-        print 'Usage: %s <file> [old_rel] [new_rel]' % sys.argv[0]
-        print 'Where <file> is a file with a category/package list'
-        print '  [old_rel] is an optional argument for specifying which release cycle'
-        print '            to use to get the cpv which has the keyword we need'
-        print '            i.e., which cpvs will we get the list of keywords from?'
-        print '  [new_rel] is an optional argument for specifying which release cycle'
-        print '            to use to get the latest cpv on which we want keywords'
-        print '            i.e., which cpvs will go in the list?'
-        print 'WARNING: the logic for old_rel & new_rel is very incomplete. See TODO'
+        print """Usage: %s <file> [old_rel] [new_rel]
+
+Where <file> is a file with a category/package list
+  [old_rel] is an optional argument for specifying which release cycle
+            to use to get the cpv which has the keyword we need
+            i.e., which cpvs will we get the list of keywords from?
+  [new_rel] is an optional argument for specifying which release cycle
+            to use to get the latest cpv on which we want keywords
+            i.e., which cpvs will go in the list?
+WARNING: the logic for old_rel & new_rel is very incomplete. See TODO
+""" % sys.argv[0]
         sys.exit(0)
+
 if len(sys.argv) > 2:
     OLD_REL = sys.argv[2]
     if len(sys.argv) > 3:
         NEW_REL = sys.argv[3]
+
 ARCHES = None
 if STABLE:
     ARCHES = STABLE_ARCHES
 else:
     ARCHES = UNSTABLE_ARCHES
 
-if os.environ.has_key('CHECK_DEPS'):
+if 'CHECK_DEPS' in os.environ:
     CHECK_DEPS = os.environ['CHECK_DEPS']
 
-if os.environ.has_key('APPEND_SLOTS'):
+if 'APPEND_SLOTS' in os.environ:
     APPEND_SLOTS = os.environ['APPEND_SLOTS']
 
 if not STABLE:
@@ -89,12 +98,14 @@ if not STABLE:
     print 'Please set STABLE to True'
     sys.exit(1)
 
-######################
-## Define Functions ##
-######################
+
+####################
+# Define Functions #
+####################
 def flatten(list, sep=' '):
     "Given a list, returns a flat string separated by 'sep'"
     return sep.join(list)
+
 
 def n_sep(n, sep=' '):
     tmp = ''
@@ -102,16 +113,19 @@ def n_sep(n, sep=' '):
         tmp += sep
     return tmp
 
+
 def debug(*strings):
     from portage.output import EOutput
     ewarn = EOutput().ewarn
     ewarn(flatten(strings))
+
 
 def nothing_to_be_done(atom, type='cpv'):
     if STABLE:
         debug('%s %s: already stable, ignoring...' % (type, atom))
     else:
         debug('%s %s: already keyworded, ignoring...' % (type, atom))
+
 
 def make_unstable(kws):
     "Takes a keyword list, and returns a list with them all unstable"
@@ -123,6 +137,7 @@ def make_unstable(kws):
             nkws.append(kw)
     return nkws
 
+
 def belongs_release(cpv, release):
     "Check if the given cpv belongs to the given release"
     # FIXME: This failure function needs better logic
@@ -130,11 +145,13 @@ def belongs_release(cpv, release):
         raise Exception('This function is utterly useless with RECURSIVE mode')
     return get_ver(cpv).startswith(release)
 
+
 def issystempackage(cpv):
     for i in SYSTEM_PACKAGES:
         if cpv.startswith(i):
             return True
     return False
+
 
 def get_kws(cpv, arches=ARCHES):
     """
@@ -146,6 +163,7 @@ def get_kws(cpv, arches=ARCHES):
             kws.append(kw)
     return kws
 
+
 def do_not_want(cpv, release=None):
     """
     Check if a package atom is p.masked or has empty keywords, or does not
@@ -156,6 +174,7 @@ def do_not_want(cpv, release=None):
         return True
     return False
 
+
 def match_wanted_atoms(atom, release=None):
     """
     Given an atom and a release, return all matching wanted atoms ordered in
@@ -163,7 +182,8 @@ def match_wanted_atoms(atom, release=None):
     """
     atoms = []
     # xmatch is stupid, and ignores ! in an atom...
-    if atom.startswith('!'): return []
+    if atom.startswith('!'):
+        return []
     for cpv in portage.portdb.xmatch('match-all', atom):
         if do_not_want(cpv, release):
             continue
@@ -171,14 +191,15 @@ def match_wanted_atoms(atom, release=None):
     atoms.reverse()
     return atoms
 
+
 def get_best_deps(cpv, kws, release=None):
     """
-    Returns a list of the best deps of a cpv, optionally matching a release, and
-    with max of the specified keywords
+    Returns a list of the best deps of a cpv, optionally matching a release,
+    and with max of the specified keywords
     """
     atoms = portage.portdb.aux_get(cpv, ['DEPEND', 'RDEPEND', 'PDEPEND'])
-    atoms = ' '.join(atoms).split() # consolidate atoms
-    atoms = list(set(atoms)) # de-duplicate
+    atoms = ' '.join(atoms).split()  # consolidate atoms
+    atoms = list(set(atoms))  # de-duplicate
     deps = set()
     tmp = []
     for atom in atoms:
@@ -187,7 +208,8 @@ def get_best_deps(cpv, kws, release=None):
             continue
         ret = match_wanted_atoms(atom, release)
         if not ret:
-            if DEBUG: debug('We encountered an irrelevant atom: %s' % atom)
+            if DEBUG:
+                debug('We encountered an irrelevant atom: %s' % atom)
             continue
         best_kws = ['', []]
         for i in ret:
@@ -197,7 +219,8 @@ def get_best_deps(cpv, kws, release=None):
                 cur_ukws = set(make_unstable(get_kws(i, arches=kws+ukws)))
                 if cur_ukws.intersection(ukws) != set(ukws):
                     best_kws = 'none'
-                    if DEBUG: debug('Insufficient unstable keywords in: %s' % i)
+                    if DEBUG:
+                        debug('Insufficient unstable keywords in: %s' % i)
                     continue
             cur_match_kws = get_kws(i, arches=kws)
             if set(cur_match_kws) == set(kws):
@@ -212,14 +235,16 @@ def get_best_deps(cpv, kws, release=None):
                 # keywords that *we checked* (i.e. kws).
                 best_kws = [i, []]
         if best_kws == 'alreadythere':
-            if DEBUG: nothing_to_be_done(atom, type='dep')
+            if DEBUG:
+                nothing_to_be_done(atom, type='dep')
             continue
         elif best_kws == 'none':
             continue
         elif not best_kws[0]:
             # We get this when the if STABLE: block above rejects everything.
-            # This means that this atom does not have any versions with unstable
-            # keywords matching the unstable keywords of the cpv that pulls it.
+            # This means that this atom does not have any versions with
+            # unstable keywords matching the unstable keywords of the cpv
+            # that pulls it.
             # This mostly happens because an || or use dep exists. However, we
             # make such deps strict while parsing
             # XXX: We arbitrarily select the most recent version for this case
@@ -239,14 +264,15 @@ def get_best_deps(cpv, kws, release=None):
                 if len(cur_kws) > len(best_kws[1]):
                     best_kws = [i, cur_kws]
                 elif not best_kws[0]:
-                    # This means that none of the versions have any of the stable
-                    # keywords *at all*. No choice but to arbitrarily select the
-                    # latest version in that case.
+                    # This means that none of the versions have any of
+                    # the stable keywords *at all*. No choice but to
+                    # arbitrarily select the latest version in that case.
                     best_kws = [i, []]
             deps.add(best_kws[0])
         else:
             deps.add(best_kws[0])
     return list(deps)
+
 
 def max_kws(cpv, release=None):
     """
@@ -259,7 +285,7 @@ def max_kws(cpv, release=None):
     Returns None if no cpv has keywords
     """
     current_kws = get_kws(cpv, arches=ALL_ARCHES)
-    maximum_kws = [] # Maximum keywords that a cpv has
+    maximum_kws = []  # Maximum keywords that a cpv has
     missing_kws = []
     for atom in match_wanted_atoms('<='+cpv, release):
         kws = get_kws(atom)
@@ -277,6 +303,7 @@ def max_kws(cpv, release=None):
         # No cpv has the keywords we need
         return None
 
+
 # FIXME: This is broken
 def kws_wanted(cpv_kws, prev_cpv_kws):
     "Generate a list of kws that need to be updated"
@@ -289,13 +316,15 @@ def kws_wanted(cpv_kws, prev_cpv_kws):
             wanted.append(kw)
     return wanted
 
+
 def gen_cpv_kws(cpv, kws_aim, depgraph):
     depgraph.add(cpv)
     cpv_kw_list = [[cpv, kws_wanted(get_kws(cpv, arches=ALL_ARCHES), kws_aim)]]
     if not cpv_kw_list[0][1]:
         # This happens when cpv has less keywords than kws_aim
-        # Usually happens when a dep was an || dep, or under a USE-flag which is
-        # masked in some profiles. We make all deps strict in get_best_deps()
+        # Usually happens when a dep was an || dep, or under a USE-flag
+        # which is masked in some profiles. We make all deps strict in
+        # get_best_deps()
         # So... let's just stabilize it on all arches we can, and ignore for
         # keywording since we have no idea about that.
         if not STABLE:
@@ -322,6 +351,7 @@ def gen_cpv_kws(cpv, kws_aim, depgraph):
     cpv_kw_list.reverse()
     return cpv_kw_list
 
+
 def fix_nesting(nested_list):
     """Takes a list of unknown nesting depth, and gives a nice list with each
     element of the form [cpv, [kws]]"""
@@ -340,6 +370,7 @@ def fix_nesting(nested_list):
         index += 1
     return nice_list
 
+
 def consolidate_dupes(cpv_kws):
     """
     Consolidate duplicate cpvs with differing keywords
@@ -355,7 +386,7 @@ def consolidate_dupes(cpv_kws):
         if type(each) is not list:
             continue
         else:
-            if not cpv_indices.has_key(each[0]):
+            if each[0] not in cpv_indices:
                 cpv_indices[each[0]] = []
             cpv_indices[each[0]].append(cpv_kws.index(each))
 
@@ -388,6 +419,7 @@ def consolidate_dupes(cpv_kws):
 
     return deduped_cpv_kws
 
+
 def get_per_slot_cpvs(cpvs):
     "Classify the given cpvs into slots, and yield the best atom for each slot"
     slots = set()
@@ -398,6 +430,7 @@ def get_per_slot_cpvs(cpvs):
         slots.add(slot)
         yield cpv
 
+
 def append_slots(cpv_kws):
     "Append slots at the end of cpv atoms"
     slotifyed_cpv_kws = []
@@ -406,6 +439,7 @@ def append_slots(cpv_kws):
         cpv = "%s:%s" % (cpv, slot)
         slotifyed_cpv_kws.append([cpv, kws])
     return slotifyed_cpv_kws
+
 
 # FIXME: This is broken
 def prettify(cpv_kws):
@@ -454,9 +488,10 @@ def prettify(cpv_kws):
         pretty_list.append([each[0], each[1]])
     return pretty_list
 
-#######################
-## Use the Functions ##
-#######################
+
+#####################
+# Use the Functions #
+#####################
 # cpvs that will make it to the final list
 if __name__ == "__main__":
     index = 0
@@ -485,8 +520,8 @@ if __name__ == "__main__":
                 # Current cpv has the max keywords => nothing to do
                 nothing_to_be_done(cpv)
                 continue
-            elif kws_missing == None:
-                debug ('No versions with stable keywords for %s' % cpv)
+            elif kws_missing is None:
+                debug('No versions with stable keywords for %s' % cpv)
                 # No cpv with stable keywords => select latest
                 arches = make_unstable(ARCHES)
                 kws_missing = [kw[1:] for kw in get_kws(cpv, arches)]
