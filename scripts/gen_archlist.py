@@ -493,10 +493,9 @@ def prettify(cpv_kws):
 # Use the Functions #
 #####################
 # cpvs that will make it to the final list
-if __name__ == "__main__":
-    index = 0
-    array = []
-
+def main():
+    """Where the magic happens!"""
+    ALL_CPV_KWS = []
     for i in open(CP_FILE).readlines():
         cp = i[:-1]
         if cp.startswith('#') or cp.isspace() or not cp:
@@ -535,3 +534,7 @@ if __name__ == "__main__":
 
     for i in prettify(ALL_CPV_KWS):
         print i[0], flatten(i[1])
+
+
+if __name__ == '__main__':
+    main()
