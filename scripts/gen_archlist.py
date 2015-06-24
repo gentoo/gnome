@@ -248,8 +248,9 @@ def get_best_deps(cpv, kws, release=None):
 
 
 def max_kws(cpv, release=None):
-    """
-    Given a cpv, find the intersection of "most keywords it can have" and
+    """Build `cpv` maximum expected keyword coverage.
+
+    Find the intersection of "most keywords it can have" and
     "keywords it has", and returns a sorted list
 
     If STABLE; makes sure it has unstable keywords right now
@@ -257,21 +258,29 @@ def max_kws(cpv, release=None):
     Returns [] if current cpv has best keywords
     Returns None if no cpv has keywords
     """
-    current_kws = get_kws(cpv, arches=ALL_ARCHES)
-    maximum_kws = []  # Maximum keywords that a cpv has
-    missing_kws = []
-    for atom in match_wanted_atoms('<='+cpv, release):
+    current_kws = set(get_kws(cpv, arches=ALL_ARCHES))
+    maximum_kws = set()  # Maximum keywords that a cpv has
+    missing_kws = set()
+
+    # Build best keyword coverage for `cpv`
+    for atom in match_wanted_atoms('<=' + cpv, release):
         kws = get_kws(atom)
-        if len(kws) > len(maximum_kws):
-            maximum_kws = kws
-        for kw in kws:
-            if kw not in missing_kws+current_kws:
-                if STABLE and '~'+kw not in current_kws:
-                    continue
-                missing_kws.append(kw)
-    missing_kws.sort()
-    if maximum_kws != []:
-        return missing_kws
+
+        # Consider stable keywords only
+        if STABLE:
+            kws = [kwd for kwd in kws if not kwd.startswith('~')]
+
+        maximum_kws.update(set(kws))
+
+    # Build list of keywords missing to achieve best coverage
+    for kwd in maximum_kws:
+        # Skip stable keywords with no corresponding unstable keyword in `cpv`
+        if STABLE and '~' + kwd not in current_kws:
+            continue
+        missing_kws.add(kwd)
+
+    if maximum_kws:
+        return sorted(missing_kws)
     else:
         # No cpv has the keywords we need
         return None
@@ -513,15 +522,17 @@ def main():
                 continue
 
             kws_missing = max_kws(cpv, release=args.old_version)
-            if kws_missing == []:
-                # Current cpv has the max keywords => nothing to do
-                nothing_to_be_done(cpv)
-                continue
-            elif kws_missing is None:
+            if kws_missing is None:
                 debug('No versions with stable keywords for %s' % cpv)
                 # No cpv with stable keywords => select latest
                 arches = make_unstable(ARCHES)
                 kws_missing = [kw[1:] for kw in get_kws(cpv, arches)]
+
+            elif not kws_missing:
+                # Current cpv has the max keywords => nothing to do
+                nothing_to_be_done(cpv)
+                continue
+
             ALL_CPV_KWS += fix_nesting(gen_cpv_kws(cpv, kws_missing, set()))
             if args.check_dependencies:
                 ALL_CPV_KWS.append(LINE_SEP)
