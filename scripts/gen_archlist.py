@@ -23,6 +23,7 @@
 
 from __future__ import division
 
+import argparse
 import os
 import sys
 
@@ -50,53 +51,25 @@ EXTREME_DEBUG = False
 CHECK_DEPS = False
 APPEND_SLOTS = False
 # Check for stable keywords
+# This is intended to switch between keywordreq (for ~arch)
+# and stablereq (for moving from ~arch to arch)
 STABLE = True
+
+# if not STABLE:
+#     print 'Currently broken for anything except STABLEREQ'
+#     print 'Please set STABLE to True'
+#     sys.exit(1)
 
 ###############
 # Preparation #
 ###############
 ALL_CPV_KWS = []
-OLD_REL = None
-NEW_REL = None
-
-if __name__ == "__main__":
-    try:
-        CP_FILE = sys.argv[1]  # File which has the cp list
-    except IndexError:
-        print """Usage: %s <file> [old_rel] [new_rel]
-
-Where <file> is a file with a category/package list
-  [old_rel] is an optional argument for specifying which release cycle
-            to use to get the cpv which has the keyword we need
-            i.e., which cpvs will we get the list of keywords from?
-  [new_rel] is an optional argument for specifying which release cycle
-            to use to get the latest cpv on which we want keywords
-            i.e., which cpvs will go in the list?
-WARNING: the logic for old_rel & new_rel is very incomplete. See TODO
-""" % sys.argv[0]
-        sys.exit(0)
-
-if len(sys.argv) > 2:
-    OLD_REL = sys.argv[2]
-    if len(sys.argv) > 3:
-        NEW_REL = sys.argv[3]
 
 ARCHES = None
 if STABLE:
     ARCHES = STABLE_ARCHES
 else:
     ARCHES = UNSTABLE_ARCHES
-
-if 'CHECK_DEPS' in os.environ:
-    CHECK_DEPS = os.environ['CHECK_DEPS']
-
-if 'APPEND_SLOTS' in os.environ:
-    APPEND_SLOTS = os.environ['APPEND_SLOTS']
-
-if not STABLE:
-    print 'Currently broken for anything except STABLEREQ'
-    print 'Please set STABLE to True'
-    sys.exit(1)
 
 
 ####################
@@ -495,8 +468,32 @@ def prettify(cpv_kws):
 # cpvs that will make it to the final list
 def main():
     """Where the magic happens!"""
+    parser = argparse.ArgumentParser(
+        description='Generate a stabilization request for multiple packages'
+    )
+    parser.add_argument('-d', '--debug', action='store_true', default=False,
+                        help='Make output more verbose')
+    parser.add_argument('--extreme-debug', action='store_true', default=False,
+                        help='Make output even more verbose')
+    parser.add_argument('--check-dependencies',
+                        action='store_true', default=False,
+                        help='Check dependencies are keyworded and if not,'
+                             ' add them to the list')
+    parser.add_argument('--append-slots', action='store_true', default=False,
+                        help='Append slots to CPVs output')
+    parser.add_argument('file', help='File to read CP from')
+    parser.add_argument('old_version', nargs='?',
+                        help='An optional argument specifying which release'
+                             ' cycle to use to get CPVs which has the'
+                             ' reference keywords for stabilization.')
+    parser.add_argument('new_version', nargs='?',
+                        help='An optional argument specifying which release'
+                             ' cycle to use to get the latest CPVs that needs'
+                             ' to be stabilized')
+    args = parser.parse_args()
+
     ALL_CPV_KWS = []
-    for i in open(CP_FILE).readlines():
+    for i in open(args.file).readlines():
         cp = i[:-1]
         if cp.startswith('#') or cp.isspace() or not cp:
             ALL_CPV_KWS.append(cp)
@@ -508,13 +505,14 @@ def main():
             atoms = [cp]
         else:
             # Get all the atoms matching the given cp
-            cpvs = match_wanted_atoms(cp, release=NEW_REL)
+            cpvs = match_wanted_atoms(cp, release=args.new_version)
 
         for cpv in get_per_slot_cpvs(cpvs):
             if not cpv:
                 debug('%s: Invalid cpv' % cpv)
                 continue
-            kws_missing = max_kws(cpv, release=OLD_REL)
+
+            kws_missing = max_kws(cpv, release=args.old_version)
             if kws_missing == []:
                 # Current cpv has the max keywords => nothing to do
                 nothing_to_be_done(cpv)
@@ -525,11 +523,11 @@ def main():
                 arches = make_unstable(ARCHES)
                 kws_missing = [kw[1:] for kw in get_kws(cpv, arches)]
             ALL_CPV_KWS += fix_nesting(gen_cpv_kws(cpv, kws_missing, set()))
-            if CHECK_DEPS:
+            if args.check_dependencies:
                 ALL_CPV_KWS.append(LINE_SEP)
 
     ALL_CPV_KWS = consolidate_dupes(ALL_CPV_KWS)
-    if APPEND_SLOTS:
+    if args.append_slots:
         ALL_CPV_KWS = append_slots(ALL_CPV_KWS)
 
     for i in prettify(ALL_CPV_KWS):
