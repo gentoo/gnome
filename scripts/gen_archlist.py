@@ -131,15 +131,21 @@ def get_kws(cpv, arches=ARCHES):
     ]
 
 
-def do_not_want(cpv, release=None):
+def can_stabilize_cpv(cpv, release=None):
+    """Whether `cpv` matches stabilization criteria.
+
+    `cpv` must:
+    * belong to the release
+    * not be p.masked
+    * have keywords
     """
-    Check if a package atom is p.masked or has empty keywords, or does not
-    belong to a release
-    """
-    if release and not belongs_release(cpv, release) or not \
-        portage.portdb.visible([cpv]) or not get_kws(cpv, arches=ALL_ARCHES):
-        return True
-    return False
+    if release and not belongs_release(cpv, release):
+        return False
+    if not portage.portdb.visible([cpv]):
+        return False
+    if not get_kws(cpv, arches=ALL_ARCHES):
+        return False
+    return True
 
 
 def match_wanted_atoms(atom, release=None):
@@ -155,7 +161,7 @@ def match_wanted_atoms(atom, release=None):
 
     return [
         cpv for cpv in reversed(portage.portdb.xmatch('match-all', atom))
-        if not do_not_want(cpv, release)
+        if can_stabilize_cpv(cpv, release)
     ]
 
 
