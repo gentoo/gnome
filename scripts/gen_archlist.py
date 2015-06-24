@@ -101,14 +101,11 @@ def nothing_to_be_done(atom, type='cpv'):
 
 
 def make_unstable(kws):
-    "Takes a keyword list, and returns a list with them all unstable"
-    nkws = []
-    for kw in kws:
-        if not kw.startswith('~'):
-            nkws.append('~'+kw)
-        else:
-            nkws.append(kw)
-    return nkws
+    """Transform `kws` into a list of unstable keywords."""
+    return [
+        kwd if kwd.startswith('~') else '~' + kwd
+        for kwd in kws
+    ]
 
 
 def belongs_release(cpv, release):
@@ -127,14 +124,11 @@ def issystempackage(cpv):
 
 
 def get_kws(cpv, arches=ARCHES):
-    """
-    Returns an array of KEYWORDS matching 'arches'
-    """
-    kws = []
-    for kw in portage.portdb.aux_get(cpv, ['KEYWORDS'])[0].split():
-        if kw in arches:
-            kws.append(kw)
-    return kws
+    """Return keywords of `cpv` filtered by `arches`."""
+    return [
+        kwd for kwd in portage.portdb.aux_get(cpv, ['KEYWORDS'])[0].split()
+        if kwd in arches
+    ]
 
 
 def do_not_want(cpv, release=None):
@@ -149,20 +143,20 @@ def do_not_want(cpv, release=None):
 
 
 def match_wanted_atoms(atom, release=None):
+    """Return a list of CPV matching `atom`.
+
+    If `release` is provided, CPVs are filtered against it.
+
+    The list is sorted by descending order of version.
     """
-    Given an atom and a release, return all matching wanted atoms ordered in
-    descending order of version
-    """
-    atoms = []
     # xmatch is stupid, and ignores ! in an atom...
     if atom.startswith('!'):
         return []
-    for cpv in portage.portdb.xmatch('match-all', atom):
-        if do_not_want(cpv, release):
-            continue
-        atoms.append(cpv)
-    atoms.reverse()
-    return atoms
+
+    return [
+        cpv for cpv in reversed(portage.portdb.xmatch('match-all', atom))
+        if not do_not_want(cpv, release)
+    ]
 
 
 def get_best_deps(cpv, kws, release=None):
@@ -278,15 +272,15 @@ def max_kws(cpv, release=None):
 
 
 # FIXME: This is broken
-def kws_wanted(cpv_kws, prev_cpv_kws):
-    "Generate a list of kws that need to be updated"
+def kws_wanted(current_kws, target_kws):
+    """Generate a list of kws that need to be updated."""
     wanted = []
-    for kw in prev_cpv_kws:
-        if kw not in cpv_kws:
-            if STABLE and '~'+kw not in cpv_kws:
-                # Ignore if no keywords at all
+    for kwd in target_kws:
+        if kwd not in current_kws:
+            if STABLE and '~' + kwd not in current_kws:
+                # Skip stable keywords with no corresponding unstable keyword
                 continue
-            wanted.append(kw)
+            wanted.append(kwd)
     return wanted
 
 
