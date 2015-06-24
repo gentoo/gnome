@@ -109,11 +109,11 @@ def make_unstable(kws):
 
 
 def belongs_release(cpv, release):
-    "Check if the given cpv belongs to the given release"
+    """Check if `cpv` belongs to the release `release`."""
     # FIXME: This failure function needs better logic
     if CHECK_DEPS:
         raise Exception('This function is utterly useless with RECURSIVE mode')
-    return get_ver(cpv).startswith(release)
+    return portage.versions.cpv_getversion(cpv).startswith(release)
 
 
 def issystempackage(cpv):
