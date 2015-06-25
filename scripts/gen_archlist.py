@@ -24,6 +24,7 @@
 from __future__ import division
 
 import argparse
+import collections
 import os
 import sys
 
@@ -41,7 +42,6 @@ UNSTABLE_ARCHES = ('~alpha', '~amd64', '~arm', '~hppa', '~ia64', '~m68k',
                    '~x86-fbsd')
 ALL_ARCHES = STABLE_ARCHES + UNSTABLE_ARCHES
 SYSTEM_PACKAGES = []
-LINE_SEP = ''
 
 ############
 # Settings #
@@ -348,52 +348,27 @@ def gen_cpv_kws(cpv, kws_aim, depgraph, check_dependencies, new_release):
 
 
 def consolidate_dupes(cpv_kws):
+    """Consolidate duplicate CPVs with differing keywords.
+
+    Cannot handle CPs with different versions since we don't know if they are
+    inter-changeable.
     """
-    Consolidate duplicate cpvs with differing keywords
+    # Build maximum requested keywords for each cpv
+    cpv_kws_dict = collections.defaultdict(set)
+    for dep_set in cpv_kws:
+        for cpv, kws in dep_set:
+            cpv_kws_dict[cpv].update(kws)
 
-    Cannot handle cps with different versions since we don't know if they are
-    inter-changeable
-    """
-    cpv_indices = {}
+    # Update cpv with their maximum request keywords
+    clean_cpv_kws = []
+    for dep_set in cpv_kws:
+        clean_cpv_kws.append([
+            (cpv, cpv_kws_dict.pop(cpv))
+            # Keep only first occurence of cpv
+            for cpv, _ in dep_set if cpv in cpv_kws_dict
+        ])
 
-    # Find all indices of each cpv
-    for each in cpv_kws:
-        # Comments/whitespace carried over from original list
-        if type(each) is not list:
-            continue
-        else:
-            if each[0] not in cpv_indices:
-                cpv_indices[each[0]] = []
-            cpv_indices[each[0]].append(cpv_kws.index(each))
-
-    # Replace the keywords of each cpv with the union of all keywords in the
-    # list belonging to this cpv
-    for each in cpv_kws:
-        # Ignore comments/whitespace carried over from original list
-        if type(each) is not list:
-            continue
-        kws = set()
-        for index in cpv_indices[each[0]]:
-            kws.update(cpv_kws[index][1])
-        each[1] = list(kws)
-        each[1].sort()
-
-    index = 0
-    deduped_cpv_kws = cpv_kws[:]
-    deduped_cpv_kws.reverse()
-    while index < len(deduped_cpv_kws):
-        item = deduped_cpv_kws[index]
-        if type(item) is not list:
-            index += 1
-            continue
-        if deduped_cpv_kws.count(item) is 1:
-            index += 1
-        else:
-            while deduped_cpv_kws.count(item) is not 1:
-                deduped_cpv_kws.remove(item)
-    deduped_cpv_kws.reverse()
-
-    return deduped_cpv_kws
+    return clean_cpv_kws
 
 
 def get_per_slot_cpvs(cpvs):
@@ -531,8 +506,6 @@ def main():
                 gen_cpv_kws(cpv, kws_missing, set([cpv]),
                             args.check_dependencies, args.new_version)
             )
-            if args.check_dependencies:
-                ALL_CPV_KWS.append(LINE_SEP)
 
     ALL_CPV_KWS = consolidate_dupes(ALL_CPV_KWS)
     if args.append_slots:
