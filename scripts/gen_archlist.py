@@ -169,50 +169,59 @@ def get_best_deps(cpv, kws, release=None):
     Returns a list of the best deps of a cpv, optionally matching a release,
     and with max of the specified keywords
     """
+    # Take raw dependency strings and convert it to a list of atoms
     atoms = portage.portdb.aux_get(cpv, ['DEPEND', 'RDEPEND', 'PDEPEND'])
     atoms = ' '.join(atoms).split()  # consolidate atoms
     atoms = list(set(atoms))  # de-duplicate
+
     deps = set()
-    tmp = []
+
     for atom in atoms:
-        if atom.find('/') is -1:
-            # It's not a dep atom
+        if not portage.isvalidatom(atom):
             continue
-        ret = match_wanted_atoms(atom, release)
-        if not ret:
+
+        cpvs = match_wanted_atoms(atom, release)
+        if not cpvs:
             if DEBUG:
                 debug('We encountered an irrelevant atom: %s' % atom)
             continue
-        best_kws = ['', []]
-        for i in ret:
+
+        best_cpv_kws = ['', []]
+        for candidate_cpv in cpvs:
             if STABLE:
                 # Check that this version has unstable keywords
-                ukws = make_unstable(kws)
-                cur_ukws = make_unstable(get_kws(i, arches=kws | ukws))
-                if cur_ukws.intersection(ukws) != ukws:
-                    best_kws = 'none'
+                unstable_kws = make_unstable(kws)
+                cur_unstable_kws = make_unstable(
+                    get_kws(candidate_cpv, arches=kws | unstable_kws)
+                )
+                if cur_unstable_kws.intersection(unstable_kws) != unstable_kws:
+                    best_cpv_kws[0] = 'none'
                     if DEBUG:
-                        debug('Insufficient unstable keywords in: %s' % i)
+                        debug('Insufficient unstable keywords in: %s' %
+                              candidate_cpv)
                     continue
-            cur_match_kws = get_kws(i, arches=kws)
-            if cur_match_kws == kws:
-                # This dep already has all keywords
-                best_kws = 'alreadythere'
+
+            candidate_kws = get_kws(candidate_cpv, arches=kws)
+            if candidate_kws == kws:
+                # This dep already has all requested keywords
+                best_cpv_kws[0] = 'alreadythere'
                 break
+
             # Select the version which needs least new keywords
-            if len(cur_match_kws) > len(best_kws[1]):
-                best_kws = [i, cur_match_kws]
-            elif not best_kws[0]:
+            if len(candidate_kws) > len(best_cpv_kws[1]):
+                best_cpv_kws = [candidate_cpv, candidate_kws]
+            elif not best_cpv_kws[0]:
                 # This means that none of the versions have any of the stable
                 # keywords that *we checked* (i.e. kws).
-                best_kws = [i, []]
-        if best_kws == 'alreadythere':
+                best_cpv_kws = [candidate_cpv, []]
+
+        if best_cpv_kws[0] == 'alreadythere':
             if DEBUG:
                 nothing_to_be_done(atom, type='dep')
             continue
-        elif best_kws == 'none':
+        elif best_cpv_kws[0] == 'none':
             continue
-        elif not best_kws[0]:
+        elif not best_cpv_kws[0]:
             # We get this when the if STABLE: block above rejects everything.
             # This means that this atom does not have any versions with
             # unstable keywords matching the unstable keywords of the cpv
@@ -220,8 +229,8 @@ def get_best_deps(cpv, kws, release=None):
             # This mostly happens because an || or use dep exists. However, we
             # make such deps strict while parsing
             # XXX: We arbitrarily select the most recent version for this case
-            deps.add(ret[0])
-        elif not best_kws[1]:
+            deps.add(cpvs[0])
+        elif not best_cpv_kws[1]:
             # This means that none of the versions have any of the stable
             # keywords that *we checked* (i.e. kws). Hence, we do another pass;
             # this time checking *all* keywords.
@@ -229,20 +238,22 @@ def get_best_deps(cpv, kws, release=None):
             # XXX: We duplicate some of the things from the for loop above
             # We don't need to duplicate anything that caused a 'continue' or
             # a 'break' above
-            ret = match_wanted_atoms(atom, release)
-            best_kws = ['', []]
-            for i in ret:
-                cur_kws = get_kws(i)
-                if len(cur_kws) > len(best_kws[1]):
-                    best_kws = [i, cur_kws]
-                elif not best_kws[0]:
+            cpvs = match_wanted_atoms(atom, release)
+            best_cpv_kws = ['', []]
+            for candidate_cpv in cpvs:
+                cur_kws = get_kws(candidate_cpv)
+                if len(cur_kws) > len(best_cpv_kws[1]):
+                    best_cpv_kws = [candidate_cpv, cur_kws]
+                elif not best_cpv_kws[0]:
                     # This means that none of the versions have any of
                     # the stable keywords *at all*. No choice but to
                     # arbitrarily select the latest version in that case.
-                    best_kws = [i, []]
-            deps.add(best_kws[0])
+                    best_cpv_kws = [candidate_cpv, []]
+
+            deps.add(best_cpv_kws[0])
         else:
-            deps.add(best_kws[0])
+            deps.add(best_cpv_kws[0])
+
     return list(deps)
 
 
