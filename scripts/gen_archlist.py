@@ -25,10 +25,14 @@ from __future__ import division, print_function
 
 import argparse
 import collections
+import logging
+import logging.config
 import os
 import sys
 
 import portage
+
+logger = logging.getLogger('gen_archlist')
 
 #############
 # Constants #
@@ -90,13 +94,6 @@ def debug(*strings):
     from portage.output import EOutput
     ewarn = EOutput().ewarn
     ewarn(flatten(strings))
-
-
-def nothing_to_be_done(atom, type='cpv'):
-    if STABLE:
-        debug('%s %s: already stable, ignoring...' % (type, atom))
-    else:
-        debug('%s %s: already keyworded, ignoring...' % (type, atom))
 
 
 def make_unstable(kws):
@@ -182,8 +179,7 @@ def get_best_deps(cpv, kws, release=None):
 
         cpvs = match_wanted_atoms(atom, release)
         if not cpvs:
-            if DEBUG:
-                debug('We encountered an irrelevant atom: %s' % atom)
+            logger.debug('Encountered an irrelevant atom: %s', atom)
             continue
 
         best_cpv_kws = ['', []]
@@ -196,9 +192,8 @@ def get_best_deps(cpv, kws, release=None):
                 )
                 if cur_unstable_kws.intersection(unstable_kws) != unstable_kws:
                     best_cpv_kws[0] = 'none'
-                    if DEBUG:
-                        debug('Insufficient unstable keywords in: %s' %
-                              candidate_cpv)
+                    logger.debug('Insufficiant unstable keywords in: %s',
+                                 candidate_cpv)
                     continue
 
             candidate_kws = get_kws(candidate_cpv, arches=kws)
@@ -216,8 +211,8 @@ def get_best_deps(cpv, kws, release=None):
                 best_cpv_kws = [candidate_cpv, []]
 
         if best_cpv_kws[0] == 'alreadythere':
-            if DEBUG:
-                nothing_to_be_done(atom, type='dep')
+            logger.debug('DEP %s is already %s, ignoring', atom,
+                         'stable' if STABLE else 'keyworded')
             continue
         elif best_cpv_kws[0] == 'none':
             continue
@@ -324,8 +319,9 @@ def gen_cpv_kws(cpv, kws_aim, depgraph, check_dependencies, new_release):
         # So... let's just stabilize it on all arches we can, and ignore for
         # keywording since we have no idea about that.
         if not STABLE:
-            debug('MEH')
-            nothing_to_be_done(cpv, type='dep')
+            logger.warn('MEH')
+            logger.info('DEP %s is already %s, ignoring', cpv,
+                        'stable' if STABLE else 'keyworded')
             return None
 
         wanted = get_kws(cpv, arches=make_unstable(kws_aim))
@@ -334,8 +330,7 @@ def gen_cpv_kws(cpv, kws_aim, depgraph, check_dependencies, new_release):
 
     if check_dependencies and not issystempackage(cpv):
         deps = get_best_deps(cpv, wanted, release=new_release)
-        if EXTREME_DEBUG:
-            debug('The deps of %s are %s' % (cpv, deps))
+        logger.debug('Dependencies of %s are: %s', cpv, deps)
 
         for dep in deps:
             if dep in depgraph:
@@ -442,10 +437,8 @@ def main():
     parser = argparse.ArgumentParser(
         description='Generate a stabilization request for multiple packages'
     )
-    parser.add_argument('-d', '--debug', action='store_true', default=False,
+    parser.add_argument('-v', '--verbose', action='count',
                         help='Make output more verbose')
-    parser.add_argument('--extreme-debug', action='store_true', default=False,
-                        help='Make output even more verbose')
     parser.add_argument('--check-dependencies',
                         action='store_true', default=False,
                         help='Check dependencies are keyworded and if not,'
@@ -462,6 +455,33 @@ def main():
                              ' cycle to use to get the latest CPVs that needs'
                              ' to be stabilized')
     args = parser.parse_args()
+
+    args.verbose = min(max(args.verbose, 0), 2)
+    logging.config.dictConfig({
+        'version': 1,
+        'disable_existing_loggers': True,
+        'formatters': {
+            'brief': {'format': '%(message)s'},
+        },
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+                'level': 'DEBUG',
+                'formatter': 'brief',
+                'stream': 'ext://sys.stdout',
+            },
+        },
+        'loggers': {
+            'gen_archlist': {
+                'handlers': ['console'],
+                'level': [logging.WARN, logging.INFO,
+                          logging.DEBUG][args.verbose],
+            },
+        },
+        'root': {
+            'handler': ['console'],
+        },
+    })
 
     ALL_CPV_KWS = []
     for i in open(args.file).readlines():
@@ -480,19 +500,20 @@ def main():
 
         for cpv in get_per_slot_cpvs(cpvs):
             if not cpv:
-                debug('%s: Invalid cpv' % cpv)
+                logger.warn('%s is an invalid CPV', cpv)
                 continue
 
             kws_missing = max_kws(cpv, release=args.old_version)
             if kws_missing is None:
-                debug('No versions with stable keywords for %s' % cpv)
+                logger.info('No versions with stable keywords for %s', cpv)
                 # No cpv with stable keywords => select latest
                 arches = make_unstable(ARCHES)
                 kws_missing = [kw[1:] for kw in get_kws(cpv, arches)]
 
             elif not kws_missing:
                 # Current cpv has the max keywords => nothing to do
-                nothing_to_be_done(cpv)
+                logger.info('CPV %s is already %s, ignoring', cpv,
+                            'stable' if STABLE else 'keyworded')
                 continue
 
             ALL_CPV_KWS.append(
