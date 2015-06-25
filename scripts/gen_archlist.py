@@ -101,10 +101,10 @@ def nothing_to_be_done(atom, type='cpv'):
 
 def make_unstable(kws):
     """Transform `kws` into a list of unstable keywords."""
-    return [
+    return set([
         kwd if kwd.startswith('~') else '~' + kwd
         for kwd in kws
-    ]
+    ])
 
 
 def belongs_release(cpv, release):
@@ -124,10 +124,10 @@ def issystempackage(cpv):
 
 def get_kws(cpv, arches=ARCHES):
     """Return keywords of `cpv` filtered by `arches`."""
-    return [
+    return set([
         kwd for kwd in portage.portdb.aux_get(cpv, ['KEYWORDS'])[0].split()
         if kwd in arches
-    ]
+    ])
 
 
 def can_stabilize_cpv(cpv, release=None):
@@ -188,14 +188,14 @@ def get_best_deps(cpv, kws, release=None):
             if STABLE:
                 # Check that this version has unstable keywords
                 ukws = make_unstable(kws)
-                cur_ukws = set(make_unstable(get_kws(i, arches=kws+ukws)))
-                if cur_ukws.intersection(ukws) != set(ukws):
+                cur_ukws = make_unstable(get_kws(i, arches=kws | ukws))
+                if cur_ukws.intersection(ukws) != ukws:
                     best_kws = 'none'
                     if DEBUG:
                         debug('Insufficient unstable keywords in: %s' % i)
                     continue
             cur_match_kws = get_kws(i, arches=kws)
-            if set(cur_match_kws) == set(kws):
+            if cur_match_kws == kws:
                 # This dep already has all keywords
                 best_kws = 'alreadythere'
                 break
@@ -279,7 +279,7 @@ def max_kws(cpv, release=None):
         missing_kws.add(kwd)
 
     if maximum_kws:
-        return sorted(missing_kws)
+        return missing_kws
     else:
         # No cpv has the keywords we need
         return None
@@ -288,13 +288,12 @@ def max_kws(cpv, release=None):
 # FIXME: This is broken
 def kws_wanted(current_kws, target_kws):
     """Generate a list of kws that need to be updated."""
-    wanted = []
+    wanted = set()
     for kwd in target_kws:
-        if kwd not in current_kws:
-            if STABLE and '~' + kwd not in current_kws:
-                # Skip stable keywords with no corresponding unstable keyword
-                continue
-            wanted.append(kwd)
+        if STABLE and '~' + kwd not in current_kws:
+            # Skip stable keywords with no corresponding unstable keyword
+            continue
+        wanted.add(kwd)
     return wanted
 
 
