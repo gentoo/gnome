@@ -27,8 +27,6 @@ import argparse
 import collections
 import logging
 import logging.config
-import os
-import sys
 
 import portage
 
