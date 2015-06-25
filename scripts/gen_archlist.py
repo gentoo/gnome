@@ -479,8 +479,8 @@ def main():
         if cp.find('#') is not -1:
             raise Exception('Inline comments are not supported')
         if portage.catpkgsplit(cp):
-            # categ/pkg is already a categ/pkg-ver
-            atoms = [cp]
+            # cat/pkg is already a categ/pkg-ver
+            cpvs = [cp]
         else:
             # Get all the atoms matching the given cp
             cpvs = match_wanted_atoms(cp, release=args.new_version)
