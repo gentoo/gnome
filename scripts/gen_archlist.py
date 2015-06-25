@@ -21,7 +21,7 @@
 # * Support recursive checking of needed keywords in deps
 #
 
-from __future__ import division
+from __future__ import division, print_function
 
 import argparse
 import collections
@@ -392,52 +392,34 @@ def append_slots(cpv_kws):
     return slotifyed_cpv_kws
 
 
-# FIXME: This is broken
-def prettify(cpv_kws):
-    "Takes a list of [cpv, [kws]] and prettifies it"
+def print_cpv_kws(cpv_kws):
+    """Takes a list of [cpv, [kws]] and prettifies it"""
     max_len = 0
-    kws_all = []
-    pretty_list = []
-    cpv_block_size = 0
+    kws_all = set()
 
-    for each in cpv_kws:
-        # Ignore comments/whitespace carried over from original list
-        if type(each) is not list:
-            continue
-        # Find the atom with max length (for output formatting)
-        if len(each[0]) > max_len:
-            max_len = len(each[0])
-        # Find the set of all kws listed
-        for kw in each[1]:
-            if kw not in kws_all:
-                kws_all.append(kw)
-    kws_all.sort()
+    for dep_set in cpv_kws:
+        for cpv, kws in dep_set:
+            # Find the atom with max length (for output formatting)
+            max_len = max(max_len, len(cpv))
+            # Find the set of all kws listed
+            kws_all.update(kws)
 
-    for each in cpv_kws:
-        # Handle comments/whitespace carried over from original list
-        if type(each) is not list:
-            # If the prev cpv block has just one line, don't print an extra \n
-            # XXX: This code relies on blocks of dep-cpvs being separated by \n
-            if CHECK_DEPS and cpv_block_size is 1:
-                cpv_block_size = 0
-                continue
-            pretty_list.append([each, []])
-            cpv_block_size = 0
-            continue
-        # The size of the current cpv list block
-        cpv_block_size += 1
-        # Pad the cpvs with space
-        each[0] += n_sep(max_len - len(each[0]))
-        for i in range(0, len(kws_all)):
-            if i == len(each[1]):
-                # Prevent an IndexError
-                # This is a problem in the algo I selected
-                each[1].append('')
-            if each[1][i] != kws_all[i]:
-                # If no arch, insert space
-                each[1].insert(i, n_sep(len(kws_all[i])))
-        pretty_list.append([each[0], each[1]])
-    return pretty_list
+    for dep_set in cpv_kws:
+        for cpv, kws in dep_set:
+            pretty_line = cpv + ' ' * (max_len - len(cpv))
+
+            for kwd in sorted(kws_all):
+                if kwd in kws:
+                    pretty_line += ' ' + kwd
+                else:
+                    pretty_line += ' ' + ' ' * len(kwd)
+
+            print(pretty_line)
+
+        if len(dep_set) > 1:
+            print()
+
+    return
 
 
 #####################
@@ -511,8 +493,7 @@ def main():
     if args.append_slots:
         ALL_CPV_KWS = append_slots(ALL_CPV_KWS)
 
-    for i in prettify(ALL_CPV_KWS):
-        print i[0], flatten(i[1])
+    print_cpv_kws(ALL_CPV_KWS)
 
 
 if __name__ == '__main__':
