@@ -347,25 +347,6 @@ def gen_cpv_kws(cpv, kws_aim, depgraph, check_dependencies, new_release):
     return cpv_kw_list
 
 
-def fix_nesting(nested_list):
-    """Takes a list of unknown nesting depth, and gives a nice list with each
-    element of the form [cpv, [kws]]"""
-    index = 0
-    cpv_index = -1
-    nice_list = []
-    # Has an unpredictable nesting of lists; so we flatten it...
-    flat_list = portage.flatten(nested_list)
-    # ... and re-create a nice list for us to use
-    while index < len(flat_list):
-        if portage.catpkgsplit(flat_list[index]):
-            cpv_index += 1
-            nice_list.append([flat_list[index], []])
-        else:
-            nice_list[cpv_index][1].append(flat_list[index])
-        index += 1
-    return nice_list
-
-
 def consolidate_dupes(cpv_kws):
     """
     Consolidate duplicate cpvs with differing keywords
@@ -546,7 +527,7 @@ def main():
                 nothing_to_be_done(cpv)
                 continue
 
-            ALL_CPV_KWS += fix_nesting(
+            ALL_CPV_KWS.append(
                 gen_cpv_kws(cpv, kws_missing, set([cpv]),
                             args.check_dependencies, args.new_version)
             )
