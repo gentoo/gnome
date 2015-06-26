@@ -485,7 +485,7 @@ def main():
         },
     })
 
-    ALL_CPV_KWS = []
+    all_cpv_kws = []
     for line in open(args.file).readlines():
         cp = line.strip()
 
@@ -522,16 +522,16 @@ def main():
                             'stable' if STABLE else 'keyworded')
                 continue
 
-            ALL_CPV_KWS.append(
+            all_cpv_kws.append(
                 gen_cpv_kws(cpv, kws_missing, set([cpv]),
                             args.check_dependencies, args.new_version)
             )
 
-    ALL_CPV_KWS = consolidate_dupes(ALL_CPV_KWS)
+    all_cpv_kws = consolidate_dupes(all_cpv_kws)
     if args.append_slots:
-        ALL_CPV_KWS = append_slots(ALL_CPV_KWS)
+        all_cpv_kws = append_slots(all_cpv_kws)
 
-    print_cpv_kws(ALL_CPV_KWS)
+    print_cpv_kws(all_cpv_kws)
 
 
 if __name__ == '__main__':
