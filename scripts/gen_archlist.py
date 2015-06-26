@@ -489,7 +489,6 @@ def main():
     for i in open(args.file).readlines():
         cp = i[:-1]
         if cp.startswith('#') or cp.isspace() or not cp:
-            ALL_CPV_KWS.append(cp)
             continue
         if cp.find('#') is not -1:
             raise Exception('Inline comments are not supported')
