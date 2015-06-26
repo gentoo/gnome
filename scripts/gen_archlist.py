@@ -486,11 +486,14 @@ def main():
     })
 
     ALL_CPV_KWS = []
-    for i in open(args.file).readlines():
-        cp = i[:-1]
-        if cp.startswith('#') or cp.isspace() or not cp:
+    for line in open(args.file).readlines():
+        cp = line.strip()
+
+        # Filter useless lines
+        if not cp or cp.startswith('#'):
             continue
-        if cp.find('#') is not -1:
+
+        if '#' in cp:
             raise Exception('Inline comments are not supported')
 
         # Convert line to CPV(s)
