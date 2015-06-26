@@ -48,10 +48,7 @@ SYSTEM_PACKAGES = []
 ############
 # Settings #
 ############
-DEBUG = False
-EXTREME_DEBUG = False
 CHECK_DEPS = False
-APPEND_SLOTS = False
 # Check for stable keywords
 # This is intended to switch between keywordreq (for ~arch)
 # and stablereq (for moving from ~arch to arch)
@@ -76,24 +73,6 @@ else:
 ####################
 # Define Functions #
 ####################
-def flatten(list, sep=' '):
-    "Given a list, returns a flat string separated by 'sep'"
-    return sep.join(list)
-
-
-def n_sep(n, sep=' '):
-    tmp = ''
-    for i in range(0, n):
-        tmp += sep
-    return tmp
-
-
-def debug(*strings):
-    from portage.output import EOutput
-    ewarn = EOutput().ewarn
-    ewarn(flatten(strings))
-
-
 def make_unstable(kws):
     """Transform `kws` into a list of unstable keywords."""
     return set([
