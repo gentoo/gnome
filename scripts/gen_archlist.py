@@ -376,7 +376,11 @@ def consolidate_dupes(cpv_kws):
 
 
 def get_per_slot_cpvs(cpvs):
-    "Classify the given cpvs into slots, and yield the best atom for each slot"
+    """Return best CPV per slot.
+
+    Classify the CPVs into slots, and yield the best atom for each slot.
+    This only works with a pre-sorted list as returned by `match_wanted_atoms`.
+    """
     slots = set()
     for cpv in cpvs:
         slot = portage.portage.portdb.aux_get(cpv, ['SLOT'])[0]
@@ -387,9 +391,9 @@ def get_per_slot_cpvs(cpvs):
 
 
 def append_slots(cpv_kws):
-    "Append slots at the end of cpv atoms"
+    """Append slots at the end of cpv atoms"""
     slotifyed_cpv_kws = []
-    for (cpv, kws) in cpv_kws:
+    for cpv, kws in cpv_kws:
         slot = portage.portage.portdb.aux_get(cpv, ['SLOT'])[0]
         cpv = "%s:%s" % (cpv, slot)
         slotifyed_cpv_kws.append([cpv, kws])
@@ -489,11 +493,13 @@ def main():
             continue
         if cp.find('#') is not -1:
             raise Exception('Inline comments are not supported')
+
+        # Convert line to CPV(s)
         if portage.catpkgsplit(cp):
             # cat/pkg is already a categ/pkg-ver
             cpvs = [cp]
         else:
-            # Get all the atoms matching the given cp
+            # Get all the atoms matching the given CP
             cpvs = match_wanted_atoms(cp, release=args.new_version)
 
         for cpv in get_per_slot_cpvs(cpvs):
