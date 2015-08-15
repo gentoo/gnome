@@ -31,11 +31,13 @@ DEPEND="${COMMON_DEPEND}
 	app-arch/gzip
 	dev-libs/libxml2
 	>=dev-util/intltool-0.40.4
+	dev-util/itstool
 	sys-apps/lsb-release
 	>=sys-devel/gettext-0.12
 	virtual/pkgconfig
 	gnome? ( app-text/docbook-xml-dtd:4.3 )
 "
+# dev-util/itstool really needed for help file generation
 # >=app-text/yelp-tools-3.1.1
 
 src_prepare() {
@@ -76,7 +78,6 @@ src_configure() {
 		--enable-sound \
 		--with-pysol-card-theme-path="${EPREFIX}${GAMES_DATADIR}"/pysolfc \
 		GUILE=$(type -P guile-2.0) \
-		ITSTOOL=$(type -P true) \
 		${myconf[@]}
 }
 
