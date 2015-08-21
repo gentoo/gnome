@@ -1,6 +1,6 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Id$
 
 EAPI="5"
 GCONF_DEBUG="no"
@@ -47,6 +47,19 @@ MULTILIB_CHOST_TOOLS=(
 )
 
 src_prepare() {
+	# Upstream patches from 2.31.x
+	epatch "${FILESDIR}"/${PN}-2.31.6-pixops-variable-type.patch \
+		"${FILESDIR}"/${PN}-2.31.6-pixops-gcc-optimizer.patch \
+		"${FILESDIR}"/${PN}-2.31.6-png-overflow.patch \
+		"${FILESDIR}"/${PN}-2.31.6-jpeg-overflow.patch \
+		"${FILESDIR}"/${PN}-2.31.6-pixops-overflow.patch \
+		"${FILESDIR}"/${PN}-2.31.6-alpha-overflow.patch \
+		"${FILESDIR}"/${PN}-2.31.6-rotate-overflow.patch #556314
+
+	# ERROR: cve-2015-4491 - missing test plan
+	# FIXME - check if this works in 2.31.7
+	sed -e 's/cve-2015-4491$(EXEEXT)//' -i tests/Makefile.in || die
+
 	# This will avoid polluting the pkg-config file with versioned libpng,
 	# which is causing problems with libpng14 -> libpng15 upgrade
 	# See upstream bug #667068
