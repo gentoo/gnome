@@ -65,7 +65,7 @@ COMMON_DEPEND="
 		virtual/libgudev
 		x11-libs/libdrm:= )
 	wayland? (
-		>=dev-libs/wayland-1.5.90
+		>=dev-libs/wayland-1.6.90
 		media-libs/clutter[wayland]
 		x11-base/xorg-server[wayland] )
 "
