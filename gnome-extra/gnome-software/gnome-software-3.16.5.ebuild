@@ -4,8 +4,9 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
+PYTHON_COMPAT=( python2_7 )
 
-inherit gnome2 virtualx
+inherit gnome2 python-any-r1 virtualx
 
 DESCRIPTION="Gnome install & update software"
 HOMEPAGE="http://wiki.gnome.org/Apps/Software"
@@ -26,7 +27,8 @@ RDEPEND="
 	sys-auth/polkit
 	>=x11-libs/gtk+-3.16:3
 "
-DEPEND="${DEPEND}
+DEPEND="${RDEPEND}
+	${PYTHON_DEPS}
 	app-text/docbook-xml-dtd:4.2
 	dev-libs/libxslt
 	>=dev-util/intltool-0.35
@@ -34,6 +36,10 @@ DEPEND="${DEPEND}
 	test? ( dev-util/dogtail )
 "
 # test? ( dev-util/valgrind )
+
+pkg_setup() {
+	python-any-r1_pkg_setup
+}
 
 src_prepare() {
 	# valgrind fails with SIGTRAP
@@ -50,5 +56,5 @@ src_configure() {
 }
 
 src_test() {
-	Xemake check
+	Xemake check TESTS_ENVIRONMENT="dbus-run-session"
 }
