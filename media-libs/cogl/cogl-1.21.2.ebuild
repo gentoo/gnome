@@ -3,28 +3,21 @@
 # $Id$
 
 EAPI="5"
-CLUTTER_LA_PUNT="yes"
+GCONF_DEBUG="yes"
 
-# Inherit gnome2 after clutter to download sources from gnome.org
-inherit clutter gnome2 multilib virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+inherit gnome2 multilib virtualx
 
 DESCRIPTION="A library for using 3D graphics hardware to draw pretty pictures"
 HOMEPAGE="http://www.cogl3d.org/"
 
 LICENSE="MIT BSD"
-SLOT="2.0/0" # subslot = .so version
+SLOT="1.0/20" # subslot = .so version
+
 # doc and profile disable for now due bugs #484750 and #483332
 IUSE="examples gles2 gstreamer +introspection +kms +opengl +pango test wayland" # doc profile
-REQUIRED_USE="wayland? ( gles2 )"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-	IUSE="${IUSE} doc"
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
-fi
+REQUIRED_USE="wayland? ( gles2 )
+	|| ( gles2 opengl )"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.32:2
@@ -53,7 +46,8 @@ COMMON_DEPEND="
 "
 # before clutter-1.7, cogl was part of clutter
 RDEPEND="${COMMON_DEPEND}
-	!<media-libs/clutter-1.7"
+	!<media-libs/clutter-1.7
+"
 DEPEND="${COMMON_DEPEND}
 	>=dev-util/gtk-doc-am-1.13
 	sys-devel/gettext
@@ -67,17 +61,10 @@ DEPEND="${COMMON_DEPEND}
 # For some reason GL3 conformance test all fails again...
 RESTRICT="test"
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? (
-			app-text/docbook-xml-dtd:4.1.2
-			>=dev-util/gtk-doc-1.13 )"
-fi
-
 src_prepare() {
 	# Do not build examples
 	sed -e "s/^\(SUBDIRS +=.*\)examples\(.*\)$/\1\2/" \
-		-i Makefile.am || die
+		-i Makefile.am Makefile.in || die
 
 	if ! use test ; then
 		# For some reason the configure switch will not completely disable
@@ -85,7 +72,7 @@ src_prepare() {
 		sed -e "s/^\(SUBDIRS =.*\)test-fixtures\(.*\)$/\1\2/" \
 			-e "s/^\(SUBDIRS +=.*\)tests\(.*\)$/\1\2/" \
 			-e "s/^\(.*am__append.* \)tests\(.*\)$/\1\2/" \
-			-i Makefile.am || die
+			-i Makefile.am Makefile.in || die
 	fi
 
 	gnome2_src_prepare
@@ -133,10 +120,12 @@ src_test() {
 }
 
 src_install() {
-	DOCS="NEWS README"
-	EXAMPLES="examples/{*.c,*.jpg}"
+	if use examples; then
+		insinto /usr/share/doc/${PF}/examples
+		doins examples/{*.c,*.jpg}
+	fi
 
-	clutter_src_install
+	gnome2_src_install
 
 	# Remove silly examples-data directory
 	rm -rvf "${ED}/usr/share/cogl/examples-data/" || die
