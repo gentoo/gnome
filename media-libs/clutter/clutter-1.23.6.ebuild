@@ -7,9 +7,6 @@ GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
 inherit gnome2 virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 HOMEPAGE="https://wiki.gnome.org/Projects/Clutter"
 DESCRIPTION="Clutter is a library for creating graphical user interfaces"
@@ -21,11 +18,7 @@ REQUIRED_USE="
 	|| ( aqua wayland X )
 	wayland? ( egl )
 "
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
 
 # NOTE: glx flavour uses libdrm + >=mesa-7.3
 # >=libX11-1.3.1 needed for X Generic Event support
