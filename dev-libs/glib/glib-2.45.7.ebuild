@@ -2,6 +2,10 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
+# Until bug #537330 glib is a reverse dependency of pkgconfig and, then
+# adding new dependencies end up making stage3 to grow. Every addition needs
+# then to be think very closely.
+
 EAPI="5"
 PYTHON_COMPAT=( python2_7 )
 # Building with --disable-debug highly unrecommended.  It will build glib in
@@ -12,10 +16,8 @@ GCONF_DEBUG="yes"
 # pkg-config
 GNOME2_LA_PUNT="yes"
 
-inherit autotools bash-completion-r1 gnome2 libtool eutils flag-o-matic gnome2-utils multilib pax-utils python-r1 toolchain-funcs versionator virtualx linux-info multilib-minimal
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+inherit autotools bash-completion-r1 gnome2 libtool eutils flag-o-matic	multilib \
+	pax-utils python-r1 toolchain-funcs versionator virtualx linux-info multilib-minimal
 
 DESCRIPTION="The GLib library of C routines"
 HOMEPAGE="http://www.gtk.org/"
@@ -29,12 +31,8 @@ REQUIRED_USE="
 	utils? ( ${PYTHON_REQUIRED_USE} )
 	test? ( ${PYTHON_REQUIRED_USE} )
 "
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux"
-fi
+
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux"
 
 RDEPEND="
 	!<dev-util/gdbus-codegen-${PV}
@@ -81,18 +79,6 @@ PDEPEND="!<gnome-base/gvfs-1.6.4-r990
 # dconf is needed to be able to save settings, bug #498436
 # Earlier versions of gvfs do not work with glib
 
-# For safety, generate sources using the gdbus-codegen from glib git tree
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		${PYTHON_DEPS}
-		doc? (
-			>=dev-util/gdbus-codegen-${PV}[${PYTHON_USEDEP}]
-			>=dev-util/gtk-doc-1.20 )
-	"
-fi
-
-DOCS="AUTHORS ChangeLog* NEWS*"
-
 pkg_setup() {
 	if use kernel_linux ; then
 		CONFIG_CHECK="~INOTIFY_USER"
@@ -106,16 +92,10 @@ pkg_setup() {
 }
 
 src_prepare() {
-	[[ ${PV} = 9999 ]] && gnome2-live_src_prepare
-
 	# Prevent build failure in stage3 where pkgconfig is not available, bug #481056
 	mv -f "${WORKDIR}"/pkg-config-*/pkg.m4 "${S}"/m4macros/ || die
 
 	if use test; then
-		# Do not try to remove files on live filesystem, upstream bug #619274
-		sed 's:^\(.*"/desktop-app-info/delete".*\):/*\1*/:' \
-			-i "${S}"/gio/tests/desktop-app-info.c || die "sed failed"
-
 		# Disable tests requiring dev-util/desktop-file-utils when not installed, bug #286629, upstream bug #629163
 		if ! has_version dev-util/desktop-file-utils ; then
 			ewarn "Some tests will be skipped due dev-util/desktop-file-utils not being present on your system,"
@@ -150,16 +130,15 @@ src_prepare() {
 
 		# Some tests need ipv6, upstream bug #667468
 		if [[ -n "${IPV6_DISABLED}" ]]; then
-			sed -i -e "/socket\/ipv6_sync/d" gio/tests/socket.c || die
-			sed -i -e "/socket\/ipv6_async/d" gio/tests/socket.c || die
-			sed -i -e "/socket\/ipv6_v4mapped/d" gio/tests/socket.c || die
+			sed -i -e "/gdbus\/peer-to-peer/d" gio/tests/gdbus-peer.c || die
+			sed -i -e "/gdbus\/delayed-message-processing/d" gio/tests/gdbus-peer.c || die
+			sed -i -e "/gdbus\/nonce-tcp/d" gio/tests/gdbus-peer.c || die
 		fi
 
-		# Test relies on /usr/bin/true, but we have /bin/true, upstream bug #698655
-		sed -i -e "s:/usr/bin/true:/bin/true:" gio/tests/desktop-app-info.c || die
-
 		# thread test fails, upstream bug #679306
-		epatch "${FILESDIR}/${PN}-2.34.0-testsuite-skip-thread4.patch"
+		# FIXME: we need to check if it's still failing as upstream thinks something
+		# is wrong in our setups
+		#epatch "${FILESDIR}/${PN}-2.34.0-testsuite-skip-thread4.patch"
 
 		# This test is prone to fail, bug #504024, upstream bug #723719
 		sed -i -e '/gdbus-close-pending/d' gio/tests/Makefile.am || die
@@ -212,9 +191,8 @@ multilib_src_configure() {
 	# Only used by the gresource bin
 	multilib_is_native_abi || myconf="${myconf} --disable-libelf"
 
-	[[ ${PV} = 9999 ]] && myconf="${myconf} $(use_enable doc gtk-doc)"
-
-	# Always use internal libpcre, bug #254659
+	# FIXME: Always use internal libpcre, bug #254659
+	# (maybe consider going back to system lib
 	ECONF_SOURCE="${S}" gnome2_src_configure ${myconf} \
 		$(use_enable xattr) \
 		$(use_enable fam) \
