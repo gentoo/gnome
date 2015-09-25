@@ -19,7 +19,7 @@ IUSE="test"
 RDEPEND="
 	>=app-admin/packagekit-base-1
 	dev-db/sqlite:3
-	>=dev-libs/appstream-glib-0.3.4
+	>=dev-libs/appstream-glib-0.3.4:0/7
 	>=dev-libs/glib-2.39.1:2
 	gnome-base/gnome-desktop:3
 	>=gnome-base/gsettings-desktop-schemas-3.11.5
