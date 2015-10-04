@@ -6,10 +6,7 @@ EAPI="5"
 GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
-inherit eutils flag-o-matic gnome2 multilib virtualx multilib-minimal
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+inherit autotools eutils flag-o-matic gnome2 multilib virtualx multilib-minimal
 
 DESCRIPTION="Gimp ToolKit +"
 HOMEPAGE="http://www.gtk.org/"
@@ -22,12 +19,7 @@ REQUIRED_USE="
 	xinerama? ( X )
 "
 
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~ppc-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~ppc-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 
 # FIXME: introspection data is built against system installation of gtk+:3
 # NOTE: cairo[svg] dep is due to bug 291283 (not patched to avoid eautoreconf)
@@ -86,12 +78,6 @@ DEPEND="${COMMON_DEPEND}
 		media-fonts/font-misc-misc
 		media-fonts/font-cursor-misc )
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.20 )"
-fi
-
 # gtk+-3.2.2 breaks Alt key handling in <=x11-libs/vte-0.30.1:2.90
 # gtk+-3.3.18 breaks scrolling in <=x11-libs/vte-0.31.0:2.90
 # >=xorg-server-1.11.4 needed for
@@ -133,35 +119,29 @@ src_prepare() {
 
 	if ! use test ; then
 		# don't waste time building tests
-		strip_builddir SRC_SUBDIRS testsuite Makefile.am
-		[[ ${PV} != 9999 ]] &&  strip_builddir SRC_SUBDIRS testsuite Makefile.in
-		strip_builddir SRC_SUBDIRS tests Makefile.am
-		[[ ${PV} != 9999 ]] && strip_builddir SRC_SUBDIRS tests Makefile.in
+		strip_builddir SRC_SUBDIRS testsuite Makefile.{am,in}
+
+		# the tests dir needs to be build now because since commit
+		# 7ff3c6df80185e165e3bf6aa31bd014d1f8bf224 tests/gtkgears.o needs to be there
+		# strip_builddir SRC_SUBDIRS tests Makefile.{am,in}
 	fi
 
 	if ! use examples; then
 		# don't waste time building demos
-		strip_builddir SRC_SUBDIRS demos Makefile.am
-		[[ ${PV} != 9999 ]] && strip_builddir SRC_SUBDIRS demos Makefile.in
-		strip_builddir SRC_SUBDIRS examples Makefile.am
-		[[ ${PV} != 9999 ]] && strip_builddir SRC_SUBDIRS examples Makefile.in
+		strip_builddir SRC_SUBDIRS demos Makefile.{am,in}
+		strip_builddir SRC_SUBDIRS examples Makefile.{am,in}
 	fi
 
-	# Do no build and install gtk-update-icon-cache which is done by gtk+:2
+	# gtk-update-icon-cache is installed by dev-util/gtk-update-icon-cache
 	epatch "${FILESDIR}"/${PN}-3.16.2-remove_update-icon-cache.patch
 
 	epatch_user
 
 	eautoreconf
-	[[ ${PV} = 9999 ]] && gnome2_src_prepare
+	gnome2_src_prepare
 }
 
 multilib_src_configure() {
-	local myconf=""
-
-	[[ ${PV} = 9999 ]] && myconf="${myconf} $(use_enable doc gtk-doc)"
-
-	# Passing --disable-debug is not recommended for production use
 	# need libdir here to avoid a double slash in a path that libtool doesn't
 	# grok so well during install (// between $EPREFIX and usr ...)
 	ECONF_SOURCE=${S} \
@@ -185,8 +165,7 @@ multilib_src_configure() {
 		--enable-man \
 		--with-xml-catalog="${EPREFIX}"/etc/xml/catalog \
 		--libdir="${EPREFIX}"/usr/$(get_libdir) \
-		CUPS_CONFIG="${EPREFIX}/usr/bin/${CHOST}-cups-config" \
-		${myconf}
+		CUPS_CONFIG="${EPREFIX}/usr/bin/${CHOST}-cups-config"
 
 	# work-around gtk-doc out-of-source brokedness
 	if multilib_is_native_abi; then
