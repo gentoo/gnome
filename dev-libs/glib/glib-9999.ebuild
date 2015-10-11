@@ -2,6 +2,10 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
+# Until bug #537330 glib is a reverse dependency of pkgconfig and, then
+# adding new dependencies end up making stage3 to grow. Every addition needs
+# then to be think very closely.
+
 EAPI="5"
 PYTHON_COMPAT=( python2_7 )
 # Building with --disable-debug highly unrecommended.  It will build glib in
@@ -12,7 +16,8 @@ GCONF_DEBUG="yes"
 # pkg-config
 GNOME2_LA_PUNT="yes"
 
-inherit autotools bash-completion-r1 gnome2 libtool eutils flag-o-matic gnome2-utils multilib pax-utils python-r1 toolchain-funcs versionator virtualx linux-info multilib-minimal
+inherit autotools bash-completion-r1 gnome2 libtool eutils flag-o-matic	multilib \
+	pax-utils python-r1 toolchain-funcs versionator virtualx linux-info multilib-minimal
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -41,17 +46,18 @@ RDEPEND="
 	>=virtual/libiconv-0-r1[${MULTILIB_USEDEP}]
 	>=virtual/libffi-3.0.13-r1[${MULTILIB_USEDEP}]
 	>=sys-libs/zlib-1.2.8-r1[${MULTILIB_USEDEP}]
-	|| (
-		>=dev-libs/elfutils-0.142
-		>=dev-libs/libelf-0.8.12
-		>=sys-freebsd/freebsd-lib-9.2_rc1
-		)
 	selinux? ( >=sys-libs/libselinux-2.2.2-r5[${MULTILIB_USEDEP}] )
 	xattr? ( >=sys-apps/attr-2.4.47-r1[${MULTILIB_USEDEP}] )
 	fam? ( >=virtual/fam-0-r1[${MULTILIB_USEDEP}] )
 	utils? (
 		${PYTHON_DEPS}
-		>=dev-util/gdbus-codegen-${PV}[${PYTHON_USEDEP}] )
+		>=dev-util/gdbus-codegen-${PV}[${PYTHON_USEDEP}]
+		|| (
+			>=dev-libs/elfutils-0.142
+			>=dev-libs/libelf-0.8.12
+			>=sys-freebsd/freebsd-lib-9.2_rc1
+		)
+	)
 	abi_x86_32? (
 		!<=app-emulation/emul-linux-x86-baselibs-20130224-r9
 		!app-emulation/emul-linux-x86-baselibs[-abi_x86_32(-)]
@@ -150,16 +156,15 @@ src_prepare() {
 
 		# Some tests need ipv6, upstream bug #667468
 		if [[ -n "${IPV6_DISABLED}" ]]; then
-			sed -i -e "/socket\/ipv6_sync/d" gio/tests/socket.c || die
-			sed -i -e "/socket\/ipv6_async/d" gio/tests/socket.c || die
-			sed -i -e "/socket\/ipv6_v4mapped/d" gio/tests/socket.c || die
+			sed -i -e "/gdbus\/peer-to-peer/d" gio/tests/gdbus-peer.c || die
+			sed -i -e "/gdbus\/delayed-message-processing/d" gio/tests/gdbus-peer.c || die
+			sed -i -e "/gdbus\/nonce-tcp/d" gio/tests/gdbus-peer.c || die
 		fi
 
-		# Test relies on /usr/bin/true, but we have /bin/true, upstream bug #698655
-		sed -i -e "s:/usr/bin/true:/bin/true:" gio/tests/desktop-app-info.c || die
-
 		# thread test fails, upstream bug #679306
-		epatch "${FILESDIR}/${PN}-2.34.0-testsuite-skip-thread4.patch"
+		# FIXME: we need to check if it's still failing as upstream thinks something
+		# is wrong in our setups
+		#epatch "${FILESDIR}/${PN}-2.34.0-testsuite-skip-thread4.patch"
 
 		# This test is prone to fail, bug #504024, upstream bug #723719
 		sed -i -e '/gdbus-close-pending/d' gio/tests/Makefile.am || die
@@ -209,12 +214,11 @@ multilib_src_configure() {
 		*)        myconf="${myconf} --with-threads=posix" ;;
 	esac
 
-	# Only used by the gresource bin
-	multilib_is_native_abi || myconf="${myconf} --disable-libelf"
-
 	[[ ${PV} = 9999 ]] && myconf="${myconf} $(use_enable doc gtk-doc)"
 
-	# Always use internal libpcre, bug #254659
+	# FIXME: Always use internal libpcre, bug #254659
+	# (maybe consider going back to system lib)
+	# libelf used only by the gresource bin
 	ECONF_SOURCE="${S}" gnome2_src_configure ${myconf} \
 		$(use_enable xattr) \
 		$(use_enable fam) \
@@ -222,6 +226,7 @@ multilib_src_configure() {
 		$(use_enable static-libs static) \
 		$(use_enable systemtap dtrace) \
 		$(use_enable systemtap systemtap) \
+		$(multilib_native_use_enable utils libelf) \
 		--disable-compile-warnings \
 		--enable-man \
 		--with-pcre=internal \

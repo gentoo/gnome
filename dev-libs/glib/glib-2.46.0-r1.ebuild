@@ -39,17 +39,18 @@ RDEPEND="
 	>=virtual/libiconv-0-r1[${MULTILIB_USEDEP}]
 	>=virtual/libffi-3.0.13-r1[${MULTILIB_USEDEP}]
 	>=sys-libs/zlib-1.2.8-r1[${MULTILIB_USEDEP}]
-	|| (
-		>=dev-libs/elfutils-0.142
-		>=dev-libs/libelf-0.8.12
-		>=sys-freebsd/freebsd-lib-9.2_rc1
-		)
 	selinux? ( >=sys-libs/libselinux-2.2.2-r5[${MULTILIB_USEDEP}] )
 	xattr? ( >=sys-apps/attr-2.4.47-r1[${MULTILIB_USEDEP}] )
 	fam? ( >=virtual/fam-0-r1[${MULTILIB_USEDEP}] )
 	utils? (
 		${PYTHON_DEPS}
-		>=dev-util/gdbus-codegen-${PV}[${PYTHON_USEDEP}] )
+		>=dev-util/gdbus-codegen-${PV}[${PYTHON_USEDEP}]
+		|| (
+			>=dev-libs/elfutils-0.142
+			>=dev-libs/libelf-0.8.12
+			>=sys-freebsd/freebsd-lib-9.2_rc1
+		)
+	)
 	abi_x86_32? (
 		!<=app-emulation/emul-linux-x86-baselibs-20130224-r9
 		!app-emulation/emul-linux-x86-baselibs[-abi_x86_32(-)]
@@ -188,11 +189,9 @@ multilib_src_configure() {
 		*)        myconf="${myconf} --with-threads=posix" ;;
 	esac
 
-	# Only used by the gresource bin
-	multilib_is_native_abi || myconf="${myconf} --disable-libelf"
-
 	# FIXME: Always use internal libpcre, bug #254659
-	# (maybe consider going back to system lib
+	# (maybe consider going back to system lib)
+	# libelf used only by the gresource bin
 	ECONF_SOURCE="${S}" gnome2_src_configure ${myconf} \
 		$(use_enable xattr) \
 		$(use_enable fam) \
@@ -200,6 +199,7 @@ multilib_src_configure() {
 		$(use_enable static-libs static) \
 		$(use_enable systemtap dtrace) \
 		$(use_enable systemtap systemtap) \
+		$(multilib_native_use_enable utils libelf) \
 		--disable-compile-warnings \
 		--enable-man \
 		--with-pcre=internal \
