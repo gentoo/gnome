@@ -8,9 +8,6 @@ GNOME2_LA_PUNT="yes"
 PYTHON_COMPAT=( python{2_7,3_3,3_4} )
 
 inherit autotools eutils gnome2 python-r1 systemd udev virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Gnome Settings Daemon"
 HOMEPAGE="https://git.gnome.org/browse/gnome-settings-daemon"
@@ -23,11 +20,7 @@ REQUIRED_USE="
 	smartcard? ( udev )
 	test? ( ${PYTHON_REQUIRED_USE} )
 "
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.37.7:2[dbus]
@@ -111,7 +104,7 @@ src_prepare() {
 	epatch "${FILESDIR}"/${PN}-3.16.0-optional.patch
 
 	epatch_user
-	[[ ${PV} != 9999 ]] && eautoreconf
+	eautoreconf
 
 	gnome2_src_prepare
 }
