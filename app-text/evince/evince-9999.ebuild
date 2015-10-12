@@ -17,7 +17,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Evince"
 LICENSE="GPL-2+ CC-BY-SA-3.0"
 # subslot = evd3.(suffix of libevdocument3)-evv3.(suffix of libevview3)
 SLOT="0/evd3.4-evv3.3"
-IUSE="djvu dvi gnome +introspection libsecret nautilus nsplugin +postscript t1lib tiff xps"
+IUSE="djvu dvi gnome +introspection libsecret multimedia nautilus nsplugin +postscript t1lib tiff xps"
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
@@ -36,7 +36,7 @@ COMMON_DEPEND="
 	>=dev-libs/libxml2-2.5:2
 	sys-libs/zlib:=
 	x11-libs/gdk-pixbuf:2
-	>=x11-libs/gtk+-3.15.3:3[introspection?]
+	>=x11-libs/gtk+-3.16.0:3[introspection?]
 	gnome-base/gsettings-desktop-schemas
 	>=x11-libs/cairo-1.10:=
 	>=app-text/poppler-0.24:=[cairo]
@@ -45,9 +45,10 @@ COMMON_DEPEND="
 		virtual/tex-base
 		dev-libs/kpathsea:=
 		t1lib? ( >=media-libs/t1lib-5:= ) )
-	gnome? ( gnome-base/gnome-desktop:3 )
+	gnome? ( gnome-base/gnome-desktop:3= )
 	introspection? ( >=dev-libs/gobject-introspection-1 )
 	libsecret? ( >=app-crypt/libsecret-0.5 )
+	multimedia? ( media-libs/gstreamer:1.0= )
 	nautilus? ( >=gnome-base/nautilus-2.91.4[introspection?] )
 	postscript? ( >=app-text/libspectre-0.2:= )
 	tiff? ( >=media-libs/tiff-3.6:0= )
@@ -106,6 +107,7 @@ src_configure() {
 		$(use_with libsecret keyring) \
 		$(use_enable gnome libgnome-desktop) \
 		$(use_enable introspection) \
+		$(use_enable multimedia) \
 		$(use_enable nautilus) \
 		$(use_enable nsplugin browser-plugin) \
 		$(use_enable postscript ps) \

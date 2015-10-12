@@ -37,7 +37,7 @@ COMMON_DEPEND="
 		virtual/tex-base
 		dev-libs/kpathsea:=
 		t1lib? ( >=media-libs/t1lib-5:= ) )
-	gnome? ( gnome-base/gnome-desktop:3 )
+	gnome? ( gnome-base/gnome-desktop:3= )
 	introspection? ( >=dev-libs/gobject-introspection-1 )
 	libsecret? ( >=app-crypt/libsecret-0.5 )
 	multimedia? ( media-libs/gstreamer:1.0= )
