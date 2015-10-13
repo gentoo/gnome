@@ -58,9 +58,6 @@ RDEPEND="${COMMON_DEPEND}
 "
 
 src_prepare() {
-	# Comment out broken unittest
-	epatch "${FILESDIR}"/${PN}-3.16.1-unittest.patch
-
 	gnome2_src_prepare
 	python_copy_sources
 }
