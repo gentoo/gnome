@@ -28,7 +28,7 @@ RDEPEND="
 	>=gnome-base/gnome-desktop-${PV}:3
 	>=x11-libs/startup-notification-0.12
 
-	>=gnome-base/gvfs-1.24
+	>=gnome-base/gvfs-1.26
 	>=gnome-base/dconf-0.24
 
 	|| (
