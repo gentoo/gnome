@@ -27,7 +27,7 @@ fi
 RDEPEND="
 	>=dev-libs/glib-2.42:2[dbus]
 	>=x11-libs/gtk+-3.10:3[X]
-	>=x11-libs/vte-0.42.0:2.91
+	>=x11-libs/vte-0.42.1:2.91
 	>=gnome-base/dconf-0.14
 	>=gnome-base/gsettings-desktop-schemas-0.1.0
 	sys-apps/util-linux
@@ -52,15 +52,14 @@ DOC_CONTENTS="To get previous working directory inherited in new opened
 	tab you will need to add the following line to your ~/.bashrc:\n
 	. /etc/profile.d/vte.sh"
 
-# src_prepare() {
-# 	gnome2_src_prepare
-# 	if ! use vanilla; then
-# 		# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=695371
-# 		epatch "${FILESDIR}"/${PN}-3.16.2-restore-transparency.patch
-# 		# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=721932
-# 		epatch "${FILESDIR}"/${PN}-3.16.2-restore-dark.patch
-# 	fi
-# }
+src_prepare() {
+	gnome2_src_prepare
+	if ! use vanilla; then
+		# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=695371
+		# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=721932
+		epatch "${FILESDIR}"/${PN}-3.18.0-restore-dark-transparency.patch
+	fi
+}
 
 src_configure() {
 	local myconf=""

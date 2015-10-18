@@ -13,14 +13,14 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Terminal/"
 
 LICENSE="GPL-3+"
 SLOT="0"
-IUSE="debug +gnome-shell +nautilus"
+IUSE="debug +gnome-shell +nautilus vanilla"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux"
 
 # FIXME: automagic dependency on gtk+[X]
 RDEPEND="
 	>=dev-libs/glib-2.42:2[dbus]
 	>=x11-libs/gtk+-3.10:3[X]
-	>=x11-libs/vte-0.42.0:2.91
+	>=x11-libs/vte-0.42.1:2.91
 	>=gnome-base/dconf-0.14
 	>=gnome-base/gsettings-desktop-schemas-0.1.0
 	sys-apps/util-linux
@@ -44,6 +44,15 @@ DEPEND="${RDEPEND}
 DOC_CONTENTS="To get previous working directory inherited in new opened
 	tab you will need to add the following line to your ~/.bashrc:\n
 	. /etc/profile.d/vte.sh"
+
+src_prepare() {
+	gnome2_src_prepare
+	if ! use vanilla; then
+		# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=695371
+		# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=721932
+		epatch "${FILESDIR}"/${PN}-3.18.0-restore-dark-transparency.patch
+	fi
+}
 
 src_configure() {
 	gnome2_src_configure \
