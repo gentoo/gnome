@@ -62,6 +62,7 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	vala? ( $(vala_depend) )
 "
+
 # eautoreconf needs:
 #	>=gnome-base/gnome-common-2
 
