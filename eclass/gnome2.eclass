@@ -21,9 +21,9 @@ esac
 
 # @ECLASS-VARIABLE: G2CONF
 # @DEFAULT_UNSET
-# @DEPRECATED
 # @DESCRIPTION:
-# Extra configure opts passed to econf
+# Extra configure opts passed to econf.
+# Deprecated, pass extra arguments to gnome2_src_configure.
 G2CONF=${G2CONF:-""}
 
 # @ECLASS-VARIABLE: GNOME2_LA_PUNT
