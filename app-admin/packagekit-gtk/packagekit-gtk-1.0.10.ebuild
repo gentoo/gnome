@@ -44,6 +44,7 @@ src_configure() {
 		--disable-networkmanager \
 		--disable-static \
 		--disable-systemd \
+		--disable-vala \
 		--enable-dummy \
 		--enable-gtk-module \
 		--enable-introspection=yes \
