@@ -1,0 +1,32 @@
+From 284dd27dc9f73415f49e7502de7ed0bddedcb8c0 Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Fri, 27 Nov 2015 13:01:37 +0100
+Subject: [PATCH 3/3] portage: do not refetch package listing for no reason
+
+---
+ backends/portage/portageBackend.py | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/backends/portage/portageBackend.py b/backends/portage/portageBackend.py
+index 12918b9..505feec 100755
+--- a/backends/portage/portageBackend.py
++++ b/backends/portage/portageBackend.py
+@@ -1003,13 +1003,12 @@ class PackageKitPortageBackend(PackageKitPortageMixin, PackageKitBaseBackend):
+     def get_packages(self, filters):
+         self.status(STATUS_QUERY)
+         self.allow_cancel(True)
++        self.percentage(0)
+ 
+         cp_list = self._get_all_cp(filters)
+-
+         progress = PackagekitProgress(compute_equal_steps(cp_list))
+-        self.percentage(progress.percent)
+ 
+-        for percentage, cp in izip(progress, self._get_all_cp(filters)):
++        for percentage, cp in izip(progress, cp_list):
+             for cpv in self._get_all_cpv(cp, filters):
+                 try:
+                     self._package(cpv)
+-- 
+2.6.3
+

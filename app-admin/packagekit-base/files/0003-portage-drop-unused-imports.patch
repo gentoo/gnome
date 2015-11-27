@@ -1,0 +1,25 @@
+From 6b2592232d9ed2713df874d3bb770f68ef701841 Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Sun, 6 Sep 2015 14:14:45 +0200
+Subject: [PATCH 3/9] portage: drop unused imports
+
+---
+ backends/portage/portageBackend.py | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/backends/portage/portageBackend.py b/backends/portage/portageBackend.py
+index f40ca92..4301c14 100755
+--- a/backends/portage/portageBackend.py
++++ b/backends/portage/portageBackend.py
+@@ -40,8 +40,6 @@ from packagekit.backend import (
+     split_package_id,
+ )
+ from packagekit.enums import *
+-from packagekit.package import PackagekitPackage
+-from packagekit.progress import *
+ # portage imports
+ import _emerge.AtomArg
+ import _emerge.actions
+-- 
+2.6.3
+

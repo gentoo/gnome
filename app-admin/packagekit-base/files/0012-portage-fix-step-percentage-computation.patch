@@ -1,0 +1,25 @@
+From b76a5ee07912e0a739a5ba39aef6d96e85e58a98 Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Fri, 27 Nov 2015 13:00:38 +0100
+Subject: [PATCH 2/3] portage: fix step percentage computation
+
+---
+ backends/portage/portageBackend.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/backends/portage/portageBackend.py b/backends/portage/portageBackend.py
+index 004c18b..12918b9 100755
+--- a/backends/portage/portageBackend.py
++++ b/backends/portage/portageBackend.py
+@@ -73,7 +73,7 @@ from portage.exception import InvalidAtom
+ 
+ 
+ def compute_equal_steps(iterable):
+-    return [idx * (100.0 / len(iterable)) / 100.0
++    return [idx * (100.0 / len(iterable))
+             for idx, _ in enumerate(iterable, start=1)]
+ 
+ 
+-- 
+2.6.3
+

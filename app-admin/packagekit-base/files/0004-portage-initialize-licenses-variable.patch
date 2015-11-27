@@ -1,0 +1,26 @@
+From 438fd88070860f858d09758daf5ff379a4d788a5 Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Sun, 6 Sep 2015 14:33:48 +0200
+Subject: [PATCH 4/9] portage: initialize licenses variable
+
+It should not be possible for licenses to be undefined but cleans up
+static analysis warnings.
+---
+ backends/portage/portageBackend.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/backends/portage/portageBackend.py b/backends/portage/portageBackend.py
+index 4301c14..f36695a 100755
+--- a/backends/portage/portageBackend.py
++++ b/backends/portage/portageBackend.py
+@@ -554,6 +554,7 @@ class PackageKitPortageMixin(object):
+             return not self.pvar.settings._getMissingLicenses(cpv, metadata)
+ 
+         if FILTER_FREE in filters or FILTER_NOT_FREE in filters:
++            licenses = ""
+             free_licenses = "@FSF-APPROVED"
+             if FILTER_FREE in filters:
+                 licenses = "-* " + free_licenses
+-- 
+2.6.3
+

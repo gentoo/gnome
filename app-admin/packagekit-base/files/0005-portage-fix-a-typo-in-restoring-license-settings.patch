@@ -1,0 +1,30 @@
+From d42390d7c78e622a8051d47f86a422a1861d7eef Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Sun, 6 Sep 2015 14:35:40 +0200
+Subject: [PATCH 5/9] portage: fix a typo in restoring license settings
+
+---
+ backends/portage/portageBackend.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/backends/portage/portageBackend.py b/backends/portage/portageBackend.py
+index f36695a..9b572e9 100755
+--- a/backends/portage/portageBackend.py
++++ b/backends/portage/portageBackend.py
+@@ -560,11 +560,11 @@ class PackageKitPortageMixin(object):
+                 licenses = "-* " + free_licenses
+             elif FILTER_NOT_FREE in filters:
+                 licenses = "* -" + free_licenses
+-            backup_license = self.pvar.settings["ACCEPT_LICENSE"]
++            backup_licenses = self.pvar.settings["ACCEPT_LICENSE"]
+ 
+             self.pvar.apply_settings({'ACCEPT_LICENSE': licences})
+             cpv_list = filter(_has_validLicense, cpv_list)
+-            self.pvar.apply_settings({'ACCEPT_LICENSE': backup_licence})
++            self.pvar.apply_settings({'ACCEPT_LICENSE': backup_licenses})
+ 
+         return cpv_list
+ 
+-- 
+2.6.3
+

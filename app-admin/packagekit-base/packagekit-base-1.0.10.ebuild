@@ -7,8 +7,9 @@ EAPI="5"
 # PackageKit supports 3.2+, but entropy and portage backends are untested
 # Future note: use --enable-python3
 PYTHON_COMPAT=( python2_7 )
+VALA_USE_DEPEND="vapigen"
 
-inherit autotools bash-completion-r1 eutils multilib nsplugins python-single-r1 systemd
+inherit bash-completion-r1 eutils multilib nsplugins python-single-r1 systemd vala
 
 MY_PN="PackageKit"
 MY_P=${MY_PN}-${PV}
@@ -20,8 +21,11 @@ SRC_URI="http://www.freedesktop.org/software/${MY_PN}/releases/${MY_P}.tar.xz"
 LICENSE="GPL-2"
 SLOT="0/18"
 KEYWORDS="~alpha ~amd64 ~arm ~mips ~ppc ~ppc64 ~x86"
-IUSE="connman cron command-not-found +introspection networkmanager nsplugin entropy systemd test"
-REQUIRED_USE="${PYTHON_REQUIRED_USE}"
+IUSE="connman cron command-not-found +introspection networkmanager nsplugin entropy systemd test vala"
+REQUIRED_USE="
+	${PYTHON_REQUIRED_USE}
+	vala? ( introspection )
+"
 
 # While not strictly needed, consolekit is the alternative to systemd-login
 # to get current session's user.
@@ -51,6 +55,7 @@ DEPEND="${CDEPEND}
 	sys-devel/gettext
 	virtual/pkgconfig
 	nsplugin? ( >=net-misc/npapi-sdk-0.27 )
+	vala? ( $(vala_depend) )
 "
 RDEPEND="${CDEPEND}
 	>=app-portage/layman-2[${PYTHON_USEDEP}]
@@ -64,11 +69,10 @@ S="${WORKDIR}/${MY_P}"
 RESTRICT="test"
 
 src_prepare() {
-	# Fix python backend detection
-	# Make portage backend work with newer layman/portage
+	# Upstreamed portage backend patches
 	epatch "${FILESDIR}"/*
 
-	eautoreconf
+	use vala && vala_src_prepare
 }
 
 src_configure() {
@@ -92,6 +96,7 @@ src_configure() {
 		$(use_enable nsplugin browser-plugin) \
 		$(use_enable systemd) \
 		$(use_enable test daemon-tests) \
+		$(use_enable vala) \
 		$(systemd_with_unitdir)
 		#$(use_enable test local)
 }
@@ -100,8 +105,10 @@ src_install() {
 	emake DESTDIR="${D}" install || die "emake install failed"
 	prune_libtool_files --all
 
-	dodoc AUTHORS MAINTAINERS NEWS README || die "dodoc failed"
-	dodoc ChangeLog || die "dodoc failed"
+	einstalldocs
+
+	#dodoc AUTHORS MAINTAINERS NEWS README || die "dodoc failed"
+	#dodoc ChangeLog || die "dodoc failed"
 
 	if use nsplugin; then
 		dodir "/usr/$(get_libdir)/${PLUGINS_DIR}"

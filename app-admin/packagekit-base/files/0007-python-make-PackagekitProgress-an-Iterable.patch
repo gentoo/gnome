@@ -1,0 +1,56 @@
+From eb52dc157c5dbda9630b448dab06fb05cdf1060c Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Sun, 6 Sep 2015 15:26:05 +0200
+Subject: [PATCH 7/9] python: make PackagekitProgress an Iterable
+
+---
+ lib/python/packagekit/progress.py | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/lib/python/packagekit/progress.py b/lib/python/packagekit/progress.py
+index 7a5d363..d0c0c26 100644
+--- a/lib/python/packagekit/progress.py
++++ b/lib/python/packagekit/progress.py
+@@ -17,7 +17,13 @@
+ # Copyright (C) 2008
+ #    Richard Hughes <richard@hughsie.com>
+ 
+-class PackagekitProgress:
++try:
++    from collections import Iterable
++except ImportError:
++    from collections.abc import Iterable
++
++
++class PackagekitProgress(Iterable):
+     '''
+     Progress class there controls the total progress of a transaction
+     the transaction is divided in n milestones. the class contains
+@@ -42,6 +48,7 @@ class PackagekitProgress:
+     #TODO: Add support for elapsed/remaining time
+ 
+     def __init__(self):
++        super(PackagekitProgress, self).__init__()
+         self.percent = 0
+         self.steps = []
+         self.current_step = 0
+@@ -68,8 +75,16 @@ class PackagekitProgress:
+             self.current_step += 1
+             self.percent = self.steps[self.current_step]
+         else:
++            self.current_step = len(self.steps)
+             self.percent = 100
+ 
++    def __iter__(self):
++        while self.current_step < len(self.steps):
++            yield self.percent
++            self.step()
++
++        raise StopIteration
++
+     def _update_percent(self):
+         '''
+         Increment percentage based on current step
+-- 
+2.6.3
+
