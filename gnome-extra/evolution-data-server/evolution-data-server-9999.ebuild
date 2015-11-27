@@ -20,7 +20,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Evolution"
 # Note: explicitly "|| ( LGPL-2 LGPL-3 )", not "LGPL-2+".
 LICENSE="|| ( LGPL-2 LGPL-3 ) BSD Sleepycat"
 SLOT="0/54" # subslot = libcamel-1.2 soname + optional revision if needed
-IUSE="api-doc-extras +gnome-online-accounts +gtk +introspection ipv6 ldap kerberos vala +weather"
+IUSE="api-doc-extras +google-auth +gnome-online-accounts +gtk +introspection ipv6 ldap kerberos vala +weather"
 REQUIRED_USE="vala? ( introspection )"
 
 if [[ ${PV} = 9999 ]]; then
@@ -33,6 +33,7 @@ fi
 
 # sys-libs/db is only required for migrating from <3.13 versions
 # gdata-0.15.1 is required for google tasks
+# google-auth allows adding own google_client_id and google_client_secret
 RDEPEND="
 	>=app-crypt/gcr-3.4
 	>=app-crypt/libsecret-0.5[crypt]
@@ -50,6 +51,10 @@ RDEPEND="
 	sys-libs/zlib:=
 	virtual/libiconv
 
+	google-auth? (
+		>=net-libs/webkit-gtk-2.4.9
+		>=dev-libs/json-glib-1.0.4
+	)
 	gtk? (
 		>=app-crypt/gcr-3.4[gtk]
 		>=x11-libs/gtk+-3.10:3
@@ -71,6 +76,7 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	vala? ( $(vala_depend) )
 "
+
 # eautoreconf needs:
 #	>=gnome-base/gnome-common-2
 
@@ -107,6 +113,7 @@ src_configure() {
 		$(use_enable api-doc-extras gtk-doc) \
 		$(use_with api-doc-extras private-docs) \
 		$(use_enable gnome-online-accounts goa) \
+		$(use_enable google-auth) \
 		$(use_enable gtk) \
 		$(use_enable introspection) \
 		$(use_enable ipv6) \
