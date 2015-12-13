@@ -9,7 +9,7 @@ EAPI="5"
 PYTHON_COMPAT=( python2_7 )
 VALA_USE_DEPEND="vapigen"
 
-inherit bash-completion-r1 eutils multilib nsplugins python-single-r1 systemd vala
+inherit bash-completion-r1 multilib nsplugins python-single-r1 systemd vala
 
 MY_PN="PackageKit"
 MY_P=${MY_PN}-${PV}
@@ -69,9 +69,6 @@ S="${WORKDIR}/${MY_P}"
 RESTRICT="test"
 
 src_prepare() {
-	# Upstreamed portage backend patches
-	epatch "${FILESDIR}"/*
-
 	use vala && vala_src_prepare
 }
 
@@ -107,8 +104,7 @@ src_install() {
 
 	einstalldocs
 
-	#dodoc AUTHORS MAINTAINERS NEWS README || die "dodoc failed"
-	#dodoc ChangeLog || die "dodoc failed"
+	dodoc AUTHORS ChangeLog MAINTAINERS NEWS README
 
 	if use nsplugin; then
 		dodir "/usr/$(get_libdir)/${PLUGINS_DIR}"
