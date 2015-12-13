@@ -18,6 +18,7 @@ IUSE=""
 RDEPEND="
 	>=dev-libs/glib-2:2
 	>=gnome-base/gnome-vfs-2:2
+	>=gnome-base/libgnome-2
 	>=gnome-base/libgnomeui-2
 	>=x11-libs/gtk+-2.24:2
 	dev-libs/libxml2:2
