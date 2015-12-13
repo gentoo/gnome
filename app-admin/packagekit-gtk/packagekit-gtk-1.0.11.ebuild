@@ -21,7 +21,7 @@ IUSE=""
 RDEPEND="
 	dev-libs/dbus-glib
 	media-libs/fontconfig
-	>=x11-libs/gtk+-3.0:3
+	>=x11-libs/gtk+-3:3
 	x11-libs/pango
 	~app-admin/packagekit-base-${PV}[introspection]
 "
