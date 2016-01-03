@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -11,7 +11,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="GNOME hexadecimal editor"
-HOMEPAGE="https://live.gnome.org/Ghex"
+HOMEPAGE="https://wiki.gnome.org/Apps/Ghex"
 
 LICENSE="GPL-2+ FDL-1.1+"
 SLOT="2"
