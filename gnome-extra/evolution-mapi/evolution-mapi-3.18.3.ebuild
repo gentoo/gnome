@@ -20,7 +20,7 @@ if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
 	# XXX: re-enable keywords when libmapi can be emerged without black magick
-	KEYWORDS="~" ~#"~alpha ~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86"
+	KEYWORDS="~" # "~alpha ~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 fi
 
 RDEPEND="
