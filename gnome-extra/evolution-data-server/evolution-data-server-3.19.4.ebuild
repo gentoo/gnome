@@ -16,7 +16,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Evolution"
 
 # Note: explicitly "|| ( LGPL-2 LGPL-3 )", not "LGPL-2+".
 LICENSE="|| ( LGPL-2 LGPL-3 ) BSD Sleepycat"
-SLOT="0/54" # subslot = libcamel-1.2 soname + optional revision if needed
+SLOT="0/55" # subslot = libcamel-1.2 soname + optional revision if needed
 IUSE="api-doc-extras +google-auth +gnome-online-accounts +gtk +introspection ipv6 ldap kerberos vala +weather"
 REQUIRED_USE="vala? ( introspection )"
 
