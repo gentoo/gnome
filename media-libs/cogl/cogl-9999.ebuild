@@ -3,10 +3,9 @@
 # $Id$
 
 EAPI="5"
-CLUTTER_LA_PUNT="yes"
+GCONF_DEBUG="yes"
 
-# Inherit gnome2 after clutter to download sources from gnome.org
-inherit clutter gnome2 multilib virtualx
+inherit gnome2 multilib virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -53,7 +52,8 @@ COMMON_DEPEND="
 "
 # before clutter-1.7, cogl was part of clutter
 RDEPEND="${COMMON_DEPEND}
-	!<media-libs/clutter-1.7"
+	!<media-libs/clutter-1.7
+"
 DEPEND="${COMMON_DEPEND}
 	>=dev-util/gtk-doc-am-1.13
 	sys-devel/gettext
@@ -134,9 +134,12 @@ src_test() {
 
 src_install() {
 	DOCS="NEWS README"
-	EXAMPLES="examples/{*.c,*.jpg}"
+	if use examples; then
+		insinto /usr/share/doc/${PF}/examples
+		doins examples/{*.c,*.jpg}
+	fi
 
-	clutter_src_install
+	gnome2_src_install
 
 	# Remove silly examples-data directory
 	rm -rvf "${ED}/usr/share/cogl/examples-data/" || die
