@@ -4,32 +4,31 @@
 
 EAPI="5"
 GCONF_DEBUG="yes"
-CLUTTER_LA_PUNT="yes"
+GNOME2_LA_PUNT="yes"
 
-# inherit clutter after gnome2 so that defaults aren't overriden
-inherit gnome2 clutter gnome.org
+inherit gnome2
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
 DESCRIPTION="Library for embedding a Clutter canvas (stage) in GTK+"
 HOMEPAGE="https://wiki.gnome.org/Projects/Clutter"
+LICENSE="LGPL-2.1+"
 
 SLOT="1.0"
-IUSE="examples +introspection"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 	IUSE="${IUSE} doc"
 else
 	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
 fi
+IUSE="X examples gtk +introspection wayland"
 
-# XXX: Needs gtk with X support (!directfb)
 RDEPEND="
-	>=x11-libs/gtk+-3.6.0:3[introspection?]
-	>=media-libs/clutter-1.18:1.0[introspection?]
+	>=x11-libs/gtk+-3.8.0:3[X=,introspection?,wayland=]
+	>=media-libs/clutter-1.23.7:1.0[X=,gtk=,introspection?,wayland=]
 	media-libs/cogl:1.0=[introspection?]
-	introspection? ( >=dev-libs/gobject-introspection-0.9.12 )
+	introspection? ( >=dev-libs/gobject-introspection-0.9.12:= )
 "
 DEPEND="${RDEPEND}
 	dev-util/gtk-doc-am
@@ -38,10 +37,17 @@ DEPEND="${RDEPEND}
 "
 
 src_configure() {
-	DOCS="NEWS README"
-	EXAMPLES="examples/{*.c,redhand.png}"
 	gnome2_src_configure \
 		--disable-maintainer-flags \
 		--enable-deprecated \
 		$(use_enable introspection)
+}
+
+src_install() {
+	gnome2_src_install
+
+	if use examples; then
+		insinto /usr/share/doc/${PF}/examples
+		doins examples/{*.c,redhand.png}
+	fi
 }
