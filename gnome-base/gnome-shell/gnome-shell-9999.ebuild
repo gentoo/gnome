@@ -1,11 +1,11 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
 EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
-PYTHON_COMPAT=( python{3_3,3_4} )
+PYTHON_COMPAT=( python{3_3,3_4,3_5} )
 
 inherit autotools eutils gnome2 multilib pax-utils python-r1 systemd
 if [[ ${PV} = 9999 ]]; then
@@ -17,7 +17,7 @@ HOMEPAGE="https://wiki.gnome.org/Projects/GnomeShell"
 
 LICENSE="GPL-2+ LGPL-2+"
 SLOT="0"
-IUSE="+bluetooth +i18n +networkmanager -openrc-force"
+IUSE="+bluetooth +networkmanager +nls -openrc-force"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
@@ -41,7 +41,7 @@ COMMON_DEPEND="
 	>=dev-libs/json-glib-0.13.2
 	>=dev-libs/libcroco-0.6.8:0.6
 	>=gnome-base/gnome-desktop-3.7.90:3=[introspection]
-	>=gnome-base/gsettings-desktop-schemas-3.14
+	>=gnome-base/gsettings-desktop-schemas-3.19.2
 	>=gnome-base/gnome-keyring-3.3.90
 	gnome-base/libgnome-keyring
 	>=gnome-extra/evolution-data-server-3.17.2:=
@@ -51,7 +51,7 @@ COMMON_DEPEND="
 	>=sys-auth/polkit-0.100[introspection]
 	>=x11-libs/libXfixes-5.0
 	x11-libs/libXtst
-	>=x11-wm/mutter-3.17.91[introspection]
+	>=x11-wm/mutter-3.19.92[introspection]
 	>=x11-libs/startup-notification-0.11
 
 	${PYTHON_DEPS}
@@ -86,7 +86,7 @@ COMMON_DEPEND="
 # 5. Systemd needed for suspending support
 # 6. xdg-utils needed for xdg-open, used by extension tool
 # 7. gnome-icon-theme-symbolic and dejavu font neeed for various icons & arrows
-# 8. IBus is needed for i18n integration
+# 8. IBus is needed for nls integration
 # 9. mobile-broadband-provider-info, timezone-data for shell-mobile-providers.c
 RDEPEND="${COMMON_DEPEND}
 	>=sys-auth/polkit-0.101[introspection]
@@ -106,10 +106,10 @@ RDEPEND="${COMMON_DEPEND}
 	media-fonts/dejavu
 	x11-themes/gnome-icon-theme-symbolic
 
-	i18n? ( >=app-i18n/ibus-1.4.99[dconf(+),gtk3,introspection] )
 	networkmanager? (
 		net-misc/mobile-broadband-provider-info
 		sys-libs/timezone-data )
+	nls? ( >=app-i18n/ibus-1.4.99[dconf(+),gtk3,introspection] )
 "
 # avoid circular dependency, see bug #546134
 PDEPEND="
@@ -163,14 +163,15 @@ src_install() {
 	# Required for gnome-shell on hardened/PaX, bug #398941
 	# Future-proof for >=spidermonkey-1.8.7 following polkit's example
 	if has_version '<dev-lang/spidermonkey-1.8.7'; then
-		pax-mark mr "${ED}usr/bin/gnome-shell"
+		pax-mark mr "${ED}usr/bin/gnome-shell"{,-extension-prefs}
 	elif has_version '>=dev-lang/spidermonkey-1.8.7[jit]'; then
-		pax-mark m "${ED}usr/bin/gnome-shell"
-	fi
+		pax-mark m "${ED}usr/bin/gnome-shell"{,-extension-prefs}
 	# Required for gnome-shell on hardened/PaX #457146 and #457194
 	# PaX EMUTRAMP need to be on
-	if has_version '>=dev-libs/libffi-3.0.13[pax_kernel]'; then
-		pax-mark E "${ED}usr/bin/gnome-shell"
+	elif has_version '>=dev-libs/libffi-3.0.13[pax_kernel]'; then
+		pax-mark E "${ED}usr/bin/gnome-shell"{,-extension-prefs}
+	else
+		pax-mark m "${ED}usr/bin/gnome-shell"{,-extension-prefs}
 	fi
 }
 
@@ -197,21 +198,16 @@ pkg_postinst() {
 		ewarn "drivers."
 	fi
 
-	if has_version "media-libs/mesa[video_cards_radeon]" ||
-	   has_version "media-libs/mesa[video_cards_r300]" ||
-	   has_version "media-libs/mesa[video_cards_r600]"; then
-		elog "GNOME Shell is unstable under classic-mode r300/r600 mesa drivers."
-		elog "Make sure that gallium architecture for r300 and r600 drivers is"
-		elog "selected using 'eselect mesa'."
-		if ! has_version "media-libs/mesa[gallium]"; then
-			ewarn "You will need to emerge media-libs/mesa with USE=gallium."
-		fi
-	fi
-
 	if ! has_version "media-libs/mesa[llvm]"; then
 		elog "llvmpipe is used as fallback when no 3D acceleration"
 		elog "is available. You will need to enable llvm USE for"
 		elog "media-libs/mesa."
+	fi
+
+	# https://bugs.gentoo.org/show_bug.cgi?id=563084
+	if has_version "x11-drivers/nvidia-drivers[-kms]"; then
+		ewarn "You will need to enable kms support in x11-drivers/nvidia-drivers,"
+		ewarn "otherwise Gnome will fail to start"
 	fi
 
 	if ! systemd_is_booted; then
