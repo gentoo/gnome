@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -27,14 +27,14 @@ fi
 COMMON_DEPEND="
 	>=x11-libs/pango-1.2[X,introspection?]
 	>=x11-libs/cairo-1.10[X]
-	>=x11-libs/gtk+-3.9.11:3[X,introspection?]
+	>=x11-libs/gtk+-3.19.8:3[X,introspection?]
 	>=dev-libs/glib-2.36.0:2[dbus]
-	>=media-libs/clutter-1.23.4:1.0[introspection?]
+	>=media-libs/clutter-1.25.6:1.0[X,introspection?]
 	>=media-libs/cogl-1.17.1:1.0=[introspection?]
 	>=media-libs/libcanberra-0.26[gtk3]
 	>=x11-libs/startup-notification-0.7
 	>=x11-libs/libXcomposite-0.2
-	>=gnome-base/gsettings-desktop-schemas-3.15.92[introspection?]
+	>=gnome-base/gsettings-desktop-schemas-3.19.3[introspection?]
 	gnome-base/gnome-desktop:3=
 	>sys-power/upower-0.99:=
 
@@ -72,7 +72,6 @@ COMMON_DEPEND="
 		x11-base/xorg-server[wayland] )
 "
 DEPEND="${COMMON_DEPEND}
-	>=dev-util/gtk-doc-am-1.15
 	>=dev-util/intltool-0.41
 	sys-devel/gettext
 	virtual/pkgconfig
