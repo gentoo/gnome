@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -16,7 +16,7 @@ DESCRIPTION="Clutter is a library for creating graphical user interfaces"
 
 LICENSE="LGPL-2.1+ FDL-1.1+"
 SLOT="1.0"
-IUSE="aqua debug doc egl gtk +introspection test wayland +X"
+IUSE="aqua debug doc egl gtk +introspection test wayland X"
 REQUIRED_USE="
 	|| ( aqua wayland X )
 	wayland? ( egl )
@@ -31,8 +31,8 @@ fi
 # >=libX11-1.3.1 needed for X Generic Event support
 # do not depend on tslib, it does not build and is disable by default upstream
 RDEPEND="
-	>=dev-libs/atk-2.5.3[introspection?]
 	>=dev-libs/glib-2.44.0:2
+	>=dev-libs/atk-2.5.3[introspection?]
 	>=dev-libs/json-glib-0.12[introspection?]
 	>=media-libs/cogl-1.21.2:1.0=[introspection?,pango,wayland?]
 	>=x11-libs/cairo-1.14:=[aqua?,glib]
@@ -42,8 +42,8 @@ RDEPEND="
 	x11-libs/libdrm:=
 
 	egl? (
-		>=dev-libs/libinput-0.19
-		media-libs/cogl:=[gles2,kms]
+		>=dev-libs/libinput-0.19.0
+		media-libs/cogl:1.0=[gles2,kms]
 		>=virtual/libgudev-136
 		x11-libs/libxkbcommon
 	)
@@ -71,9 +71,6 @@ DEPEND="${RDEPEND}
 		dev-libs/libxslt )
 	test? ( x11-libs/gdk-pixbuf )
 "
-# Tests fail with both swrast and llvmpipe
-# They pass under r600g or i965, so the bug is in mesa
-#RESTRICT="test"
 
 src_prepare() {
 	# We only need conformance tests, the rest are useless for us
