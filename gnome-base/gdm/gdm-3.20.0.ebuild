@@ -7,9 +7,6 @@ GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
 inherit autotools eutils gnome2 pam readme.gentoo systemd user versionator
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="GNOME Display Manager for managing graphical display servers and user logins"
 HOMEPAGE="https://wiki.gnome.org/Projects/GDM"
@@ -27,11 +24,7 @@ SLOT="0"
 
 IUSE="accessibility audit branding fprint +introspection ipv6 plymouth selinux smartcard tcpd test wayland xinerama"
 
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86"
 
 # NOTE: x11-base/xorg-server dep is for X_SERVER_PATH etc, bug #295686
 # nspr used by smartcard extension
