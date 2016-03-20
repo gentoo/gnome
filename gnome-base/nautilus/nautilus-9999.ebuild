@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -6,7 +6,7 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes" # Needed with USE 'sendto'
 
-inherit eutils gnome2 readme.gentoo virtualx
+inherit gnome2 readme.gentoo virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -18,7 +18,7 @@ LICENSE="GPL-2+ LGPL-2+ FDL-1.1"
 SLOT="0"
 
 # profiling?
-IUSE="debug exif gnome +introspection packagekit +previewer sendto tracker xmp"
+IUSE="exif gnome +introspection packagekit +previewer selinux sendto tracker xmp"
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
@@ -36,7 +36,7 @@ RESTRICT="test"
 COMMON_DEPEND="
 	>=dev-libs/glib-2.45.7:2[dbus]
 	>=x11-libs/pango-1.28.3
-	>=x11-libs/gtk+-3.17.5:3[introspection?]
+	>=x11-libs/gtk+-3.19.12:3[introspection?]
 	>=dev-libs/libxml2-2.7.8:2
 	>=gnome-base/gnome-desktop-3:3=
 
@@ -47,7 +47,8 @@ COMMON_DEPEND="
 	x11-libs/libXrender
 
 	exif? ( >=media-libs/libexif-0.6.20 )
-	introspection? ( >=dev-libs/gobject-introspection-0.6.4 )
+	introspection? ( >=dev-libs/gobject-introspection-0.6.4:= )
+	selinux? ( >=sys-libs/libselinux-2 )
 	tracker? ( >=app-misc/tracker-0.16:= )
 	xmp? ( >=media-libs/exempi-2.1.0 )
 "
@@ -55,7 +56,7 @@ DEPEND="${COMMON_DEPEND}
 	>=dev-lang/perl-5
 	>=dev-util/gdbus-codegen-2.33
 	>=dev-util/gtk-doc-am-1.10
-	>=dev-util/intltool-0.40.1
+	>=dev-util/intltool-0.50
 	sys-devel/gettext
 	virtual/pkgconfig
 	x11-proto/xproto
@@ -108,16 +109,14 @@ src_configure() {
 		$(use_enable introspection) \
 		$(use_enable packagekit) \
 		$(use_enable sendto nst-extension) \
+		$(use_enable selinux) \
 		$(use_enable tracker) \
 		$(use_enable xmp)
 }
 
 src_test() {
 	gnome2_environment_reset
-	unset DBUS_SESSION_BUS_ADDRESS
-	export GSETTINGS_BACKEND="memory"
 	Xemake check
-	unset GSETTINGS_BACKEND
 }
 
 src_install() {
