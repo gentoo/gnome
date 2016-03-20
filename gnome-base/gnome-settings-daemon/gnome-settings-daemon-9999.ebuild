@@ -1,11 +1,11 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
 EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
-PYTHON_COMPAT=( python{2_7,3_3,3_4} )
+PYTHON_COMPAT=( python{2_7,3_3,3_4,3_5} )
 
 inherit autotools eutils gnome2 python-r1 systemd udev virtualx
 if [[ ${PV} = 9999 ]]; then
@@ -33,7 +33,7 @@ COMMON_DEPEND="
 	>=dev-libs/glib-2.37.7:2[dbus]
 	>=x11-libs/gtk+-3.15.3:3
 	>=gnome-base/gnome-desktop-3.11.1:3=
-	>=gnome-base/gsettings-desktop-schemas-3.15.4
+	>=gnome-base/gsettings-desktop-schemas-3.19.3
 	>=gnome-base/librsvg-2.36.2
 	media-fonts/cantarell
 	media-libs/fontconfig
@@ -53,7 +53,7 @@ COMMON_DEPEND="
 	x11-libs/libXxf86misc
 	x11-misc/xkeyboard-config
 
-	>=app-misc/geoclue-2.1.2:2.0
+	>=app-misc/geoclue-2.3.1:2.0
 	>=dev-libs/libgweather-3.9.5:2
 	>=sci-geosciences/geocode-glib-3.10
 	>=sys-auth/polkit-0.103
@@ -65,7 +65,7 @@ COMMON_DEPEND="
 		>=x11-libs/pango-1.20
 		x11-drivers/xf86-input-wacom
 		virtual/libgudev:= )
-	networkmanager? ( >=net-misc/networkmanager-0.9.9.1 )
+	networkmanager? ( >=net-misc/networkmanager-1.0 )
 	smartcard? ( >=dev-libs/nss-3.11.2 )
 	udev? ( virtual/libgudev:= )
 	wayland? ( dev-libs/wayland )
