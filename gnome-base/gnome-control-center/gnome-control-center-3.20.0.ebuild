@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -21,19 +21,16 @@ QA_CONFIGURE_OPTIONS=".*"
 
 # gnome-session-2.91.6-r1 is needed so that 10-user-dirs-update is run at login
 # g-s-d[policykit] needed for bug #403527
-
 # kerberos unfortunately means mit-krb5; build fails with heimdal
-
 # udev could be made optional, only conditions gsd-device-panel
 # (mouse, keyboards, touchscreen, etc)
-
 COMMON_DEPEND="
-	>=dev-libs/glib-2.39.91:2[dbus]
+	>=dev-libs/glib-2.44.0:2[dbus]
 	>=x11-libs/gdk-pixbuf-2.23.0:2
-	>=x11-libs/gtk+-3.15:3[X,wayland?]
-	>=gnome-base/gsettings-desktop-schemas-3.15.4
-	>=gnome-base/gnome-desktop-3.17.4:3=
-	>=gnome-base/gnome-settings-daemon-3.8.3[colord?,policykit]
+	>=x11-libs/gtk+-3.19.12:3[X,wayland?]
+	>=gnome-base/gsettings-desktop-schemas-3.19.3
+	>=gnome-base/gnome-desktop-3.19.93:3=
+	>=gnome-base/gnome-settings-daemon-3.19.1[colord?,policykit]
 
 	>=dev-libs/libpwquality-1.2.2
 	dev-libs/libxml2:2
@@ -42,7 +39,7 @@ COMMON_DEPEND="
 
 	>=media-libs/libcanberra-0.13[gtk3]
 	>=media-sound/pulseaudio-2[glib]
-	>=sys-auth/polkit-0.103[introspection]
+	>=sys-auth/polkit-0.97
 	>=sys-power/upower-0.99:=
 	>=x11-libs/libnotify-0.7.3:0=
 
@@ -54,7 +51,7 @@ COMMON_DEPEND="
 	x11-libs/libXxf86misc
 	>=x11-libs/libXi-1.2
 
-	bluetooth? ( >=net-wireless/gnome-bluetooth-3.18.0:= )
+	bluetooth? ( >=net-wireless/gnome-bluetooth-3.18.2:= )
 	colord? (
 		net-libs/libsoup:2.4
 		>=x11-misc/colord-0.1.34:0=
@@ -63,7 +60,7 @@ COMMON_DEPEND="
 		>=net-print/cups-1.4[dbus]
 		|| ( >=net-fs/samba-3.6.14-r1[smbclient] >=net-fs/samba-4.0.0[client] ) )
 	gnome-online-accounts? (
-		>=media-libs/grilo-0.2.6:0.2
+		>=media-libs/grilo-0.3.0:0.3
 		>=net-libs/gnome-online-accounts-3.15.1 )
 	i18n? ( >=app-i18n/ibus-1.5.2 )
 	kerberos? ( app-crypt/mit-krb5 )
@@ -122,7 +119,7 @@ DEPEND="${COMMON_DEPEND}
 src_prepare() {
 	# Make some panels and dependencies optional; requires eautoreconf
 	# https://bugzilla.gnome.org/686840, 697478, 700145
-	epatch "${FILESDIR}"/${PN}-3.18.0-optional.patch
+	epatch "${FILESDIR}"/${PN}-3.20.0-optional.patch
 	epatch "${FILESDIR}"/${PN}-3.16.0-make-wayland-optional.patch
 	epatch "${FILESDIR}"/${PN}-3.18.0-keep-panels-optional.patch
 	epatch "${FILESDIR}"/${PN}-3.16.0-networkmanager.patch
