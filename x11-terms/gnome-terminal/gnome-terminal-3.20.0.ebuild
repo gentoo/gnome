@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -6,7 +6,7 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
-inherit eutils gnome2 readme.gentoo
+inherit autotools eutils gnome2 readme.gentoo
 
 DESCRIPTION="The Gnome Terminal"
 HOMEPAGE="https://wiki.gnome.org/Apps/Terminal/"
@@ -19,8 +19,8 @@ KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~
 # FIXME: automagic dependency on gtk+[X]
 RDEPEND="
 	>=dev-libs/glib-2.42:2[dbus]
-	>=x11-libs/gtk+-3.10:3[X]
-	>=x11-libs/vte-0.42.1:2.91
+	>=x11-libs/gtk+-3.12:3[X]
+	>=x11-libs/vte-0.44.0:2.91
 	>=gnome-base/dconf-0.14
 	>=gnome-base/gsettings-desktop-schemas-0.1.0
 	sys-apps/util-linux
@@ -34,6 +34,7 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	app-text/yelp-tools
 	dev-libs/libxml2
+	dev-util/desktop-file-utils
 	dev-util/gdbus-codegen
 	dev-util/itstool
 	>=dev-util/intltool-0.50
@@ -46,12 +47,13 @@ DOC_CONTENTS="To get previous working directory inherited in new opened
 	. /etc/profile.d/vte.sh"
 
 src_prepare() {
+	# if ! use vanilla; then
+		# OpenSuSE patches, https://bugzilla.gnome.org/show_bug.cgi?id=695371
+		# FIXME: add transparency.patch
+		# epatch "${FILESDIR}"/${PN}-3.20.0-transparency.patch
+		# eautoreconf
+	# fi
 	gnome2_src_prepare
-	if ! use vanilla; then
-		# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=695371
-		# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=721932
-		epatch "${FILESDIR}"/${PN}-3.18.0-restore-dark-transparency.patch
-	fi
 }
 
 src_configure() {

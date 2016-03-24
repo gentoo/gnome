@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -26,8 +26,8 @@ fi
 # FIXME: automagic dependency on gtk+[X]
 RDEPEND="
 	>=dev-libs/glib-2.42:2[dbus]
-	>=x11-libs/gtk+-3.10:3[X]
-	>=x11-libs/vte-0.42.1:2.91
+	>=x11-libs/gtk+-3.12:3[X]
+	>=x11-libs/vte-0.44.0:2.91
 	>=gnome-base/dconf-0.14
 	>=gnome-base/gsettings-desktop-schemas-0.1.0
 	sys-apps/util-linux
@@ -41,6 +41,7 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	app-text/yelp-tools
 	dev-libs/libxml2
+	dev-util/desktop-file-utils
 	dev-util/gdbus-codegen
 	dev-util/itstool
 	>=dev-util/intltool-0.50
@@ -54,11 +55,11 @@ DOC_CONTENTS="To get previous working directory inherited in new opened
 
 src_prepare() {
 	gnome2_src_prepare
-	if ! use vanilla; then
-		# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=695371
-		# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=721932
-		epatch "${FILESDIR}"/${PN}-3.18.0-restore-dark-transparency.patch
-	fi
+	# if ! use vanilla; then
+	# 	# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=695371
+	# 	# Fedora patch, https://bugzilla.gnome.org/show_bug.cgi?id=721932
+	# 	epatch "${FILESDIR}"/${PN}-3.18.0-restore-dark-transparency.patch
+	# fi
 }
 
 src_configure() {
