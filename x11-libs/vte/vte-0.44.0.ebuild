@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -27,7 +27,7 @@ RDEPEND="
 	x11-libs/libXft
 
 	glade? ( >=dev-util/glade-3.9:3.10 )
-	introspection? ( >=dev-libs/gobject-introspection-0.9.0 )
+	introspection? ( >=dev-libs/gobject-introspection-0.9.0:= )
 "
 DEPEND="${RDEPEND}
 	$(vala_depend)
@@ -59,8 +59,8 @@ src_configure() {
 
 	# Python bindings are via gobject-introspection
 	# Ex: from gi.repository import Vte
+	# FIXME: add USE for pcre
 	gnome2_src_configure \
-		--disable-deprecation \
 		--disable-test-application \
 		--disable-static \
 		$(use_enable debug) \
