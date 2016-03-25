@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -17,14 +17,14 @@ KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 # Note to developers:
 # This is a wrapper for the core libraries used by GNOME 3
 RDEPEND="
-	>=dev-libs/glib-2.45.8:2
-	>=x11-libs/gdk-pixbuf-2.30.8:2
-	>=x11-libs/pango-1.36.8
-	>=media-libs/clutter-1.23.4:1.0
+	>=dev-libs/glib-2.46:2
+	>=x11-libs/gdk-pixbuf-2.34:2
+	>=x11-libs/pango-1.38
+	>=media-libs/clutter-1.26:1.0
 	>=x11-libs/gtk+-${PV}:3[cups?]
-	>=dev-libs/atk-2.16
+	>=dev-libs/atk-2.18
 	>=x11-libs/libwnck-3.14:3
-	>=gnome-base/librsvg-2.40.2
+	>=gnome-base/librsvg-2.40.10
 	>=gnome-base/gnome-desktop-${PV}:3
 	>=x11-libs/startup-notification-0.12
 
@@ -33,13 +33,13 @@ RDEPEND="
 
 	|| (
 		>=media-libs/gstreamer-0.10.36:0.10
-		>=media-libs/gstreamer-1.4.5:1.0 )
+		>=media-libs/gstreamer-1.6.1:1.0 )
 	|| (
 		>=media-libs/gst-plugins-base-0.10.36:0.10
-		>=media-libs/gst-plugins-base-1.4.5:1.0 )
+		>=media-libs/gst-plugins-base-1.6.1:1.0 )
 	|| (
 		>=media-libs/gst-plugins-good-0.10.31:0.10
-		>=media-libs/gst-plugins-good-1.4.5:1.0 )
+		>=media-libs/gst-plugins-good-1.6.1:1.0 )
 
 	python? ( >=dev-python/pygobject-${PV}:3 )
 "
