@@ -1,8 +1,10 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
 EAPI="5"
+
+inherit versionator
 
 DESCRIPTION="Meta package for GNOME-Light, merge this package to install"
 HOMEPAGE="https://www.gnome.org/"
@@ -32,14 +34,14 @@ RDEPEND="!gnome-base/gnome
 		>=x11-wm/mutter-${PV}
 		>=gnome-base/gnome-shell-${PV} )
 
-	>=x11-themes/adwaita-icon-theme-${PV}
-	>=x11-themes/gnome-themes-standard-${PV}
-	>=x11-themes/gnome-backgrounds-${PV}
+	>=x11-themes/adwaita-icon-theme-$(get_version_component_range 1-2)
+	>=x11-themes/gnome-themes-standard-$(get_version_component_range 1-2)
+	>=x11-themes/gnome-backgrounds-$(get_version_component_range 1-2)
 
 	>=x11-terms/gnome-terminal-${PV}
 "
 DEPEND=""
-PDEPEND=">=gnome-base/gvfs-1.24.0"
+PDEPEND=">=gnome-base/gvfs-1.26.0"
 S="${WORKDIR}"
 
 pkg_pretend() {
@@ -51,7 +53,7 @@ pkg_pretend() {
 }
 
 pkg_postinst() {
-	# Remember people where to find our project information               
+	# Remember people where to find our project information
 	elog "Please remember to look at https://wiki.gentoo.org/wiki/Project:GNOME"
 	elog "for information about the project and documentation."
 }
