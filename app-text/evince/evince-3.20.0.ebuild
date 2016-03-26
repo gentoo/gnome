@@ -7,9 +7,6 @@ GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Simple document viewer for GNOME"
 HOMEPAGE="https://wiki.gnome.org/Apps/Evince"
@@ -18,12 +15,7 @@ LICENSE="GPL-2+ CC-BY-SA-3.0"
 # subslot = evd3.(suffix of libevdocument3)-evv3.(suffix of libevview3)
 SLOT="0/evd3.4-evv3.3"
 IUSE="djvu dvi gstreamer gnome gnome-keyring +introspection nautilus nsplugin +postscript t1lib tiff xps"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~x64-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~x64-solaris"
 
 # Since 2.26.2, can handle poppler without cairo support. Make it optional ?
 # not mature enough
@@ -64,7 +56,6 @@ RDEPEND="${COMMON_DEPEND}
 		>=x11-themes/adwaita-icon-theme-2.17.1
 		( >=x11-themes/gnome-icon-theme-2.17.1 x11-themes/gnome-icon-theme-symbolic )
 		>=x11-themes/hicolor-icon-theme-0.10 )
-	x11-themes/gnome-icon-theme-symbolic
 "
 DEPEND="${COMMON_DEPEND}
 	app-text/docbook-xml-dtd:4.3
@@ -76,16 +67,8 @@ DEPEND="${COMMON_DEPEND}
 	sys-devel/gettext
 	virtual/pkgconfig
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools
-		doc? ( >=dev-util/gtk-doc-1.13 )"
-fi
-
-# Needs dogtail and pyspi from http://fedorahosted.org/dogtail/
-# Releases: http://people.redhat.com/zcerza/dogtail/releases/
-#RESTRICT="test"
+# eautoreconf needs:
+#  app-text/yelp-tools
 
 src_prepare() {
 	gnome2_src_prepare
@@ -97,8 +80,6 @@ src_prepare() {
 }
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		--disable-static \
 		--enable-pdf \
@@ -118,6 +99,5 @@ src_configure() {
 		$(use_enable t1lib) \
 		$(use_enable tiff) \
 		$(use_enable xps) \
-		BROWSER_PLUGIN_DIR="${EPREFIX}"/usr/$(get_libdir)/nsbrowser/plugins \
-		${myconf}
+		BROWSER_PLUGIN_DIR="${EPREFIX}"/usr/$(get_libdir)/nsbrowser/plugins
 }
