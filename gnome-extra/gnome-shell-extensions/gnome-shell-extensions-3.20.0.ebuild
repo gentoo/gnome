@@ -1,14 +1,11 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
 EAPI="5"
 GCONF_DEBUG="no"
 
-inherit eutils gnome2 readme.gentoo
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+inherit gnome2 readme.gentoo
 
 DESCRIPTION="JavaScript extensions for GNOME Shell"
 HOMEPAGE="https://wiki.gnome.org/Projects/GnomeShell/Extensions"
@@ -16,11 +13,7 @@ HOMEPAGE="https://wiki.gnome.org/Projects/GnomeShell/Extensions"
 LICENSE="GPL-2"
 SLOT="0"
 IUSE="examples"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64 ~x86"
-fi
+KEYWORDS="~amd64 ~x86"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.26:2
@@ -29,7 +22,7 @@ COMMON_DEPEND="
 "
 RDEPEND="${COMMON_DEPEND}
 	>=dev-libs/gjs-1.29
-	dev-libs/gobject-introspection
+	dev-libs/gobject-introspection:=
 	dev-libs/atk[introspection]
 	gnome-base/gnome-menus:3[introspection]
 	>=gnome-base/gnome-shell-3.14.2
@@ -38,7 +31,7 @@ RDEPEND="${COMMON_DEPEND}
 	x11-libs/gdk-pixbuf:2[introspection]
 	x11-libs/gtk+:3[introspection]
 	x11-libs/pango[introspection]
-	x11-themes/gnome-icon-theme-symbolic
+	x11-themes/adwaita-icon-theme
 "
 DEPEND="${COMMON_DEPEND}
 	>=dev-util/intltool-0.50
