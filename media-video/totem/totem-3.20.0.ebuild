@@ -8,11 +8,7 @@ GNOME2_LA_PUNT="yes" # plugins are dlopened
 PYTHON_COMPAT=( python2_7 )
 PYTHON_REQ_USE="threads"
 
-inherit eutils gnome2 multilib python-single-r1
-if [[ ${PV} = 9999 ]]; then
-	VALA_MIN_API_VERSION="0.14"
-	inherit gnome2-live vala
-fi
+inherit autotools eutils gnome2 multilib python-single-r1
 
 DESCRIPTION="Media player for GNOME"
 HOMEPAGE="https://wiki.gnome.org/Apps/Videos"
@@ -26,13 +22,7 @@ REQUIRED_USE="
 	zeitgeist? ( introspection )
 "
 
-if [[ ${PV} = 9999 ]]; then
-	IUSE+=" doc vala"
-	REQUIRED_USE+=" zeitgeist? ( vala )"
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86 ~x86-fbsd"
-fi
+KEYWORDS="~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86 ~x86-fbsd"
 
 # FIXME:
 # Runtime dependency on gnome-session-2.91
@@ -94,12 +84,6 @@ DEPEND="${RDEPEND}
 #	gnome-base/gnome-common
 # docbook-xml-dtd is needed for user doc
 # Prevent dev-python/pylint dep, bug #482538
-# Only needed when regenerating C sources from Vala files
-if [[ ${PV} = 9999 ]]; then
-	DEPEND+=" vala? ( $(vala_depend) )
-		app-text/yelp-tools
-		doc? ( >=dev-util/gtk-doc-1.14 )"
-fi
 
 pkg_setup() {
 	use python && python-single-r1_pkg_setup
@@ -109,10 +93,7 @@ src_prepare() {
 	# Prevent pylint usage by tests, bug #482538
 	sed -i -e 's/ check-pylint//' src/plugins/Makefile.plugins || die
 
-	if [[ ${PV} = 9999 ]]; then
-		# Only needed when regenerating C sources from Vala files
-		use vala && vala_src_prepare
-	fi
+	eautoreconf
 	gnome2_src_prepare
 
 	# FIXME: upstream should provide a way to set GST_INSPECT, bug #358755 & co.
@@ -131,14 +112,6 @@ src_configure() {
 	use lirc && plugins+=",lirc"
 	use nautilus && plugins+=",save-file"
 	use python && plugins+=",dbusservice,pythonconsole,opensubtitles"
-	if [[ ${PV} = 9999 ]]; then
-		# Only needed when regenerating C sources from Vala files
-		myconf="${myconf} $(use_enable vala)"
-		use vala && plugins+=",rotation"
-	else
-		myconf="${myconf} --enable-vala VALAC=$(type -P true)"
-		plugins+=",rotation"
-	fi
 	use zeitgeist && plugins+=",zeitgeist-dp"
 
 	# pylint is checked unconditionally, but is only used for make check
@@ -155,6 +128,5 @@ src_configure() {
 		PYLINT=$(type -P true) \
 		VALAC=$(type -P true) \
 		APPSTREAM_UTIL=$(type -P true) \
-		--with-plugins=${plugins} \
-		${myconf}
+		--with-plugins=${plugins}
 }
