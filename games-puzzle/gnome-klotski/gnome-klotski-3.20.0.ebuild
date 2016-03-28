@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -17,9 +17,11 @@ KEYWORDS="~amd64 ~arm ~x86"
 IUSE=""
 
 RDEPEND="
+	dev-libs/libgee:0.8
 	>=dev-libs/glib-2.32:2
+	>=dev-libs/libgames-support-1.0:1.0
 	>=gnome-base/librsvg-2.32.0
-	>=x11-libs/gtk+-3.15:3
+	>=x11-libs/gtk+-3.19.0:3
 "
 DEPEND="${RDEPEND}
 	$(vala_depend)
