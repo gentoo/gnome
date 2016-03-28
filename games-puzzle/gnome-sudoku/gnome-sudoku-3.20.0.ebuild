@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -23,7 +23,7 @@ RDEPEND="
 	dev-libs/json-glib
 	>=dev-libs/qqwing-1.3.4
 	x11-libs/gdk-pixbuf:2[introspection]
-	>=x11-libs/gtk+-3.15:3[introspection]
+	>=x11-libs/gtk+-3.19.0:3[introspection]
 	x11-libs/pango[introspection]
 "
 DEPEND="${RDEPEND}
