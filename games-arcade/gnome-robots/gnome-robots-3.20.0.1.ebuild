@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -16,6 +16,7 @@ KEYWORDS="~amd64 ~arm ~x86"
 IUSE=""
 
 RDEPEND="
+	>=dev-libs/libgames-support-1.0:1.0
 	>=dev-libs/glib-2.32:2
 	>=gnome-base/librsvg-2.36.2:2
 	>=media-libs/libcanberra-0.26[gtk3]
