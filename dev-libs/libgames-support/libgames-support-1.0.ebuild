@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -17,7 +17,7 @@ IUSE=""
 
 RDEPEND="
 	>=dev-libs/glib-2.40:2
-	>=x11-libs/gtk+-3.12:3
+	>=x11-libs/gtk+-3.19.2:3
 	dev-libs/libgee:0.8
 "
 DEPEND="${DEPEND}
