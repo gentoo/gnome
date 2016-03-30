@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -38,6 +38,7 @@ RDEPEND="${COMMON_DEPEND}
 	>=x11-libs/gtk+-3.12:3[introspection]
 
 	net-libs/libsoup[introspection]
+	net-libs/libsoup-gnome[introspection]
 	x11-libs/libnotify[introspection]
 
 	>=gnome-base/gnome-settings-daemon-3
