@@ -6,22 +6,14 @@ EAPI="5"
 GCONF_DEBUG="yes"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Dictionary utility for GNOME"
-HOMEPAGE="https://live.gnome.org/GnomeUtils"
+HOMEPAGE="https://wiki.gnome.org/Apps/Dictionary"
 
 LICENSE="GPL-2+ LGPL-2.1+ FDL-1.1+"
-SLOT="0/8" # subslot = suffix of libgdict-1.0.so
+SLOT="0/9" # subslot = suffix of libgdict-1.0.so
 IUSE="+introspection ipv6"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.39:2[dbus]
@@ -38,21 +30,13 @@ RDEPEND="${COMMON_DEPEND}
 DEPEND="${COMMON_DEPEND}
 	>=dev-util/gtk-doc-am-1.15
 	>=dev-util/intltool-0.40
+	dev-util/itstool
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools
-		doc? ( >=dev-util/gtk-doc-1.15 )"
-fi
-
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		$(use_enable introspection) \
-		$(use_enable ipv6) \
-		${myconf}
+		$(use_enable ipv6)
 }
