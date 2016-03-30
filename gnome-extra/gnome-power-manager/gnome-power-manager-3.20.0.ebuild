@@ -6,9 +6,6 @@ EAPI="5"
 GCONF_DEBUG="no"
 
 inherit eutils gnome2 virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="GNOME power management service"
 HOMEPAGE="https://projects.gnome.org/gnome-power-manager/"
@@ -16,11 +13,7 @@ HOMEPAGE="https://projects.gnome.org/gnome-power-manager/"
 LICENSE="GPL-2"
 SLOT="0"
 IUSE="test"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS=" ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86 ~x86-fbsd"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.45.8:2
