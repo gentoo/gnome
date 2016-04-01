@@ -1,4 +1,4 @@
-From d3a9941031fc69d343fb011af52f2462de269bff Mon Sep 17 00:00:00 2001
+From dc62978815a12d0d0fbd97e975a612a13aff0cdc Mon Sep 17 00:00:00 2001
 From: Alexandre Rostovtsev <tetromino@gentoo.org>
 Date: Fri, 25 Apr 2014 22:17:24 +0200
 Subject: [PATCH] Make bluetooth/colord/goa/kerberos/wacom optional
@@ -11,17 +11,17 @@ https://bugzilla.gnome.org/show_bug.cgi?id=700145
 
 Signed-Off: Ole Reifschneider <tranquility@gentoo.org>
 ---
- configure.ac                            | 157 ++++++++++++++++++++++++++------
+ configure.ac                            | 156 ++++++++++++++++++++++++++------
  panels/Makefile.am                      |  10 +-
  panels/background/Makefile.am           |   8 +-
  panels/background/bg-pictures-source.c  |  20 ++++
  panels/user-accounts/um-realm-manager.c |   9 ++
  shell/Makefile.am                       |  10 +-
  shell/cc-panel-loader.c                 |   8 ++
- 7 files changed, 187 insertions(+), 35 deletions(-)
+ 7 files changed, 186 insertions(+), 35 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 0c2a779..0fd0025 100644
+index 0c2a779..4dfff18 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -119,10 +119,6 @@ LIBGD_INIT([_view-common notification static])
@@ -35,7 +35,7 @@ index 0c2a779..0fd0025 100644
  PKG_CHECK_MODULES(DATETIME_PANEL, $COMMON_MODULES
                    gnome-desktop-3.0 >= $GNOME_DESKTOP_REQUIRED_VERSION
                    polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION
-@@ -140,14 +136,66 @@ PKG_CHECK_MODULES(MOUSE_PANEL, $COMMON_MODULES xi >= 1.2
+@@ -140,14 +136,65 @@ PKG_CHECK_MODULES(MOUSE_PANEL, $COMMON_MODULES xi >= 1.2
  PKG_CHECK_MODULES(NETWORK_PANEL, $COMMON_MODULES gmodule-2.0
                    polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION)
  PKG_CHECK_MODULES(NOTIFICATIONS_PANEL, $COMMON_MODULES)
@@ -56,7 +56,7 @@ index 0c2a779..0fd0025 100644
 +if test x$WANT_ONLINE_ACCOUNTS = xyes; then
 +       PKG_CHECK_MODULES(ONLINE_ACCOUNTS_PANEL, $COMMON_MODULES goa-1.0 goa-backend-1.0 >= $GOA_REQUIRED_VERSION)
 +       build_online_accounts=true
-+       background_online_accounts="goa-1.0 >= $GOA_REQUIRED_VERSION grilo-0.2 >= $GRILO_REQUIRED_VERSION"
++       background_online_accounts="goa-1.0 >= $GOA_REQUIRED_VERSION grilo-0.3 >= $GRILO_REQUIRED_VERSION"
 +fi
 +if test "x$build_online_accounts" = xtrue ; then
 +       AC_DEFINE(BUILD_ONLINE_ACCOUNTS, 1, [Define to 1 to build the Online Accounts panel])
@@ -67,8 +67,7 @@ index 0c2a779..0fd0025 100644
 +
 +PKG_CHECK_MODULES(BACKGROUND_PANEL, $COMMON_MODULES cairo-gobject libxml-2.0 gnome-desktop-3.0
 +                  gdk-pixbuf-2.0 >= $GDKPIXBUF_REQUIRED_VERSION
-+                  goa-1.0 >= $GOA_REQUIRED_VERSION
-+                  grilo-0.3 >= $GRILO_REQUIRED_VERSION)
++                  $background_online_accounts)
 +
  PKG_CHECK_MODULES(POWER_PANEL, $COMMON_MODULES upower-glib >= 0.99.0
                    gnome-settings-daemon >= $GSD_REQUIRED_VERSION)
@@ -108,7 +107,7 @@ index 0c2a779..0fd0025 100644
  PKG_CHECK_MODULES(PRINTERS_PANEL, $COMMON_MODULES
                    polkit-gobject-1 >= $POLKIT_REQUIRED_VERSION)
  PKG_CHECK_MODULES(PRIVACY_PANEL, $COMMON_MODULES)
-@@ -221,8 +269,25 @@ fi
+@@ -221,8 +268,25 @@ fi
  AM_CONDITIONAL(HAVE_NM_UNSTABLE, [test x$nm_unstable = xyes])
  
  # Check for gnome-bluetooth
@@ -136,7 +135,7 @@ index 0c2a779..0fd0025 100644
  if test "x$have_bluetooth" = xyes ; then
  	AC_DEFINE(BUILD_BLUETOOTH, 1, [Define to 1 to build the Bluetooth panel])
  fi
-@@ -307,15 +372,27 @@ case $host_os in
+@@ -307,15 +371,27 @@ case $host_os in
      if test "$host_cpu" = s390 -o "$host_cpu" = s390x; then
        have_wacom=no
      else
@@ -173,7 +172,7 @@ index 0c2a779..0fd0025 100644
      fi
      ;;
    *)
-@@ -325,15 +402,22 @@ esac
+@@ -325,15 +401,22 @@ esac
  AM_CONDITIONAL(BUILD_WACOM, [test x${have_wacom} = xyes])
  
  # Kerberos kerberos support
@@ -204,7 +203,7 @@ index 0c2a779..0fd0025 100644
  
  AC_SUBST(KRB5_CFLAGS)
  AC_SUBST(KRB5_LIBS)
-@@ -569,6 +653,11 @@ if test "x$have_bluetooth" = "xyes"; then
+@@ -569,6 +652,11 @@ if test "x$have_bluetooth" = "xyes"; then
  else
  	AC_MSG_NOTICE([   Bluetooth panel disabled])
  fi
@@ -216,7 +215,7 @@ index 0c2a779..0fd0025 100644
  if test "x$enable_cups" = "xyes"; then
  	AC_MSG_NOTICE([** CUPS (Printers panel)])
  else
-@@ -579,6 +668,16 @@ if test "x$have_cheese" = "xyes"; then
+@@ -579,6 +667,16 @@ if test "x$have_cheese" = "xyes"; then
  else
  	AC_MSG_NOTICE([   Users panel webcam support disabled])
  fi
@@ -530,5 +529,5 @@ index de9c5df..17503fe 100644
  #ifdef BUILD_PRINTERS
    PANEL_TYPE("printers",         cc_printers_panel_get_type     ),
 -- 
-2.7.2
+2.7.4
 
