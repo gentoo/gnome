@@ -39,7 +39,7 @@ PINENTRY_DEPEND="|| ( app-crypt/pinentry[gtk] app-crypt/pinentry[qt4] )"
 COMMON_DEPEND="
 	>=app-crypt/gcr-3.4
 	>=app-text/enchant-1.1.7
-	>=dev-libs/glib-2.40:2
+	>=dev-libs/glib-2.40:2[dbus]
 	>=dev-libs/libxml2-2.7.3:2
 	>=gnome-base/gnome-desktop-2.91.3:3=
 	>=gnome-base/gsettings-desktop-schemas-2.91.92
