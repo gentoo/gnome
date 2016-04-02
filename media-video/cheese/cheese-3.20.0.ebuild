@@ -7,9 +7,6 @@ GCONF_DEBUG="no"
 VALA_MIN_API_VERSION="0.26"
 
 inherit gnome2 vala virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="A cheesy program to take pictures and videos from your webcam"
 HOMEPAGE="https://wiki.gnome.org/Apps/Cheese"
@@ -17,12 +14,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Cheese"
 LICENSE="GPL-2+"
 SLOT="0/8" # subslot = libcheese soname version
 IUSE="+introspection test"
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 # using clutter-gst-2.0.0 results in GLSL errors; bug #478702
 COMMON_DEPEND="
@@ -62,31 +54,23 @@ DEPEND="${COMMON_DEPEND}
 	dev-util/gdbus-codegen
 	>=dev-util/gtk-doc-am-1.14
 	>=dev-util/intltool-0.50
+	dev-util/itstool
 	virtual/pkgconfig
 	x11-proto/xf86vidmodeproto
 	test? ( dev-libs/glib:2[utils] )
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.14 )"
-fi
-
 src_prepare() {
 	vala_src_prepare
-	gnome2-live_src_prepare
+	gnome2_src_prepare
 }
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
-
 	gnome2_src_configure \
 		GST_INSPECT=$(type -P true) \
 		$(use_enable introspection) \
 		--disable-lcov \
-		--disable-static \
-		${myconf}
+		--disable-static
 }
 
 src_compile() {
