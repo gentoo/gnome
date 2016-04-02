@@ -4,23 +4,15 @@
 
 EAPI="5"
 GCONF_DEBUG="no"
-VALA_MIN_API_VERSION="0.18"
 
 inherit gnome2 linux-info vala
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="VNC client for the GNOME desktop"
 HOMEPAGE="https://wiki.gnome.org/Apps/Vinagre"
 
 LICENSE="GPL-3+"
 SLOT="0"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86"
-fi
+KEYWORDS="~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86"
 IUSE="rdp +ssh spice +telepathy zeroconf"
 
 # cairo used in vinagre-tab
@@ -49,16 +41,11 @@ DEPEND="${RDEPEND}
 	>=dev-lang/perl-5
 	dev-libs/appstream-glib
 	>=dev-util/intltool-0.50
+	dev-util/itstool
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
 	$(vala_depend)
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND+="
-		app-text/yelp-tools
-		gnome-base/gnome-common"
-fi
 
 pkg_pretend() {
 	# Needed for VNC ssh tunnel, bug #518574
@@ -72,14 +59,11 @@ src_prepare() {
 }
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} = 9999 ]] || myconf="ITSTOOL=$(type -P true)"
 	DOCS="AUTHORS ChangeLog ChangeLog.pre-git NEWS README"
 	gnome2_src_configure \
 		$(use_enable rdp) \
 		$(use_enable ssh) \
 		$(use_enable spice) \
 		$(use_with telepathy) \
-		$(use_with zeroconf avahi) \
-		${myconf}
+		$(use_with zeroconf avahi)
 }
