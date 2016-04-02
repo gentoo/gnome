@@ -6,7 +6,6 @@
 	<name>Gentoo GNOME Desktop</name>
 </maintainer>
 <use>
-	<flag name="libsecret">Enable <pkg>app-crypt/libsecret</pkg> support to store login credentials.</flag>
 	<flag name="telepathy">Enable desktop sharing through a telepathy client</flag>
 </use>
 </pkgmetadata>
