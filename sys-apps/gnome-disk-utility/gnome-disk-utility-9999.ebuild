@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -6,17 +6,17 @@ EAPI="5"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 
-inherit autotools eutils gnome2
+inherit gnome2
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
 DESCRIPTION="Disk Utility for GNOME using udisks"
-HOMEPAGE="http://git.gnome.org/browse/gnome-disk-utility"
+HOMEPAGE="https://git.gnome.org/browse/gnome-disk-utility"
 
 LICENSE="GPL-2+"
 SLOT="0"
-IUSE="fat +gnome systemd"
+IUSE="fat gnome systemd"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
@@ -24,13 +24,13 @@ else
 fi
 
 COMMON_DEPEND="
-	>=dev-libs/glib-2.31:2
+	>=dev-libs/glib-2.31:2[dbus]
 	>=sys-fs/udisks-2.1.1:2
-	>=x11-libs/gtk+-3.12:3
+	>=x11-libs/gtk+-3.16.0:3
 	>=app-arch/xz-utils-5.0.5
 	>=app-crypt/libsecret-0.7
 	dev-libs/libpwquality
-	systemd? ( >=sys-apps/systemd-44:0= )
+	systemd? ( >=sys-apps/systemd-209:0= )
 "
 RDEPEND="${COMMON_DEPEND}
 	>=media-libs/libdvdread-4.2.0
@@ -41,23 +41,14 @@ RDEPEND="${COMMON_DEPEND}
 	gnome? ( >=gnome-base/gnome-settings-daemon-3.8 )
 "
 DEPEND="${COMMON_DEPEND}
-	>=dev-util/intltool-0.50
+	>=dev-util/intltool-0.50.2
+	dev-libs/appstream-glib
 	dev-libs/libxslt
-	gnome-base/gnome-common
 	virtual/pkgconfig
 "
-
-src_prepare() {
-	# Fix USE=-gnome, bug #478820
-	epatch "${FILESDIR}"/${PN}-3.10.0-kill-gsd-automagic.patch
-	epatch "${FILESDIR}"/${PN}-3.10.0-raise-gsd-dependency.patch
-
-	eautoreconf
-	gnome2_src_prepare
-}
 
 src_configure() {
 	gnome2_src_configure \
 		$(use_enable gnome gsd-plugin) \
-		$(use_enable systemd libsystemd-login)
+		$(use_enable systemd libsystemd)
 }
