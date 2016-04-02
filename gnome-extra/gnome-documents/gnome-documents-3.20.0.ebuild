@@ -6,9 +6,6 @@ EAPI="5"
 GCONF_DEBUG="no"
 
 inherit gnome2
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="A document manager application for GNOME"
 HOMEPAGE="https://wiki.gnome.org/Apps/Documents"
@@ -16,11 +13,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Documents"
 LICENSE="GPL-2+"
 SLOT="0"
 IUSE=""
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64 ~x86"
-fi
+KEYWORDS="~amd64 ~x86"
 
 # Need gdk-pixbuf-2.25 for gdk_pixbuf_get_pixels_with_length
 COMMON_DEPEND="
@@ -50,23 +43,13 @@ RDEPEND="${COMMON_DEPEND}
 DEPEND="${COMMON_DEPEND}
 	dev-libs/libxslt
 	>=dev-util/intltool-0.50.1
+	dev-util/itstool
 	virtual/pkgconfig
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools
-	"
-fi
+# eautoreconf requires yelp-tools
 
 src_prepare() {
 	# Prevent sandbox violation, https://bugzilla.gnome.org/show_bug.cgi?id=758097
 	sed -i -e '/-rm -f $(appdir)\/org.gnome.Books.data.gresource/d' data/Makefile.{am,in} || die
 	gnome2_src_prepare
-}
-
-src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
-	gnome2_src_configure ${myconf}
 }
