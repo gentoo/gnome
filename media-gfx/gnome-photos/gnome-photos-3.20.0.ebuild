@@ -17,7 +17,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE="test"
 
 RDEPEND="
-	>=app-misc/tracker-1:=
+	>=app-misc/tracker-1:=[miner-fs]
 	>=dev-libs/glib-2.39.3:2
 	gnome-base/gnome-desktop:3=
 	>=dev-libs/libgdata-0.15.2:0=
