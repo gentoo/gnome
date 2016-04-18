@@ -131,6 +131,10 @@ src_prepare() {
 	# https://bugzilla.gnome.org/show_bug.cgi?id=726435
 	epatch "${FILESDIR}"/${PN}-3.14.0-bluetooth-gold.patch
 
+	# Fix crash with nvidia-drivers, bug #578216
+	# https://bugzilla.gnome.org/show_bug.cgi?id=764898
+	epatch "${FILESDIR}"/${PN}-3.20-fix-nvidia-crash.patch
+
 	epatch_user
 
 	eautoreconf
