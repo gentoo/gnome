@@ -39,14 +39,12 @@ RDEPEND="
 	>=app-crypt/libsecret-0.5[crypt]
 	>=dev-db/sqlite-3.7.17:=
 	>=dev-libs/glib-2.40:2
-	>=dev-libs/json-glib-1.0.4
 	>=dev-libs/libgdata-0.10:=
 	>=dev-libs/libical-0.43:=
 	>=dev-libs/libxml2-2
 	>=dev-libs/nspr-4.4:=
 	>=dev-libs/nss-3.9:=
 	>=net-libs/libsoup-2.42:2.4
-	>=net-libs/webkit-gtk-2.4.9:3
 
 	dev-libs/icu:=
 	sys-libs/zlib:=
