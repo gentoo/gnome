@@ -2,8 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
+EAPI=6
 
 inherit gnome2
 
@@ -16,7 +15,7 @@ KEYWORDS="~amd64"
 IUSE=""
 
 RDEPEND="
-	>=dev-libs/glib-2:2
+	>=dev-libs/glib-2.40:2
 	>=gnome-base/gnome-vfs-2:2
 	>=gnome-base/libgnome-2
 	>=gnome-base/libgnomeui-2
