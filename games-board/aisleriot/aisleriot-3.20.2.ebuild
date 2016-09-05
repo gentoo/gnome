@@ -1,11 +1,10 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI="5"
-GCONF_DEBUG="yes"
+EAPI=6
 
-inherit autotools eutils gnome-games
+inherit autotools gnome2
 
 DESCRIPTION="A collection of solitaire card games for GNOME"
 HOMEPAGE="https://wiki.gnome.org/action/show/Apps/Aisleriot"
@@ -13,13 +12,13 @@ HOMEPAGE="https://wiki.gnome.org/action/show/Apps/Aisleriot"
 LICENSE="GPL-3 LGPL-3 FDL-1.1"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="gnome qt4"
+IUSE="debug gnome qt4"
 
 # FIXME: quartz support?
 # Does not build with guile-2.0.0 or 2.0.1
 COMMON_DEPEND="
 	>=dev-libs/glib-2.32:2
-	>=dev-scheme/guile-2.0.5:2[deprecated,regex]
+	>=dev-scheme/guile-2.0.5:12[deprecated,regex]
 	>=gnome-base/librsvg-2.32:2
 	>=media-libs/libcanberra-0.26[gtk3]
 	>=x11-libs/cairo-1.10
@@ -42,7 +41,7 @@ DEPEND="${COMMON_DEPEND}
 
 src_prepare() {
 	# Fix SVG detection and usage
-	epatch "${FILESDIR}"/${PN}-3.16.2-detect-svg.patch
+	eapply "${FILESDIR}"/${PN}-3.16.2-detect-svg.patch
 
 	eautoreconf
 	gnome2_src_prepare
@@ -75,6 +74,7 @@ src_configure() {
 	gnome2_src_configure \
 		--with-gtk=3.0 \
 		--with-guile=2.0 \
+		$(usex debug --enable-debug=yes --enable-debug=minimum) \
 		--enable-sound \
 		--with-pysol-card-theme-path="${EPREFIX}${GAMES_DATADIR}"/pysolfc \
 		GUILE=$(type -P guile-2.0) \

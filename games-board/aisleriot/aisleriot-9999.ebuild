@@ -26,7 +26,7 @@ IUSE="gnome qt4"
 # Does not build with guile-2.0.0 or 2.0.1
 COMMON_DEPEND="
 	>=dev-libs/glib-2.32:2
-	>=dev-scheme/guile-2.0.5:2[deprecated,regex]
+	>=dev-scheme/guile-2.0.5:12[deprecated,regex]
 	>=gnome-base/librsvg-2.32:2
 	>=media-libs/libcanberra-0.26[gtk3]
 	>=x11-libs/cairo-1.10
