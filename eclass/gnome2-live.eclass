@@ -16,14 +16,14 @@
 
 inherit autotools eutils gnome2 gnome2-utils libtool git-r3
 
-# Stolen from git.eclass
-EXPORTED_FUNCTIONS="src_unpack pkg_postinst"
+EXPORTED_FUNCTIONS=" "
 case "${EAPI:-0}" in
-    2|3|4|5) EXPORTED_FUNCTIONS="${EXPORTED_FUNCTIONS} src_prepare" ;;
-    0|1) ;;
-    *) die "Unknown EAPI, Bug eclass maintainers." ;;
+	4|5)
+		EXPORT_FUNCTIONS src_unpack src_prepare pkg_postinst
+		;;
+	*)
+		die "Unknown EAPI, Bug eclass maintainers." ;;
 esac
-EXPORT_FUNCTIONS ${EXPORTED_FUNCTIONS}
 
 # DEPEND on
 # app-text/gnome-doc-utils for gnome-doc-*
@@ -79,7 +79,7 @@ gnome2-live_src_unpack() {
 		unpack ${A}
 	fi
 	git-r3_src_unpack
-	has src_prepare ${EXPORTED_FUNCTIONS} || gnome2-live_src_prepare
+	gnome2-live_src_prepare
 }
 
 # @FUNCTION: gnome2-live_src_prepare
