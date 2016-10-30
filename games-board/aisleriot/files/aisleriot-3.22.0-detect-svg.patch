@@ -1,0 +1,40 @@
+From f8dfa11c318c33847670cd06a43dd5b19f1d5231 Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Mon, 31 Oct 2016 11:23:30 +0100
+Subject: [PATCH] Do not require a particular SVG library unless actually found
+
+---
+ configure.ac | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 8c4a38e..06e174f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -325,7 +325,9 @@ if test "$need_rsvg" = "yes"; then
+ 
+   PKG_CHECK_EXISTS([librsvg-2.0 >= $RSVG_REQUIRED],[have_rsvg=yes],[have_rsvg=no])
+ 
+-  PKGS="$PKGS librsvg-2.0 >= $RSVG_REQUIRED cairo >= $CAIRO_REQUIRED"
++  if test "$have_rsvg" = "yes" ; then
++    PKGS="$PKGS librsvg-2.0 >= $RSVG_REQUIRED cairo >= $CAIRO_REQUIRED"
++  fi
+ 
+   AC_DEFINE([HAVE_RSVG],[1],[Refine if librsvg is available])
+ fi
+@@ -340,8 +342,10 @@ if test "$need_qtsvg" = "yes"; then
+ 
+   PKG_CHECK_EXISTS([Qt5Svg >= $QT_SVG_REQUIRED],[have_qtsvg=yes],[have_qtsvg=no])
+ 
+-  PKGS="$PKGS Qt5Svg >= $QT_SVG_REQUIRED"
+-  EXTRA_CXX_LIBS="$EXTRA_CXX_LIBS -lstdc++"
++  if test "$have_qtsvg" = "yes" ; then
++    PKGS="$PKGS Qt5Svg >= $QT_SVG_REQUIRED"
++    EXTRA_CXX_LIBS="$EXTRA_CXX_LIBS -lstdc++"
++  fi
+ 
+   AC_DEFINE([HAVE_QTSVG],[1],[Refine if QtSvg is available])
+ fi
+-- 
+2.10.1
+
