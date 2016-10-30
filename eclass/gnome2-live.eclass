@@ -14,7 +14,7 @@
 # Always to be imported *AFTER* gnome2.eclass
 #
 
-inherit autotools eutils gnome2 gnome2-utils libtool git-r3
+inherit autotools eutils gnome2 gnome2-utils libtool git-r3 xdg
 
 EXPORTED_FUNCTIONS=" "
 case "${EAPI:-0}" in
@@ -105,9 +105,7 @@ gnome2-live_src_prepare() {
 
 	### Keep this in-sync with gnome2.eclass!
 
-	# Don't use the session bus address inherited via the environment
-	# causes test and introspection-building failures
-	unset DBUS_SESSION_BUS_ADDRESS
+	xdg_src_prepare
 
 	# Prevent assorted access violations and test failures
 	gnome2_environment_reset
@@ -115,7 +113,8 @@ gnome2-live_src_prepare() {
 	# Prevent scrollkeeper access violations
 	gnome2_omf_fix
 
-	# Libtool patching
+	# Run libtoolize
+	# https://bugzilla.gnome.org/show_bug.cgi?id=655517
 	elibtoolize ${ELTCONF}
 }
 
