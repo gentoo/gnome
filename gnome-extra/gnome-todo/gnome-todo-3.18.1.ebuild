@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -18,7 +18,7 @@ IUSE=""
 RDEPEND="
 	>=dev-libs/glib-2.43.4:2
 	>=dev-libs/libical-0.43
-	>=gnome-extra/evolution-data-server-3.17.1[gtk]
+	>=gnome-extra/evolution-data-server-3.17.1:=[gtk]
 	>=net-libs/gnome-online-accounts-3.2
 	>=x11-libs/gtk+-3.16:3
 "

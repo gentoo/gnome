@@ -16,12 +16,12 @@ IUSE="+introspection"
 
 RDEPEND="
 	>=dev-libs/glib-2.43.4:2
-	introspection? ( >=dev-libs/gobject-introspection-1.42:= )
 	>=dev-libs/libical-0.43
 	>=dev-libs/libpeas-1.17
-	>=gnome-extra/evolution-data-server-3.17.1[gtk]
+	>=gnome-extra/evolution-data-server-3.17.1:=[gtk]
 	>=net-libs/gnome-online-accounts-3.2
 	>=x11-libs/gtk+-3.22.0:3
+	introspection? ( >=dev-libs/gobject-introspection-1.42:= )
 "
 DEPEND="${RDEPEND}
 	dev-libs/appstream-glib
