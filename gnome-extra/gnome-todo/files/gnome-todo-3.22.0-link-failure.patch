@@ -1,0 +1,30 @@
+From 4aa960186c90f1cf60c42cb4756da09cba96fc74 Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Sun, 13 Nov 2016 13:02:42 +0100
+Subject: [PATCH] Fix link failure with missing e_source_get_displayname symbol
+
+---
+ src/Makefile.am | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 094d463..f6d1194 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -104,11 +104,11 @@ gnome_todo_LDFLAGS = \
+ 	$(GNOME_TODO_WARN_LDFLAGS)
+ 
+ gnome_todo_LDADD = \
+-	$(GNOME_TODO_LIBS) \
+ 	$(top_builddir)/plugins/eds/libeds.la \
+ 	$(top_builddir)/plugins/dark-theme/libdarktheme.la \
+ 	$(top_builddir)/plugins/scheduled-panel/libscheduledpanel.la \
+-	$(top_builddir)/plugins/today-panel/libtodaypanel.la
++	$(top_builddir)/plugins/today-panel/libtodaypanel.la \
++	$(GNOME_TODO_LIBS)
+ 
+ gnome_todo_DEPENDENCIES = \
+ 	$(top_builddir)/plugins/eds/libeds.la \
+-- 
+2.10.2
+

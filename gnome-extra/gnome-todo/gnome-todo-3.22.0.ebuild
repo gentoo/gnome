@@ -21,11 +21,12 @@ RDEPEND="
 	>=dev-libs/libpeas-1.17
 	>=gnome-extra/evolution-data-server-3.17.1[gtk]
 	>=net-libs/gnome-online-accounts-3.2
-	>=x11-libs/gtk+-3.19.5:3
+	>=x11-libs/gtk+-3.22.0:3
 "
 DEPEND="${RDEPEND}
-	>=dev-util/intltool-0.40.6
 	dev-libs/appstream-glib
+	>=dev-util/gtk-doc-am-1.14
+	>=dev-util/intltool-0.40.6
 	sys-devel/gettext
 	virtual/pkgconfig
 "
@@ -38,5 +39,12 @@ src_prepare() {
 }
 
 src_configure() {
-	gnome2_src_configure --enable-eds-plugin
+	gnome2_src_configure \
+		$(use_enable introspection) \
+		--enable-eds-plugin \
+		--enable-dark-theme-plugin \
+		--enable-scheduled-panel-plugin \
+		--enable-score-plugin \
+		--enable-today-panel-plugin \
+		--enable-unscheduled-panel-plugin
 }
