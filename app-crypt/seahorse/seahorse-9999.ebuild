@@ -1,10 +1,7 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
-VALA_MIN_API_DEPEND="0.22"
+EAPI=6
 
 inherit gnome2
 if [[ ${PV} = 9999 ]]; then
@@ -33,14 +30,16 @@ COMMON_DEPEND="
 
 	net-misc/openssh
 	>=app-crypt/gpgme-1
-	>=app-crypt/gnupg-1.4
-	<app-crypt/gnupg-2.1
+	>=app-crypt/gnupg-2.0.12
 
 	ldap? ( net-nds/openldap:= )
 	zeroconf? ( >=net-dns/avahi-0.6:= )
 "
 DEPEND="${COMMON_DEPEND}
+	app-text/yelp-tools
+	dev-util/gdbus-codegen
 	>=dev-util/intltool-0.35
+	dev-util/itstool
 	sys-devel/gettext
 	virtual/pkgconfig
 "
@@ -56,7 +55,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 src_prepare() {
-	# FIXME: Do not mess with CFLAGS with USE="debug"
+	# Do not mess with CFLAGS with USE="debug"
 	sed -e '/CFLAGS="$CFLAGS -g/d' \
 		-e '/CFLAGS="$CFLAGS -O0/d' \
 		-i configure.ac configure || die "sed 1 failed"
@@ -68,9 +67,7 @@ src_prepare() {
 src_configure() {
 	local myconf=""
 	if [[ ${PV} != 9999 ]]; then
-		myconf="${myconf}
-			ITSTOOL=$(type -P true)
-			VALAC=$(type -P true)"
+		myconf="${myconf} VALAC=$(type -P true)"
 	fi
 	# bindir is needed due to bad macro expansion in desktop file, bug #508610
 	gnome2_src_configure \
