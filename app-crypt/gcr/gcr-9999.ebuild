@@ -1,11 +1,9 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
+EAPI=6
 VALA_USE_DEPEND="vapigen"
-PYTHON_COMPAT=( python{2_7,3_3,3_4,3_5} )
+PYTHON_COMPAT=( python2_7 )
 
 inherit gnome2 python-any-r1 vala virtualx
 if [[ ${PV} = 9999 ]]; then
@@ -17,6 +15,7 @@ HOMEPAGE="https://git.gnome.org/browse/gcr"
 
 LICENSE="GPL-2+ LGPL-2+"
 SLOT="0/1" # subslot = suffix of libgcr-3
+
 IUSE="debug gtk +introspection vala"
 REQUIRED_USE="vala? ( introspection )"
 if [[ ${PV} = 9999 ]]; then
@@ -27,7 +26,6 @@ else
 fi
 
 COMMON_DEPEND="
-	>=app-crypt/gnupg-2
 	>=app-crypt/p11-kit-0.19
 	>=dev-libs/glib-2.38:2
 	>=dev-libs/libgcrypt-1.2.2:0=
@@ -86,6 +84,5 @@ src_configure() {
 }
 
 src_test() {
-	unset DBUS_SESSION_BUS_ADDRESS
-	Xemake check
+	virtx emake check
 }
