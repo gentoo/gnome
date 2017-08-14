@@ -6,7 +6,3 @@
 # careful not to commit atoms that are not valid, as it can cause large-scale
 # breakage, especially if it ends up in the daily snapshot.
 #
-
-# Gilles Dartiguelongue <eva@gentoo.org> (22 Dec 2013)
-# New releases depend on libmapi-2 which is not in tree nor in this overlay.
->=evolution-mapi/evolution-mapi-3.10
