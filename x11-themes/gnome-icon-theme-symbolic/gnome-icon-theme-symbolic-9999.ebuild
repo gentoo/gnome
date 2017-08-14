@@ -1,6 +1,5 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI="5"
 GCONF_DEBUG="no"
@@ -24,7 +23,9 @@ fi
 
 COMMON_DEPEND=">=x11-themes/hicolor-icon-theme-0.10"
 
+# gnome-base/librsvg will be needed by apps using this icons, bug #508210
 RDEPEND="${COMMON_DEPEND}
+	gnome-base/librsvg
 	!=gnome-extra/gnome-power-manager-3.0*
 "
 # Matches 3.10
