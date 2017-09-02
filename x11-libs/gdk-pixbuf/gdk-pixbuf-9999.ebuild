@@ -1,12 +1,10 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
+EAPI=6
 GNOME2_LA_PUNT="yes"
 
-inherit eutils flag-o-matic gnome2 multilib libtool multilib-minimal
+inherit flag-o-matic gnome2 multilib multilib-minimal
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -19,12 +17,12 @@ SLOT="2"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 fi
 IUSE="X debug +introspection jpeg jpeg2k tiff test"
 
 COMMON_DEPEND="
-	>=dev-libs/glib-2.37.6:2[${MULTILIB_USEDEP}]
+	>=dev-libs/glib-2.48.0:2[${MULTILIB_USEDEP}]
 	>=media-libs/libpng-1.4:0=[${MULTILIB_USEDEP}]
 	introspection? ( >=dev-libs/gobject-introspection-0.9.3:= )
 	jpeg? ( virtual/jpeg:0=[${MULTILIB_USEDEP}] )
@@ -46,12 +44,12 @@ RDEPEND="${COMMON_DEPEND}
 "
 
 MULTILIB_CHOST_TOOLS=(
-	/usr/bin/gdk-pixbuf-query-loaders
+	/usr/bin/gdk-pixbuf-query-loaders$(get_exeext)
 )
 
 src_prepare() {
 	# See https://bugzilla.gnome.org/show_bug.cgi?id=756590
-	epatch "${FILESDIR}"/${PN}-2.32.3-fix-lowmem-uclibc.patch
+	eapply "${FILESDIR}"/${PN}-2.32.3-fix-lowmem-uclibc.patch
 
 	# This will avoid polluting the pkg-config file with versioned libpng,
 	# which is causing problems with libpng14 -> libpng15 upgrade
