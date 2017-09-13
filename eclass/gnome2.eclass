@@ -1,6 +1,5 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 # @ECLASS: gnome2.eclass
 # @MAINTAINER:
@@ -10,6 +9,13 @@
 # Exports portage base functions used by ebuilds written for packages using the
 # GNOME framework. For additional functions, see gnome2-utils.eclass.
 
+# @ECLASS-VARIABLE: GNOME2_EAUTORECONF
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Run eautoreconf instead of only elibtoolize
+GNOME2_EAUTORECONF=${GNOME2_EAUTORECONF:-""}
+
+[[ ${GNOME2_EAUTORECONF} == 'yes' ]] && inherit autotools
 inherit eutils libtool gnome.org gnome2-utils xdg
 
 case "${EAPI:-0}" in
@@ -62,7 +68,7 @@ if has ${EAPI:-0} 4 5; then
 		IUSE="debug"
 	fi
 fi
-    
+
 # @ECLASS-VARIABLE: GNOME2_ECLASS_GIO_MODULES
 # @INTERNAL
 # @DESCRIPTION:
@@ -113,9 +119,13 @@ gnome2_src_prepare() {
 	# Disable all deprecation warnings
 	gnome2_disable_deprecation_warning
 
-	# Run libtoolize
+	# Run libtoolize or eautoreconf, bug #591584
 	# https://bugzilla.gnome.org/show_bug.cgi?id=655517
-	elibtoolize ${ELTCONF}
+	if [[ ${GNOME2_EAUTORECONF} == 'yes' ]]; then
+		eautoreconf
+	else
+		elibtoolize ${ELTCONF}
+	fi
 }
 
 # @FUNCTION: gnome2_src_configure
@@ -327,8 +337,12 @@ gnome2_pkg_preinst() {
 gnome2_pkg_postinst() {
 	xdg_pkg_postinst
 	gnome2_gconf_install
-	gnome2_icon_cache_update
-	gnome2_schemas_update
+	if [[ -n ${GNOME2_ECLASS_ICONS} ]]; then
+		gnome2_icon_cache_update
+	fi
+	if [[ -z ${GNOME2_ECLASS_GLIB_SCHEMAS} ]]; then
+		gnome2_schemas_update
+	fi
 	gnome2_scrollkeeper_update
 	gnome2_gdk_pixbuf_update
 
@@ -354,8 +368,12 @@ gnome2_pkg_postinst() {
 # Handle scrollkeeper, GSettings, Icons, desktop and mime database updates.
 gnome2_pkg_postrm() {
 	xdg_pkg_postrm
-	gnome2_icon_cache_update
-	gnome2_schemas_update
+	if [[ -n ${GNOME2_ECLASS_ICONS} ]]; then
+		gnome2_icon_cache_update
+	fi
+	if [[ -z ${GNOME2_ECLASS_GLIB_SCHEMAS} ]]; then
+		gnome2_schemas_update
+	fi
 	gnome2_scrollkeeper_update
 
 	if [[ ${#GNOME2_ECLASS_GIO_MODULES[@]} -gt 0 ]]; then
