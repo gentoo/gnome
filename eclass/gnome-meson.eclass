@@ -28,26 +28,26 @@ esac
 # Prepare environment for build, fix build of scrollkeeper documentation,
 # run elibtoolize.
 gnome-meson_src_prepare() {
+	# FIXME add gtk-doc stuff if needed
 	xdg_src_prepare
 
 	# Prevent assorted access violations and test failures
 	gnome2_environment_reset
-
-	# Disable all deprecation warnings
-	gnome2_disable_deprecation_warning
 }
 
 # @FUNCTION: gnome-meson_src_configure
 # @DESCRIPTION:
 # Gnome specific configure handling
 gnome-meson_src_configure() {
-	#FIXME: handle gtk-doc
-	
-	#FIXME is this still valid ?
 	# Avoid sandbox violations caused by gnome-vfs (bug #128289 and #345659)
 	addpredict "$(unset	 HOME; echo ~)/.gnome2"
 	
-
+	#FIXME are these valid/needed
+	#	"-Dgtk-doc=no"
+	#	"-Dmaintainer-mode=no"
+	#	"-Dschemas-install=no"
+	#	"-Dupdate-mimedb=no"
+	#	"-Dcompile-warnings=minimum"
 	local emesonargs=(
 		"$@"
 	)
@@ -67,21 +67,19 @@ gnome-meson_src_compile() {
 # Gnome specific install. Handles typical GConf and scrollkeeper setup
 # in packages and removal of .la files if requested
 gnome-meson_src_install() {
-	# we must delay gconf schema installation due to sandbox
-	export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL="1"
-
-	unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
-
+	# install docs
+	default
 	
-	# Since eapi6 this is handled by default on its own plus MAINTAINERS and HACKING
 	# files that are really common in gnome packages (bug #573390)
 	local d
 	for d in HACKING MAINTAINERS; do
 		[[ -s "${d}" ]] && dodoc "${d}"
 	done
 	
+	# Make sure this one doesn't get in the portage db
+	rm -fr "${ED}/usr/share/applications/mimeinfo.cache"
+
 	# Delete all .la files
-	
 	case "${GNOME2_LA_PUNT}" in
 		yes)    prune_libtool_files --modules;;
 		no)     ;;
@@ -131,6 +129,13 @@ gnome-meson_pkg_postinst() {
 	if [[ ${#GNOME2_ECLASS_GIO_MODULES[@]} -gt 0 ]]; then
 		gnome2_giomodule_cache_update
 	fi
+	
+	# This should only be in the overlay
+	ewarn "**************************************************************"
+	ewarn "This is the *experimental* Gentoo GNOME Overlay"
+	ewarn "Please report bugs at #gentoo-desktop @ FreeNode"
+	ewarn "Do NOT go to upstream with bugs without checking with us first"
+	ewarn "**************************************************************"
 }
 
 # # FIXME Handle GConf schemas removal
