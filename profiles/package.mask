@@ -6,3 +6,7 @@
 # careful not to commit atoms that are not valid, as it can cause large-scale
 # breakage, especially if it ends up in the daily snapshot.
 #
+
+# Sobhan Mohammadpour <sobhan@gentoo.org> (21 Dec 2017)
+# Depends on masked dev-lang/spidermonkey:52
+=dev-libs/gjs-1.50.2
