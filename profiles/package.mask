@@ -6,3 +6,8 @@
 # careful not to commit atoms that are not valid, as it can cause large-scale
 # breakage, especially if it ends up in the daily snapshot.
 #
+
+# mask gjs 1.50.2 since it depends on masked spider monkey
+# sobhan 2017/12/21
+=dev-libs/gjs-1.50.2
+
