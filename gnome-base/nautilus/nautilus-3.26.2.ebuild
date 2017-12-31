@@ -82,13 +82,13 @@ src_configure() {
 	# FIXME no doc useflag??
 	gnome-meson_src_configure \
 		-Denable-desktop=true \
-		-Denable-gtk-doc=true \
-		$(gnome-meson_use exif libexif) \
-		$(gnome-meson_use introspection) \
-		$(gnome-meson_use packagekit) \
-		$(gnome-meson_use sendto nst-extension) \
-		$(gnome-meson_use selinux) \
-		$(gnome-meson_use xmp)
+		-Denable-gtk-doc=false \
+		-Denable-profiling=false \
+		$(meson_use exif enable-exif) \
+		$(meson_use packagekit enable-packagekit) \
+		$(meson_use sendto nst-extension) \
+		$(meson_use selinux enable-selinux) \
+		$(meson_use xmp enable-xmp)
 }
 
 src_test() {
