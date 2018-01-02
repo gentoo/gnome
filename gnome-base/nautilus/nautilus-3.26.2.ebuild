@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -47,7 +47,7 @@ COMMON_DEPEND="
 DEPEND="${COMMON_DEPEND}
 	>=dev-lang/perl-5
 	>=dev-util/gdbus-codegen-2.33
-	>=dev-util/gtk-doc-am-1.10
+	>=dev-util/gtk-doc-1.10
 	>=sys-devel/gettext-0.19.7
 	virtual/pkgconfig
 	x11-proto/xproto
@@ -82,7 +82,7 @@ src_configure() {
 	# FIXME no doc useflag??
 	gnome-meson_src_configure \
 		-Denable-desktop=true \
-		-Denable-gtk-doc=false \
+		-Denable-gtk-doc=true \
 		-Denable-profiling=false \
 		$(meson_use exif enable-exif) \
 		$(meson_use packagekit enable-packagekit) \
