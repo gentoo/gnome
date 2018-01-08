@@ -1,0 +1,29 @@
+From a2f3afb3c8a4f8b0a2a361e37b36b10e1e98380c Mon Sep 17 00:00:00 2001
+From: Georges Basile Stavracas Neto <georges.stavracas@gmail.com>
+Date: Sat, 11 Nov 2017 03:31:47 -0200
+Subject: [PATCH] eds: Build with libical 3.0
+
+Fixes #123
+
+(cherry picked and ported from commit 6de8adc351b758c1d608ae0ea8acf6d35ed502ea)
+---
+ src/gtd-task.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/src/gtd-task.c b/src/gtd-task.c
+index 1143dad..125e2f3 100644
+--- a/src/gtd-task.c
++++ b/src/gtd-task.c
+@@ -777,8 +777,7 @@ gtd_task_set_complete (GtdTask  *task,
+           dt->hour = g_date_time_get_hour (now);
+           dt->minute = g_date_time_get_minute (now);
+           dt->second = g_date_time_get_seconds (now);
+-          dt->is_date = 0;
+-          dt->is_utc = 1;
++          dt->zone = icaltimezone_get_utc_timezone ();
+ 
+           /* convert timezone
+            *
+-- 
+2.15.1
+
