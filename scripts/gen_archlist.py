@@ -37,11 +37,11 @@ logger = logging.getLogger('gen_archlist')
 #############
 # GNOME_OVERLAY = PORTDB.getRepositoryPath('gnome')
 portage.portdb.porttrees = [portage.settings['PORTDIR']]
-STABLE_ARCHES = ('alpha', 'amd64', 'arm', 'hppa', 'ia64', 'ppc', 'ppc64',
-                 'sparc', 'x86')
-UNSTABLE_ARCHES = ('~alpha', '~amd64', '~arm', '~hppa', '~ia64', '~m68k',
-                   '~ppc', '~ppc64', '~s390', '~sh', '~sparc', '~x86',
-                   '~x86-fbsd')
+STABLE_ARCHES = ('alpha', 'amd64', 'arm', 'arm64', 'hppa', 'ia64',
+                 'ppc', 'ppc64', 'sparc', 'x86')
+UNSTABLE_ARCHES = ('~alpha', '~amd64', '~arm', '~arm64', '~hppa', '~ia64',
+                   '~m68k', '~ppc', '~ppc64', '~s390', '~sh', '~sparc',
+                   '~x86', '~x86-fbsd')
 ALL_ARCHES = STABLE_ARCHES + UNSTABLE_ARCHES
 SYSTEM_PACKAGES = []
 
