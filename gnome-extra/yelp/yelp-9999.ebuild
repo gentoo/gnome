@@ -1,6 +1,5 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI="5"
 GCONF_DEBUG="no"
@@ -52,7 +51,7 @@ fi
 src_prepare() {
 	# Fix compatibility with Gentoo's sys-apps/man
 	# https://bugzilla.gnome.org/show_bug.cgi?id=648854
-	epatch "${FILESDIR}"/${PN}-3.16.0-man-compatibility.patch
+	epatch "${FILESDIR}"/${PN}-3.20.0-man-compatibility.patch
 
 	[[ ${PV} != 9999 ]] && eautoreconf
 
