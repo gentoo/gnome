@@ -5,9 +5,8 @@
 	<email>gnome@gentoo.org</email>
 	<name>Gentoo GNOME Desktop</name>
 </maintainer>
-  <use>
-    <flag name="audit">Enable support for <pkg>sys-process/audit</pkg></flag>
-    <flag name="fprint">Enables experimental fingerprint authentication using
+<use>
+	<flag name="fprint">Enables experimental fingerprint authentication using
 		<pkg>sys-auth/fprintd</pkg></flag>
 	<flag name="plymouth">Enable support for smooth transition from
 		<pkg>sys-boot/plymouth</pkg></flag>
