@@ -1,10 +1,9 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=6
 GNOME_ORG_MODULE="gnome-2048"
-VALA_MIN_API_VERSION="0.24"
+VALA_MIN_API_VERSION="0.32"
 
 inherit gnome2 vala
 
