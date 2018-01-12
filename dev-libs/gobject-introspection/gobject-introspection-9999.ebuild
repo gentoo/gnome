@@ -1,6 +1,5 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI="5"
 GCONF_DEBUG="no"
@@ -12,7 +11,7 @@ if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
-DESCRIPTION="Introspection infrastructure for generating gobject library bindings for various languages"
+DESCRIPTION="Introspection system for GObject-based libraries"
 HOMEPAGE="https://wiki.gnome.org/Projects/GObjectIntrospection"
 
 LICENSE="LGPL-2+ GPL-2+"
