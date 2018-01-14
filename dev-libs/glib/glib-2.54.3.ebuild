@@ -7,8 +7,7 @@
 
 EAPI=6
 PYTHON_COMPAT=( python2_7 )
-# Completely useless with or without USE static-libs, people need to use
-# pkg-config
+# Completely useless with or without USE static-libs, people need to use pkg-config
 GNOME2_LA_PUNT="yes"
 
 inherit bash-completion-r1 epunt-cxx flag-o-matic gnome-meson libtool linux-info \
