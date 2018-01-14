@@ -3,8 +3,7 @@ From: Sobhan Mohammadpour <mohammadpour.sobhan@gmail.com>
 Date: Thu, 14 Dec 2017 17:10:50 +0330
 Subject: [PATCH] glib-2.54.2 external gdbus codegen
 
-based on gdbus-codegen-2.40.0-sitedir.patch
----
+--
  gio/gdbus-2.0/codegen/gdbus-codegen.in | 11 +----------
  1 file changed, 1 insertion(+), 10 deletions(-)
 

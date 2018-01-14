@@ -7,27 +7,13 @@ PYTHON_COMPAT=( python{2_7,3_4,3_5,3_6} )
 PYTHON_REQ_USE="xml"
 
 inherit gnome.org distutils-r1
-if [[ ${PV} = 9999 ]]; then
-	inherit git-r3
-fi
 
 DESCRIPTION="GDBus code and documentation generator"
-HOMEPAGE="http://www.gtk.org/"
-
-if [[ ${PV} = 9999 ]]; then
-	EGIT_REPO_URI="https://git.gnome.org/browse/${GNOME_ORG_MODULE}"
-	SRC_URI=""
-fi
+HOMEPAGE="https://www.gtk.org/"
 
 LICENSE="LGPL-2+"
 SLOT="0"
-
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
-fi
-
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~x64-macos ~x86-macos"
 IUSE=""
 
 RDEPEND="${PYTHON_DEPS}"
