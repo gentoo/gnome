@@ -13,7 +13,7 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE="doc"
 
-# TODO: Todoist plugin seems to require 3.26 GOA for being able to add a Todoist account
+# TODO: Todoist plugin requires 3.25.3 GOA for being able to add a Todoist account
 RDEPEND="
 	>=dev-libs/glib-2.43.4:2
 	>=x11-libs/gtk+-3.22.0:3
