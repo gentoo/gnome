@@ -13,11 +13,10 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE="doc"
 
-# TODO: Todoist plugin requires 3.25.3 GOA for being able to add a Todoist account
 RDEPEND="
 	>=dev-libs/glib-2.43.4:2
 	>=x11-libs/gtk+-3.22.0:3
-	>=net-libs/gnome-online-accounts-3.2.0
+	>=net-libs/gnome-online-accounts-3.25.3
 	>=gnome-extra/evolution-data-server-3.17.1:=[gtk]
 	>=dev-libs/libical-0.43
 	>=dev-libs/libpeas-1.17
@@ -37,6 +36,7 @@ PATCHES=(
 src_configure() {
 	# TODO: There aren't any consumers of the introspection outside gnome-todo's own plugins, so maybe we
 	# TODO: should just always build introspection support as an application that needs it for full functionality?
+	# Todoist plugin requires 3.25.3 GOA for being able to add a Todoist account
 	gnome-meson_src_configure \
 		-Denable-background-plugin=true \
 		-Denable-dark-theme-plugin=true \
