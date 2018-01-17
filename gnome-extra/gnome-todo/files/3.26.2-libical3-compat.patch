@@ -1,0 +1,27 @@
+From 7362e5becc32cec8eebea5d41d95db8d9ad816bc Mon Sep 17 00:00:00 2001
+From: Mart Raudsepp <leio@gentoo.org>
+Date: Wed, 17 Jan 2018 14:29:38 +0200
+Subject: [PATCH] eds: Build with libical 3.0
+
+Backport of 6de8adc351b758c1d608ae0ea8acf6d35ed502ea
+---
+ src/gtd-task.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/src/gtd-task.c b/src/gtd-task.c
+index 389f5ad..219ab44 100644
+--- a/src/gtd-task.c
++++ b/src/gtd-task.c
+@@ -777,8 +777,7 @@ gtd_task_set_complete (GtdTask  *task,
+           dt->hour = g_date_time_get_hour (now);
+           dt->minute = g_date_time_get_minute (now);
+           dt->second = g_date_time_get_seconds (now);
+-          dt->is_date = 0;
+-          dt->is_utc = 1;
++          dt->zone = icaltimezone_get_utc_timezone ();
+ 
+           /* convert timezone
+            *
+-- 
+2.10.2
+
