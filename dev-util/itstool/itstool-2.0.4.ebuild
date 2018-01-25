@@ -8,32 +8,19 @@ PYTHON_REQ_USE="xml"
 
 inherit autotools python-single-r1
 
-if [[ ${PV} = 9999 ]]; then
-	inherit git-r3
-fi
-
 DESCRIPTION="Translation tool for XML documents that uses gettext files and ITS rules"
 HOMEPAGE="http://itstool.org/"
-if [[ ${PV} = 9999 ]]; then
-	EGIT_REPO_URI="https://github.com/itstool/itstool.git"
-else
-	SRC_URI="https://github.com/itstool/itstool/archive/${PV}.tar.gz"
-fi
+SRC_URI="https://github.com/itstool/itstool/archive/${PV}.tar.gz"
 
 LICENSE="GPL-3+"
 SLOT="0"
-
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~arm-linux ~x86-linux"
-fi
-
+KEYWORDS="~alpha ~amd64 ~arm ~arm64  ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~arm-linux ~x86-linux"
 IUSE=""
+
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 RDEPEND="${PYTHON_DEPS}
-		dev-libs/libxml2[python,${PYTHON_USEDEP}]"
+		dev-libs/libxml2[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}"
 
 src_prepare() {
