@@ -10,3 +10,7 @@
 # Sobhan Mohammadpour <sobhan@gentoo.org> (21 Dec 2017)
 # Depends on masked dev-lang/spidermonkey:52
 =dev-libs/gjs-1.50.2
+
+# Gilles Dartiguelongue <eva@gentoo.org> (29 Jan 2018)
+# Lots of unittests broken, no multilib support
+>=gnome-base/librsvg-2.41
