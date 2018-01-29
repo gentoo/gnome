@@ -1,8 +1,6 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-#
 # @ECLASS: gnome2-live.eclass
 # @MAINTAINER:
 # gnome@gentoo.org
@@ -12,7 +10,6 @@
 # @DESCRIPTION:
 # Exports additional functions used by live ebuilds written for GNOME packages
 # Always to be imported *AFTER* gnome2.eclass
-#
 
 inherit autotools eutils gnome2 gnome2-utils libtool git-r3 xdg
 
