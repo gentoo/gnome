@@ -219,6 +219,7 @@ multilib_src_test() {
 
 # FIXME completentiondir
 multilib_src_install() {
+	chmod +x glib-gettextize || die
 	gnome-meson_src_install completiondir="$(get_bashcompdir)"
 	keepdir /usr/$(get_libdir)/gio/modules
 }
@@ -272,7 +273,7 @@ pkg_preinst() {
 
 pkg_postinst() {
 	# force (re)generation of gschemas.compiled
-	gnome-meson_GNOME2_ECLASS_GLIB_SCHEMAS="force"
+	GNOME2_ECLASS_GLIB_SCHEMAS="force"
 
 	gnome-meson_pkg_postinst
 
