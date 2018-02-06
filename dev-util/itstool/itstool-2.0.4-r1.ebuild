@@ -20,10 +20,12 @@ IUSE=""
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 RDEPEND="${PYTHON_DEPS}
-		dev-libs/libxml2[${PYTHON_USEDEP}]"
+	dev-libs/libxml2[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}"
 
 src_prepare() {
+	eapply "${FILESDIR}/${P}-segfault.patch"
+	python_fix_shebang .
 	eapply_user
 	eautoreconf
 }
