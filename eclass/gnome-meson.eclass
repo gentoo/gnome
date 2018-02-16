@@ -159,10 +159,3 @@ gnome-meson_pkg_postrm() {
 		gnome2_giomodule_cache_update
 	fi
 }
-
-# @FUNTION: gnome-meson_use
-# @DESCRIPTION:
-# Make setting arguments easier taken from https://github.com/Heather/gentoo-gnome/blob/4f61803890da76026f4fed772c34c4394e1d2959/gnome-base/nautilus/nautilus-3.27.2.ebuild#L83
-gnome-meson_use() {
-	echo "-Denable-${2:-${1}}=$(usex ${1} 'true' 'false')"
-}
