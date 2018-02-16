@@ -56,7 +56,7 @@ PATCHES=(
 src_configure() {
 	gnome-meson_src_configure \
 		-Ddistributor_name=Gentoo \
-		-Dhttpps_everywhere=false \
+		-Dhttps_everywhere=false \
 		$(meson_use test unit_tests)
 }
 
