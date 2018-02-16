@@ -18,16 +18,16 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="The GLib library of C routines"
-HOMEPAGE="http://www.gtk.org/"
+HOMEPAGE="https://www.gtk.org/"
 SRC_URI="${SRC_URI}
-	http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz" # pkg.m4 for eautoreconf
+	https://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz" # pkg.m4 for eautoreconf
 
 if [[ ${PV} = 9999 ]]; then
 	EGIT_REPO_URI="https://git.gnome.org/browse/${GNOME_ORG_MODULE}"
-	SRC_URI=""
+	SRC_URI="https://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz" # pkg.m4 for eautoreconf
 fi
 
-LICENSE="LGPL-2+"
+LICENSE="LGPL-2.1+"
 SLOT="2"
 IUSE="dbus debug fam kernel_linux +mime selinux static-libs systemtap test utils xattr"
 REQUIRED_USE="
@@ -94,6 +94,10 @@ pkg_setup() {
 	fi
 }
 
+src_unpack() {
+	git-r3_src_unpack
+	default
+}
 src_prepare() {
 	# Prevent build failure in stage3 where pkgconfig is not available, bug #481056
 	mv -f "${WORKDIR}"/pkg-config-*/pkg.m4 "${S}"/m4macros/ || die
@@ -186,8 +190,8 @@ multilib_src_configure() {
 	gnome-meson_src_configure \
 		${myconf} \
 		-Denable-libmount=$(usex kernel_linux yes no) \
-		$(gnome-meson_use systemtap dtrace) \
-		$(gnome-meson_use systemtap) \
+		$(meson_use systemtap enable-dtrace) \
+		$(meson_use systemtap enable-systemtap) \
 		-Dwith-pcre=system \
 		-Dwith-docs=no \
 		-Dwith-man=yes
@@ -226,8 +230,8 @@ multilib_src_test() {
 	virtx meson_src_test
 }
 
-# FIXME completentiondir
 multilib_src_install() {
+	chmod +x glib-gettextize || die
 	gnome-meson_src_install completiondir="$(get_bashcompdir)"
 	keepdir /usr/$(get_libdir)/gio/modules
 }
@@ -281,7 +285,7 @@ pkg_preinst() {
 
 pkg_postinst() {
 	# force (re)generation of gschemas.compiled
-	gnome-meson_GNOME2_ECLASS_GLIB_SCHEMAS="force"
+	GNOME2_ECLASS_GLIB_SCHEMAS="force"
 
 	gnome-meson_pkg_postinst
 
