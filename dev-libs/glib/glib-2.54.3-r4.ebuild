@@ -125,7 +125,8 @@ src_prepare() {
 	# arg, but that would mean a build dep on python when USE=utils.
 	sed -e '/${PYTHON}/d' \
 		-i glib/Makefile.{am,in} || die
-
+	sed -e 's:@PYTHON@:python:' \
+		-i gobject/glib-{genmarshal.in,mkenums.in} || die
 	# Also needed to prevent cross-compile failures, see bug #267603
 	eautoreconf
 
