@@ -29,7 +29,7 @@ DEPEND="${RDEPEND}
 
 multilib_src_configure() {
 	gnome-meson_src_configure \
-		-Ddocs=true \
+		$(meson_use doc docs) \
 		$(meson_use introspection)
 }
 
