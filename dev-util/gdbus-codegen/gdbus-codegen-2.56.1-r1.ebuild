@@ -30,7 +30,7 @@ python_prepare_all() {
 	)
 	distutils-r1_python_prepare_all
 
-	cp gdbus-codegen.in gdbus-codegen || die "cp failed"
+	sed -e 's:@PYTHON@:python:' gdbus-codegen.in > gdbus-codegen || die
 	cp "${FILESDIR}/setup.py-2.32.4" setup.py || die "cp failed"
 	sed -e "s/@PV@/${PV}/" -i setup.py || die "sed setup.py failed"
 }
