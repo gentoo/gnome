@@ -12,6 +12,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 # >=libical-1.0.1 for https://bugzilla.gnome.org/show_bug.cgi?id=751244
+# FIXME add docs
 RDEPEND="
 	>=dev-libs/glib-2.43.4:2
 	>=x11-libs/gtk+-3.21.6:3
