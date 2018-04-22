@@ -11,7 +11,7 @@ DESCRIPTION="A tagging metadata database, search tool and indexer"
 HOMEPAGE="https://wiki.gnome.org/Projects/Tracker"
 
 LICENSE="GPL-2+ LGPL-2.1+"
-SLOT="0/200"
+SLOT="0/2.0"
 IUSE="doc elibc_glibc journal networkmanager stemmer upower unistring test"
 
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~sparc ~x86"
@@ -28,7 +28,7 @@ RDEPEND="
 	>=net-libs/libsoup-2.40:2.4
 	>=sys-apps/dbus-1.3.1
 	sys-apps/util-linux
-
+	>=app-text/libgepub-0.5.2
 	elibc_glibc? ( >=sys-libs/glibc-2.12 )
 	networkmanager? ( >=net-misc/networkmanager-0.8 )
 	stemmer? ( dev-libs/snowball-stemmer )
