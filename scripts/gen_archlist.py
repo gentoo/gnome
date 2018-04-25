@@ -437,7 +437,7 @@ def main():
                              ' to be stabilized')
     args = parser.parse_args()
 
-    args.verbose = min(max(args.verbose, 0), 2)
+    args.verbose = min(max(args.verbose if args.verbose else 0, 0), 2)
     logging.config.dictConfig({
         'version': 1,
         'disable_existing_loggers': True,
