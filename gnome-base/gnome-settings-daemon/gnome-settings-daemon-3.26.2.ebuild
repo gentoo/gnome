@@ -100,7 +100,7 @@ RESTRICT="!test? ( test )"
 
 PATCHES=(
 	# Make colord and wacom optional; requires eautoreconf
-	"${FILESDIR}"/${PV}-optional.patch
+	"${FILESDIR}"/3.26.1-optional.patch
 	# Allow specifying udevrulesdir via configure, bug 509484; requires eautoreconf
 	"${FILESDIR}"/3.24.2-udevrulesdir-configure.patch
 	# Fix build issue when gudev is present but not wayland, bug #627966
