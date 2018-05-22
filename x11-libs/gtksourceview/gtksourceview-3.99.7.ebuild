@@ -11,7 +11,7 @@ DESCRIPTION="A text widget implementing syntax highlighting and other features"
 HOMEPAGE="https://wiki.gnome.org/Projects/GtkSourceView"
 
 LICENSE="GPL-2+ LGPL-2.1+"
-SLOT="3.0/3"
+SLOT="4.0/4"
 
 IUSE="glade +introspection vala"
 REQUIRED_USE="vala? ( introspection )"
@@ -53,6 +53,6 @@ src_test() {
 src_install() {
 	gnome2_src_install
 
-	insinto /usr/share/${PN}-3.0/language-specs
+	insinto /usr/share/${PN}-4/language-specs
 	doins "${FILESDIR}"/2.0/gentoo.lang
 }
