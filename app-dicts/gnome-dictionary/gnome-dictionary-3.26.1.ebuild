@@ -2,12 +2,10 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
-inherit gnome-meson git-r3
+inherit gnome-meson
 
 DESCRIPTION="Dictionary utility for GNOME"
 HOMEPAGE="https://wiki.gnome.org/Apps/Dictionary"
-SRC_URI=""
-EGIT_REPO_URI="https://gitlab.gnome.org/GNOME/gnome-dictionary.git"
 
 LICENSE="GPL-2+ LGPL-2.1+ FDL-1.1+"
 SLOT="0"
