@@ -1,11 +1,10 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="5"
-GCONF_DEBUG="yes"
+EAPI=6
 GNOME2_LA_PUNT="yes"
 
-inherit gnome2
+inherit gnome2 systemd
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -21,24 +20,23 @@ if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~x64-solaris"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux ~x64-solaris"
 fi
 
-# Since 2.26.2, can handle poppler without cairo support. Make it optional ?
-# not mature enough
 # atk used in libview
 # gdk-pixbuf used all over the place
-# libX11 used for totem-screensaver
+# bundles unarr library. It does not seem to exist standalone.
 COMMON_DEPEND="
 	dev-libs/atk
 	>=dev-libs/glib-2.36:2[dbus]
 	>=dev-libs/libxml2-2.5:2
 	sys-libs/zlib:=
-	x11-libs/gdk-pixbuf:2
+	>=x11-libs/gdk-pixbuf-2.36.5:2
 	>=x11-libs/gtk+-3.16.0:3[introspection?]
 	gnome-base/gsettings-desktop-schemas
 	>=x11-libs/cairo-1.10:=
 	>=app-text/poppler-0.33[cairo]
+	>=app-arch/libarchive-3.1.2
 	djvu? ( >=app-text/djvu-3.5.22:= )
 	dvi? (
 		virtual/tex-base
@@ -61,9 +59,7 @@ RDEPEND="${COMMON_DEPEND}
 	gnome-base/librsvg
 	|| (
 		>=x11-themes/adwaita-icon-theme-2.17.1
-		( >=x11-themes/gnome-icon-theme-2.17.1 x11-themes/gnome-icon-theme-symbolic )
 		>=x11-themes/hicolor-icon-theme-0.10 )
-	x11-themes/gnome-icon-theme-symbolic
 "
 DEPEND="${COMMON_DEPEND}
 	app-text/docbook-xml-dtd:4.3
@@ -81,10 +77,6 @@ if [[ ${PV} = 9999 ]]; then
 		app-text/yelp-tools
 		doc? ( >=dev-util/gtk-doc-1.13 )"
 fi
-
-# Needs dogtail and pyspi from http://fedorahosted.org/dogtail/
-# Releases: http://people.redhat.com/zcerza/dogtail/releases/
-#RESTRICT="test"
 
 src_prepare() {
 	gnome2_src_prepare
@@ -118,5 +110,6 @@ src_configure() {
 		$(use_enable tiff) \
 		$(use_enable xps) \
 		BROWSER_PLUGIN_DIR="${EPREFIX}"/usr/$(get_libdir)/nsbrowser/plugins \
+		--with-systemduserunitdir="$(systemd_get_userunitdir)"
 		${myconf}
 }
