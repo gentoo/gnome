@@ -12,7 +12,7 @@ fi
 DESCRIPTION="A collection of solitaire card games for GNOME"
 HOMEPAGE="https://wiki.gnome.org/action/show/Apps/Aisleriot"
 
-LICENSE="GPL-3 LGPL-3 FDL-1.1"
+LICENSE="GPL-3 LGPL-3 FDL-1.3"
 SLOT="0"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
