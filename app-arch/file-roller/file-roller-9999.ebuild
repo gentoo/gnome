@@ -1,26 +1,24 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
+EAPI=6
 GNOME2_LA_PUNT="yes"
 
-inherit eutils gnome2 readme.gentoo
+inherit gnome2 readme.gentoo-r1
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
 DESCRIPTION="Archive manager for GNOME"
-HOMEPAGE="http://fileroller.sourceforge.net/ https://wiki.gnome.org/Apps/FileRoller"
+HOMEPAGE="https://wiki.gnome.org/Apps/FileRoller"
 
 LICENSE="GPL-2+ CC-BY-SA-3.0"
 SLOT="0"
-IUSE="nautilus packagekit"
+IUSE="libnotify nautilus packagekit"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 fi
 
 # gdk-pixbuf used extensively in the source
@@ -31,17 +29,19 @@ RDEPEND="
 	>=dev-libs/glib-2.36:2
 	>=dev-libs/json-glib-0.14
 	>=x11-libs/gtk+-3.13.2:3
-	>=x11-libs/libnotify-0.4.3:=
 	sys-apps/file
 	x11-libs/cairo
 	x11-libs/gdk-pixbuf:2
 	x11-libs/pango
-	nautilus? ( >=gnome-base/nautilus-3 )
+	libnotify? ( >=x11-libs/libnotify-0.4.3:= )
+	nautilus? ( >=gnome-base/nautilus-2.22.2 )
 	packagekit? ( app-admin/packagekit-base )
 "
+# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${RDEPEND}
-	dev-util/desktop-file-utils
-	>=dev-util/intltool-0.40.0
+	dev-libs/libxml2
+	>=dev-util/intltool-0.50.1
+	dev-util/itstool
 	sys-devel/gettext
 	virtual/pkgconfig
 "
@@ -67,26 +67,19 @@ iso     - app-cdr/cdrtools
 jar,zip - app-arch/zip and app-arch/unzip
 lha     - app-arch/lha
 lzop    - app-arch/lzop
+lz4     - app-arch/lz4
 rar     - app-arch/unrar or app-arch/unar
 rpm     - app-arch/rpm
 unstuff - app-arch/stuffit
 zoo     - app-arch/zoo"
 
 src_prepare() {
-	# Use absolute path to GNU tar since star doesn't have the same
-	# options. On Gentoo, star is /usr/bin/tar, GNU tar is /bin/tar
-	epatch "${FILESDIR}"/${PN}-2.10.3-use_bin_tar.patch
-
 	# File providing Gentoo package names for various archivers
-	cp -f "${FILESDIR}/3.6.0-packages.match" data/packages.match || die
-
+	cp -f "${FILESDIR}"/3.22-packages.match data/packages.match || die
 	gnome2_src_prepare
 }
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
-	DOCS="AUTHORS ChangeLog HACKING MAINTAINERS NEWS README* TODO"
 	# --disable-debug because enabling it adds -O0 to CFLAGS
 	gnome2_src_configure \
 		--disable-run-in-place \
@@ -94,9 +87,9 @@ src_configure() {
 		--disable-debug \
 		--enable-magic \
 		--enable-libarchive \
+		$(use_enable libnotify notification) \
 		$(use_enable nautilus nautilus-actions) \
-		$(use_enable packagekit) \
-		${myconf}
+		$(use_enable packagekit)
 }
 
 src_install() {
