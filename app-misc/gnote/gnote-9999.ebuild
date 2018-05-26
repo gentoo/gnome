@@ -1,12 +1,10 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
+EAPI=6
 GNOME2_LA_PUNT="yes"
 
-inherit gnome2 readme.gentoo
+inherit gnome2 readme.gentoo-r1
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -21,29 +19,27 @@ if [[ ${PV} = 9999 ]]; then
 else
 	KEYWORDS="~amd64 ~x86"
 fi
-IUSE="debug X"
+IUSE="debug"
 
 # Automagic glib-2.32 dep
 COMMON_DEPEND="
 	>=app-crypt/libsecret-0.8
 	>=app-text/gtkspell-3.0:3
 	>=dev-cpp/glibmm-2.32:2
-	>=dev-cpp/gtkmm-3.10:3.0
-	>=dev-libs/boost-1.34
-	>=dev-libs/glib-2.32:2
+	>=dev-cpp/gtkmm-3.18:3.0
+	>=dev-libs/glib-2.32:2[dbus]
 	>=dev-libs/libxml2-2:2
 	dev-libs/libxslt
 	>=sys-apps/util-linux-2.16:=
-	>=x11-libs/gtk+-3.10:3
-	X? ( x11-libs/libX11 )
+	>=x11-libs/gtk+-3.20:3
 "
 RDEPEND="${COMMON_DEPEND}
 	gnome-base/gsettings-desktop-schemas
 "
 DEPEND="${DEPEND}
 	app-text/docbook-xml-dtd:4.1.2
-	dev-util/desktop-file-utils
 	>=dev-util/intltool-0.35.0
+	dev-util/itstool
 	virtual/pkgconfig
 "
 if [[ ${PV} = 9999 ]]; then
@@ -54,6 +50,7 @@ fi
 src_prepare() {
 	# Do not alter CFLAGS
 	sed 's/-DDEBUG -g/-DDEBUG/' -i configure.ac configure || die
+
 	gnome2_src_prepare
 
 	if has_version net-fs/wdfs; then
@@ -67,13 +64,9 @@ src_prepare() {
 }
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
 	gnome2_src_configure \
 		--disable-static \
-		$(use_enable debug) \
-		$(use_with X x11-support) \
-		${myconf}
+		$(use_enable debug)
 }
 
 src_install() {
