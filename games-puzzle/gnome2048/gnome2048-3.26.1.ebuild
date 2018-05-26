@@ -23,13 +23,16 @@ RDEPEND="
 	>=media-libs/clutter-gtk-1.6:1.0
 	>=x11-libs/gtk+-3.12:3
 "
+# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${DEPEND}
 	$(vala_depend)
 	app-text/yelp-tools
 	dev-libs/appstream-glib
+	dev-libs/libxml2
 	>=dev-util/intltool-0.50
 	sys-devel/gettext
 	virtual/pkgconfig
+	x11-libs/gdk-pixbuf
 "
 
 src_prepare() {
