@@ -29,14 +29,16 @@ COMMON_DEPEND="
 	>=net-libs/gnome-online-accounts-3.2.0[introspection]
 	x11-libs/pango[introspection]
 	>=net-libs/libzapojit-0.0.2[introspection]
-	>=app-text/libgepub-0.4[introspection]
+	>=app-text/libgepub-0.5[introspection]
 "
 RDEPEND="${COMMON_DEPEND}
 	net-misc/gnome-online-miners
 	sys-apps/dbus
 	x11-themes/adwaita-icon-theme
 "
+# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${COMMON_DEPEND}
+	dev-libs/libxml2
 	dev-libs/libxslt
 	>=sys-devel/gettext-0.19.8
 	dev-util/itstool
