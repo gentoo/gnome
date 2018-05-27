@@ -1,29 +1,22 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
-
-inherit gnome2 virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+EAPI=6
+inherit git-r3 gnome-meson virtualx
 
 DESCRIPTION="Color profile manager for the GNOME desktop"
 HOMEPAGE="https://git.gnome.org/browse/gnome-color-manager"
+SRC_URI=""
+EGIT_MODULE="https://git.gnome.org/gnome-color-manager"
 
 LICENSE="GPL-2+"
 SLOT="0"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86"
-fi
-IUSE="packagekit raw"
+KEYWORDS=""
+IUSE="packagekit raw test"
 
 # Need gtk+-3.3.8 for https://bugzilla.gnome.org/show_bug.cgi?id=673331
-COMMON_DEPEND="
+# vte could be made optional
+RDEPEND="
 	>=dev-libs/glib-2.31.10:2
 	>=media-libs/lcms-2.2:2
 	>=media-libs/libcanberra-0.10[gtk3]
@@ -32,50 +25,41 @@ COMMON_DEPEND="
 
 	>=x11-libs/gtk+-3.3.8:3
 	>=x11-libs/vte-0.25.1:2.91
-	>=x11-misc/colord-0.1.34:0=
+	>=x11-misc/colord-1.3.1:0=
 	>=x11-libs/colord-gtk-0.1.20
 
 	packagekit? ( app-admin/packagekit-base )
-	raw? ( media-gfx/exiv2 )
+	raw? ( media-gfx/exiv2:0= )
 "
-RDEPEND="${COMMON_DEPEND}"
-
 # docbook-sgml-{utils,dtd:4.1} needed to generate man pages
-DEPEND="${COMMON_DEPEND}
+DEPEND="${RDEPEND}
 	app-text/docbook-sgml-dtd:4.1
 	app-text/docbook-sgml-utils
 	dev-libs/appstream-glib
-	dev-libs/libxslt
-	>=dev-util/intltool-0.35
+	dev-util/itstool
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 "
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools"
-fi
+PATCHES=(
+	# https://bugzilla.gnome.org/show_bug.cgi?id=796428
+	"${FILESDIR}"/9999-remove-unwanted-check.patch
+)
 
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
-
 	# Always enable tests since they are check_PROGRAMS anyway
-	# appstream does not want to be relax by default !
-	gnome2_src_configure \
-		--disable-static \
-		--enable-tests \
-		$(use_enable packagekit) \
-		$(use_enable raw exiv) \
-		APPSTREAM_UTIL=$(type -P true) \
-		${myconf}
+	gnome-meson_src_configure \
+		$(meson_use raw enable-exiv) \
+		$(meson_use packagekit enable-packagekit) \
+		$(meson_use test enable-tests)
 }
 
 src_test() {
-	Xemake check
+	virtx meson_src_test
 }
 
 pkg_postinst() {
-	gnome2_pkg_postinst
+	gnome-meson_pkg_postinst
 
 	if ! has_version media-gfx/argyllcms ; then
 		elog "If you want to do display or scanner calibration, you will need to"

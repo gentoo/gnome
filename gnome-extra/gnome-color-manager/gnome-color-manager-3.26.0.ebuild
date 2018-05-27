@@ -10,9 +10,10 @@ HOMEPAGE="https://git.gnome.org/browse/gnome-color-manager"
 LICENSE="GPL-2+"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-IUSE="packagekit raw"
-# FIXME: libvte atomagic
+IUSE="packagekit raw test"
+
 # Need gtk+-3.3.8 for https://bugzilla.gnome.org/show_bug.cgi?id=673331
+# vte could be made optional
 RDEPEND="
 	>=dev-libs/glib-2.31.10:2
 	>=media-libs/lcms-2.2:2
@@ -25,8 +26,6 @@ RDEPEND="
 	>=x11-misc/colord-1.3.1:0=
 	>=x11-libs/colord-gtk-0.1.20
 
-	x11-libs/vte:2.91
-
 	packagekit? ( app-admin/packagekit-base )
 	raw? ( media-gfx/exiv2:0= )
 "
@@ -35,19 +34,22 @@ DEPEND="${RDEPEND}
 	app-text/docbook-sgml-dtd:4.1
 	app-text/docbook-sgml-utils
 	dev-libs/appstream-glib
-	dev-libs/libxslt
 	dev-util/itstool
-	>=sys-devel/gettext-0.19.7
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 "
 
+PATCHES=(
+	# https://bugzilla.gnome.org/show_bug.cgi?id=796428
+	"${FILESDIR}"/3.26-remove-unwanted-check.patch
+)
+
 src_configure() {
 	# Always enable tests since they are check_PROGRAMS anyway
-	# appstream does not want to be relax by default !
 	gnome-meson_src_configure \
-		-Denable-tests=true \
 		$(meson_use raw enable-exiv) \
-		$(meson_use packagekit enable-packagekit)
+		$(meson_use packagekit enable-packagekit) \
+		$(meson_use test enable-tests)
 }
 
 src_test() {

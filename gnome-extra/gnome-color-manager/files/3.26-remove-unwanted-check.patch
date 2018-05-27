@@ -1,0 +1,24 @@
+From dd43972782c34fe4d8925d52ae82d69add00493a Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Sun, 27 May 2018 19:27:51 +0200
+Subject: [PATCH] Fix unwanted exiv check in packagekit option handling
+
+---
+ meson.build | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index dd0be0b..0721028 100644
+--- a/meson.build
++++ b/meson.build
+@@ -101,7 +101,6 @@ if get_option('enable-exiv')
+ endif
+ 
+ if get_option('enable-packagekit')
+-  libexiv = dependency('exiv2')
+   conf.set('HAVE_PACKAGEKIT', '1')
+ endif
+ 
+-- 
+2.17.0
+
