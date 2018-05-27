@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
-inherit gnome-meson
+inherit gnome-meson virtualx
 
 DESCRIPTION="Manage your online calendars with simple and modern interface"
 HOMEPAGE="https://wiki.gnome.org/Apps/Calendar"
@@ -11,6 +11,7 @@ LICENSE="GPL-3+"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
+
 # >=libical-1.0.1 for https://bugzilla.gnome.org/show_bug.cgi?id=751244
 # FIXME add docs
 RDEPEND="
@@ -25,9 +26,11 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	dev-libs/appstream-glib
 	dev-util/gdbus-codegen
-	>=dev-util/intltool-0.40.6
-	sys-devel/gettext
+	>=dev-util/meson-0.42.0
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 "
 
-# FIXME: test fails
+src_test() {
+	virtx meson_src_test
+}
