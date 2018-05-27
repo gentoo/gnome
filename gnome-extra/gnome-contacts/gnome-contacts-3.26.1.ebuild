@@ -24,7 +24,6 @@ VALA_DEPEND="
 	net-libs/telepathy-glib[vala]
 "
 # Configure is wrong; it needs cheese-3.5.91, not 3.3.91
-# folks-0.11.4 to avoid build issues with vala-0.36, upstream 7a9001b056b4fb1d00375e7b2adeda9b7cf93c90
 RDEPEND="
 	>=dev-libs/folks-0.11.4:=[eds,telepathy]
 	>=dev-libs/glib-2.44:2
