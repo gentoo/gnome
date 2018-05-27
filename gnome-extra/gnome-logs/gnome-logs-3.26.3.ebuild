@@ -20,14 +20,17 @@ RDEPEND="
 	sys-apps/systemd:=
 	>=x11-libs/gtk+-3.22:3
 "
+# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${RDEPEND}
 	~app-text/docbook-xml-dtd-4.3
 	app-text/yelp-tools
 	dev-libs/appstream-glib
+	dev-libs/libxml2:2
 	dev-libs/libxslt
 	>=dev-util/intltool-0.50
 	gnome-base/gnome-common
 	virtual/pkgconfig
+	x11-libs/gdk-pixbuf:2
 	test? (
 		${PYTHON_DEPS}
 		$(python_gen_any_dep 'dev-util/dogtail[${PYTHON_USEDEP}]') )
