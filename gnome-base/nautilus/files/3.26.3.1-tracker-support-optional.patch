@@ -1,4 +1,4 @@
-From 3e3d7621c6f8ec72e626701e3f55afc900a04a68 Mon Sep 17 00:00:00 2001
+From 664c66bd231c5d0ac20f6f4f14be461bfb206a1e Mon Sep 17 00:00:00 2001
 From: Gilles Dartiguelongue <eva@gentoo.org>
 Date: Sun, 27 May 2018 13:54:38 +0200
 Subject: [PATCH] Make tracker support optional
@@ -7,12 +7,12 @@ Subject: [PATCH] Make tracker support optional
  config.h.meson                      |  1 +
  meson.build                         | 15 ++++++++++++---
  meson_options.txt                   |  5 +++++
- src/meson.build                     | 21 +++++++++++++--------
+ src/meson.build                     | 19 ++++++++++++-------
  src/nautilus-file-undo-operations.c |  4 ++++
  src/nautilus-file.c                 |  2 ++
  src/nautilus-files-view.c           |  4 ++++
  src/nautilus-search-engine.c        | 14 ++++++++++++++
- 8 files changed, 55 insertions(+), 11 deletions(-)
+ 8 files changed, 54 insertions(+), 10 deletions(-)
 
 diff --git a/config.h.meson b/config.h.meson
 index 4f5cb5848..58d71e96f 100644
@@ -27,7 +27,7 @@ index 4f5cb5848..58d71e96f 100644
  #mesondefine ENABLE_PACKAGEKIT
  #mesondefine LOCALEDIR
 diff --git a/meson.build b/meson.build
-index 7b8f15cf5..b2f2ef438 100644
+index 6256193cc..776111f81 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -81,9 +81,18 @@ if get_option ('enable-selinux')
@@ -36,7 +36,7 @@ index 7b8f15cf5..b2f2ef438 100644
  
 -tracker_sparql = dependency ('tracker-sparql-2.0', required: false)
 -if not tracker_sparql.found()
--  tracker_sparql = dependency ('tracker-sparql-1.0')
+-    tracker_sparql = dependency ('tracker-sparql-1.0')
 +tracker_api = get_option ('tracker')
 +if tracker_api == 'disabled'
 +    # pass
@@ -69,7 +69,7 @@ index c934dd8b1..d2ba885a2 100644
          type: 'boolean',
          value: false,
 diff --git a/src/meson.build b/src/meson.build
-index 9f01f5ba2..c55f39c7d 100644
+index cc08345d8..40f337cde 100644
 --- a/src/meson.build
 +++ b/src/meson.build
 @@ -254,12 +254,6 @@ libnautilus_sources = [
@@ -85,17 +85,15 @@ index 9f01f5ba2..c55f39c7d 100644
  ]
  
  nautilus_deps = [glib,
-@@ -273,8 +267,7 @@ nautilus_deps = [glib,
-                  eel_2,
+@@ -274,7 +268,6 @@ nautilus_deps = [glib,
                   nautilus_extension,
                   x11,
--                 gmodule_no_export,
--                 tracker_sparql]
-+                 gmodule_no_export]
+                  gmodule_no_export,
+-                 tracker_sparql,
+                  gio_unix]
  
  if get_option ('enable-exif')
-     nautilus_deps += exif
-@@ -288,6 +281,18 @@ if get_option ('enable-xmp')
+@@ -289,6 +282,18 @@ if get_option ('enable-xmp')
      nautilus_deps += exempi
  endif
  
@@ -146,7 +144,7 @@ index e833d0578..d6e407ca5 100644
  /* trash */
  G_DEFINE_TYPE (NautilusFileUndoInfoTrash, nautilus_file_undo_info_trash, NAUTILUS_TYPE_FILE_UNDO_INFO)
 diff --git a/src/nautilus-file.c b/src/nautilus-file.c
-index 536f83541..247334d5d 100644
+index d6ac35a44..752adc295 100644
 --- a/src/nautilus-file.c
 +++ b/src/nautilus-file.c
 @@ -2392,6 +2392,7 @@ real_batch_rename (GList                         *files,
@@ -166,7 +164,7 @@ index 536f83541..247334d5d 100644
      if (op->skipped_files == g_list_length (files))
      {
 diff --git a/src/nautilus-files-view.c b/src/nautilus-files-view.c
-index a79ecf20d..3b7bd4166 100644
+index 8784f63f8..af5605d68 100644
 --- a/src/nautilus-files-view.c
 +++ b/src/nautilus-files-view.c
 @@ -28,8 +28,10 @@
@@ -180,7 +178,7 @@ index a79ecf20d..3b7bd4166 100644
  #include "nautilus-error-reporting.h"
  #include "nautilus-file-undo-manager.h"
  #include "nautilus-floating-bar.h"
-@@ -6209,6 +6211,7 @@ real_action_rename (NautilusFilesView *view)
+@@ -6266,6 +6268,7 @@ real_action_rename (NautilusFilesView *view)
              {
                  invoke_external_bulk_rename_utility (view, selection);
              }
@@ -188,7 +186,7 @@ index a79ecf20d..3b7bd4166 100644
              else
              {
                  GdkCursor *cursor;
-@@ -6226,6 +6229,7 @@ real_action_rename (NautilusFilesView *view)
+@@ -6283,6 +6286,7 @@ real_action_rename (NautilusFilesView *view)
  
                  gtk_widget_show (GTK_WIDGET (dialog));
              }
