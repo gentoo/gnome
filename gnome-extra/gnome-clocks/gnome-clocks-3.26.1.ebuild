@@ -26,6 +26,7 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	$(vala_depend)
 	dev-util/itstool
+	>=dev-util/meson-0.41.0
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 "
