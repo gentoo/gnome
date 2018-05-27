@@ -15,7 +15,6 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="test"
 
-# FIXME: test fails
 RDEPEND="
 	>=dev-libs/gjs-1.43.3
 	>=dev-libs/glib-2.32:2
@@ -35,6 +34,9 @@ DEPEND="${RDEPEND}
 		${PYTHON_DEPS}
 		$(python_gen_any_dep 'dev-util/dogtail[${PYTHON_USEDEP}]') )
 "
+
+# Tests are not maintained with code base
+RESTRICT="test"
 
 python_check_deps() {
 	use test && has_version "dev-util/dogtail[${PYTHON_USEDEP}]"
