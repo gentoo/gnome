@@ -1,10 +1,7 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
-
+EAPI=6
 inherit gnome2
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
@@ -22,34 +19,38 @@ else
 	KEYWORDS="~amd64 ~x86"
 fi
 
-# Need gdk-pixbuf-2.25 for gdk_pixbuf_get_pixels_with_length
+# cairo-1.14 for cairo_surface_set_device_scale check and usage
 COMMON_DEPEND="
 	>=app-misc/tracker-1:=
 	>=app-text/evince-3.13.3[introspection]
-	dev-libs/gjs
+	>=net-libs/webkit-gtk-2.6:4[introspection]
+	>=dev-libs/gjs-1.48
 	>=dev-libs/glib-2.39.3:2
 	>=dev-libs/gobject-introspection-1.31.6:=
-	>=dev-libs/libgdata-0.13.3:=[crypt,gnome-online-accounts,introspection]
-	gnome-base/gnome-desktop:3=
-	>=media-libs/clutter-1.10:1.0
-	>=media-libs/clutter-gtk-1.3.2:1.0[introspection]
-	>=net-libs/gnome-online-accounts-3.2.0
+	>=x11-libs/gtk+-3.22.15:3[introspection]
 	>=net-libs/libsoup-2.41.3:2.4
-	>=net-libs/libzapojit-0.0.2
-	>=net-libs/webkit-gtk-2.6:4
-	>=x11-libs/gdk-pixbuf-2.25:2[introspection]
-	>=x11-libs/gtk+-3.19.1:3[introspection]
+	gnome-base/gnome-desktop:3=[introspection]
+	>=app-misc/tracker-2:=
+	>=x11-libs/cairo-1.14
+	>=dev-libs/libgdata-0.13.3:=[crypt,gnome-online-accounts,introspection]
+	x11-libs/gdk-pixbuf:2[introspection]
+	>=net-libs/gnome-online-accounts-3.2.0[introspection]
 	x11-libs/pango[introspection]
+	>=net-libs/libzapojit-0.0.2[introspection]
+	>=app-text/libgepub-0.5[introspection]
 "
 RDEPEND="${COMMON_DEPEND}
 	media-libs/clutter[introspection]
 	net-misc/gnome-online-miners
 	sys-apps/dbus
-	x11-themes/gnome-icon-theme-symbolic
+	x11-themes/adwaita-icon-theme
 "
+# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${COMMON_DEPEND}
+	dev-libs/libxml2
 	dev-libs/libxslt
-	>=dev-util/intltool-0.50.1
+	>=sys-devel/gettext-0.19.8
+	dev-util/itstool
 	virtual/pkgconfig
 "
 
@@ -58,15 +59,3 @@ if [[ ${PV} = 9999 ]]; then
 		app-text/yelp-tools
 	"
 fi
-
-src_prepare() {
-	# Prevent sandbox violation, https://bugzilla.gnome.org/show_bug.cgi?id=758097
-	sed -i -e '/-rm -f $(appdir)\/org.gnome.Books.data.gresource/d' data/Makefile.{am,in} || die
-	gnome2_src_prepare
-}
-
-src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
-	gnome2_src_configure ${myconf}
-}
