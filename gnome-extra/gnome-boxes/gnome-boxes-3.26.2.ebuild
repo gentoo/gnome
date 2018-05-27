@@ -6,27 +6,28 @@ VALA_USE_DEPEND="vapigen"
 VALA_MIN_API_VERSION="0.36"
 
 inherit gnome2 linux-info readme.gentoo-r1 vala
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="Simple GNOME 3 application to access remote or virtual systems"
 HOMEPAGE="https://wiki.gnome.org/Apps/Boxes"
 
 LICENSE="LGPL-2"
 SLOT="0"
-IUSE="bindist"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~amd64" # qemu-kvm[spice] is 64bit-only
-fi
+
+# We force 'bindist' due to licenses from gnome-boxes-nonfree
+IUSE="" #bindist
+
+KEYWORDS="~amd64"
 
 # NOTE: sys-fs/* stuff is called via exec()
 # FIXME: ovirt is not available in tree
+# FIXME: use vala.eclass but only because of libgd not being able
+#        to use its pre-generated files so do not copy all the
+#        vala deps like live ebuild has.
+# FIXME: qemu probably needs to depend on spice[smartcard]
+#        directly with USE=spice
 RDEPEND="
 	>=app-arch/libarchive-3:=
-	>=dev-libs/glib-2.38:2
+	>=dev-libs/glib-2.52:2
 	>=dev-libs/gobject-introspection-0.9.6:=
 	>=dev-libs/libxml2-2.7.8:2
 	>=sys-libs/libosinfo-0.2.12
@@ -46,25 +47,16 @@ RDEPEND="
 
 	sys-fs/mtools
 	>=virtual/libgudev-165:=
-	!bindist? ( gnome-extra/gnome-boxes-nonfree )
 "
+#	!bindist? ( gnome-extra/gnome-boxes-nonfree )
 # libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${RDEPEND}
+	$(vala_depend)
 	app-text/yelp-tools
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 	x11-libs/gdk-pixbuf:2
 "
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		$(vala_depend)
-		sys-libs/libosinfo[introspection,vala]
-		app-emulation/libvirt-glib[introspection,vala]
-		net-libs/gtk-vnc[introspection,vala]
-		net-misc/spice-gtk[introspection,vala]
-		net-libs/rest:0.7[introspection]"
-fi
 
 DISABLE_AUTOFORMATTING="yes"
 DOC_CONTENTS="Before running gnome-boxes, you will need to load the KVM modules.
@@ -88,7 +80,7 @@ pkg_pretend() {
 src_prepare() {
 	# Do not change CFLAGS, wondering about VALA ones but appears to be
 	# needed as noted in configure comments below
-	sed 's/CFLAGS="$CFLAGS -O0 -ggdb3"//' -i configure.ac || die
+	sed 's/CFLAGS="$CFLAGS -O0 -ggdb3"//' -i configure{.ac,} || die
 
 	vala_src_prepare
 	gnome2_src_prepare
