@@ -24,11 +24,11 @@ DEPEND="${RDEPEND}
 	$(vala_depend)
 	app-text/yelp-tools
 	dev-libs/appstream-glib
-	dev-libs/libxml2
+	dev-libs/libxml2:2
 	>=dev-util/intltool-0.50
 	sys-devel/gettext
 	virtual/pkgconfig
-	x11-libs/gdk-pixbuf
+	x11-libs/gdk-pixbuf:2
 "
 
 src_prepare() {
