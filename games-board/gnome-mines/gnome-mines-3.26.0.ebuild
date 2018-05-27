@@ -26,10 +26,10 @@ DEPEND="${COMMON_DEPEND}
 	$(vala_depend)
 	app-text/yelp-tools
 	dev-libs/appstream-glib
-	dev-libs/libxml2
+	dev-libs/libxml2:2
 	>=sys-devel/gettext-0.19.8
-	x11-libs/gdk-pixbuf
 	virtual/pkgconfig
+	x11-libs/gdk-pixbuf:2
 "
 
 src_prepare() {
