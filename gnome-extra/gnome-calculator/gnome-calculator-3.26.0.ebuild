@@ -27,8 +27,8 @@ RDEPEND="${COMMON_DEPEND}
 "
 DEPEND="${COMMON_DEPEND}
 	app-text/yelp-tools
-	>=dev-util/intltool-0.50
-	sys-devel/gettext
+	dev-libs/appstream-glib
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 "
 
