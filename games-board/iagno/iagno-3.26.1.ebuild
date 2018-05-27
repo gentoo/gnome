@@ -29,10 +29,10 @@ DEPEND="${COMMON_DEPEND}
 	app-text/yelp-tools
 	dev-libs/appstream-glib
 	>=dev-util/intltool-0.50
-	dev-libs/libxml2
+	dev-libs/libxml2:2
 	sys-devel/gettext
-	x11-libs/gdk-pixbuf
 	virtual/pkgconfig
+	x11-libs/gdk-pixbuf:2
 "
 
 src_prepare() {
