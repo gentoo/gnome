@@ -41,7 +41,7 @@ multilib_src_configure() {
 #	ECONF_SOURCE=${S} \
 	gnome-meson_src_configure \
 		-Denable_docs=true \
-		-Ddisable-introspection=$(multilib_native_usex introspection false true)
+		-Ddisable_introspection=$(multilib_native_usex introspection false true)
 
 }
 
