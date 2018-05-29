@@ -46,8 +46,7 @@ DEPEND="${COMMON_DEPEND}
 	>=dev-util/intltool-0.40.6
 	dev-util/itstool
 	sys-devel/gettext
-	x11-proto/xproto
-	>=x11-proto/randrproto-1.2
+	x11-base/xorg-proto
 	virtual/pkgconfig
 "
 

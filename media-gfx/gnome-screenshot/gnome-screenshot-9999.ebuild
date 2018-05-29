@@ -38,7 +38,7 @@ RDEPEND="${COMMON_DEPEND}
 "
 # ${PN} was part of gnome-utils before 3.4
 DEPEND="${COMMON_DEPEND}
-	x11-proto/xextproto
+	x11-base/xorg-proto
 	>=dev-util/intltool-0.40
 	virtual/pkgconfig
 "
