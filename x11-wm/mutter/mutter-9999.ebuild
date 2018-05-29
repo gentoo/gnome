@@ -15,7 +15,7 @@ SLOT="0/0"
 #FIXME add remote desktop support
 IUSE="debug gles2 input_devices_wacom +introspection test udev wayland"
 
-KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
+KEYWORDS=""
 
 # libXi-1.7.4 or newer needed per:
 # https://bugzilla.gnome.org/show_bug.cgi?id=738944
