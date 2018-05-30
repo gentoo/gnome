@@ -275,10 +275,6 @@ app-misc/tomboy
 # GNOME Shell
 dev-libs/gjs
 dev-libs/libcroco:0.6
-~x11-proto/inputproto-2.3
-~x11-proto/xextproto-7.2.1
-~x11-proto/kbproto-1.0.6
-~x11-proto/xproto-7.0.23
 ~x11-libs/libX11-1.5.0
 ~x11-libs/libXfixes-5.0
 ~x11-libs/libXext-1.3.1
