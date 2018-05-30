@@ -1,9 +1,7 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
+EAPI=6
 GNOME2_LA_PUNT="yes"
 
 inherit gnome2 virtualx
@@ -16,6 +14,7 @@ DESCRIPTION="Clutter is a library for creating graphical user interfaces"
 
 LICENSE="LGPL-2.1+ FDL-1.1+"
 SLOT="1.0"
+
 IUSE="aqua debug doc egl gtk +introspection test wayland X"
 REQUIRED_USE="
 	|| ( aqua wayland X )
@@ -29,7 +28,7 @@ fi
 
 # NOTE: glx flavour uses libdrm + >=mesa-7.3
 # >=libX11-1.3.1 needed for X Generic Event support
-# do not depend on tslib, it does not build and is disable by default upstream
+# do not depend on tslib, it does not build and is disabled by default upstream
 RDEPEND="
 	>=dev-libs/glib-2.44.0:2
 	>=dev-libs/atk-2.5.3[introspection?]
@@ -43,18 +42,17 @@ RDEPEND="
 
 	egl? (
 		>=dev-libs/libinput-0.19.0
-		media-libs/cogl:1.0=[gles2,kms]
+		media-libs/cogl[gles2,kms]
 		>=virtual/libgudev-136
 		x11-libs/libxkbcommon
 	)
-	gtk? ( >=x11-libs/gtk+-3.3.18:3[aqua?] )
+	gtk? ( >=x11-libs/gtk+-3.22.6:3[aqua?] )
 	introspection? ( >=dev-libs/gobject-introspection-1.39:= )
 	X? (
 		media-libs/fontconfig
 		>=x11-libs/libX11-1.3.1
 		x11-libs/libXext
 		x11-libs/libXdamage
-		x11-base/xorg-proto
 		>=x11-libs/libXi-1.3
 		>=x11-libs/libXcomposite-0.4 )
 	wayland? (
@@ -69,6 +67,7 @@ DEPEND="${RDEPEND}
 		>=dev-util/gtk-doc-1.20
 		>=app-text/docbook-sgml-utils-0.6.14[jadetex]
 		dev-libs/libxslt )
+	X? ( x11-base/xorg-proto )
 	test? ( x11-libs/gdk-pixbuf )
 "
 
@@ -109,5 +108,5 @@ src_configure() {
 }
 
 src_test() {
-	Xemake check -C tests/conform
+	virtx emake check -C tests/conform
 }
