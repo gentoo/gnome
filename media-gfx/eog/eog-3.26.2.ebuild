@@ -35,11 +35,12 @@ RDEPEND="
 	svg? ( >=gnome-base/librsvg-2.36.2:2 )
 	xmp? ( media-libs/exempi:2 )
 "
+# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${RDEPEND}
+	dev-libs/libxml2:2
 	>=dev-util/gtk-doc-am-1.16
-	>=dev-util/intltool-0.50.1
 	dev-util/itstool
-	sys-devel/gettext
+	>=sys-devel/gettext-0.19.7
 	virtual/pkgconfig
 "
 
