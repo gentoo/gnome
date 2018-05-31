@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -42,6 +42,7 @@ RDEPEND="${COMMON_DEPEND}
 	>=media-plugins/gst-plugins-v4l2-1.4:1.0
 	>=media-plugins/gst-plugins-vpx-1.4:1.0
 "
+# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${COMMON_DEPEND}
 	$(vala_depend)
 	app-text/docbook-xml-dtd:4.3
@@ -49,7 +50,6 @@ DEPEND="${COMMON_DEPEND}
 	dev-libs/appstream-glib
 	dev-libs/libxml2:2
 	dev-libs/libxslt
-	dev-util/gdbus-codegen
 	>=dev-util/gtk-doc-am-1.14
 	>=dev-util/intltool-0.50
 	dev-util/itstool
