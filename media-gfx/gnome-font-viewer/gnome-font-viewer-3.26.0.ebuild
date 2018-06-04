@@ -20,7 +20,10 @@ RDEPEND="
 	>=media-libs/harfbuzz-0.9.9
 	>=x11-libs/gtk+-3.20:3
 "
+# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${RDEPEND}
-	>=dev-util/intltool-0.40
+	dev-libs/libxml2:2
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
+	x11-libs/gdk-pixbuf:2
 "
