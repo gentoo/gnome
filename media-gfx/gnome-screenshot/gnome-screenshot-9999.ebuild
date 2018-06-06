@@ -1,26 +1,25 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
-
-inherit gnome2 readme.gentoo
+EAPI=6
+inherit gnome-meson readme.gentoo-r1
 if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
+	inherit git-r3
+	SRC_URI=""
+	EGIT_REPO_URI="git://git.gnome.org/gnome-screenshot"
 fi
 
 DESCRIPTION="Screenshot utility for GNOME"
-HOMEPAGE="https://git.gnome.org/browse/gnome-screenshot"
+HOMEPAGE="https://wiki.gnome.org/Apps/Attic/GnomeUtils"
 
 LICENSE="GPL-2+"
 SLOT="0"
 IUSE=""
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux"
-fi
+#if [[ ${PV} = 9999 ]]; then
+#	KEYWORDS=""
+#else
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
+#fi
 
 # libcanberra 0.26-r2 is needed for gtk+:3 fixes
 COMMON_DEPEND="
@@ -37,10 +36,12 @@ RDEPEND="${COMMON_DEPEND}
 	!<gnome-extra/gnome-utils-3.4
 "
 # ${PN} was part of gnome-utils before 3.4
+# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${COMMON_DEPEND}
-	x11-base/xorg-proto
-	>=dev-util/intltool-0.40
+	dev-libs/libxml2:2
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
+	x11-base/xorg-proto
 "
 
 DOC_CONTENTS="${P} saves screenshots in ~/Pictures/ and defaults to
@@ -48,11 +49,11 @@ DOC_CONTENTS="${P} saves screenshots in ~/Pictures/ and defaults to
 	where to save the screenshot, run 'gnome-screenshot --interactive'"
 
 src_install() {
-	gnome2_src_install
+	gnome-meson_src_install
 	readme.gentoo_create_doc
 }
 
 pkg_postinst() {
-	gnome2_pkg_postinst
+	gnome-meson_pkg_postinst
 	readme.gentoo_print_elog
 }
