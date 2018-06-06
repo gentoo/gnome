@@ -27,8 +27,10 @@ RDEPEND="${COMMON_DEPEND}
 	!<gnome-extra/gnome-utils-3.4
 "
 # ${PN} was part of gnome-utils before 3.4
+# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${COMMON_DEPEND}
-	>=dev-util/intltool-0.50.2
+	dev-libs/libxml2:2
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 	x11-base/xorg-proto
 "
