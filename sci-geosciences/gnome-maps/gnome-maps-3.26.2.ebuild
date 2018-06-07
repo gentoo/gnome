@@ -25,6 +25,7 @@ COMMON_DEPEND="
 	>=sci-geosciences/geocode-glib-3.15.2[introspection]
 	>=x11-libs/gtk+-3.22:3[introspection]
 "
+# libxml2+gdk-pixbuf required for glib-compile-resources
 # Found by grepping imports.gi in ${S}
 RDEPEND="${COMMON_DEPEND}
 	app-crypt/libsecret[introspection]
@@ -41,4 +42,5 @@ RDEPEND="${COMMON_DEPEND}
 DEPEND="${COMMON_DEPEND}
 	>=dev-util/intltool-0.40
 	virtual/pkgconfig
+	x11-libs/gdk-pixbuf:2
 "
