@@ -1,0 +1,37 @@
+From 008df868818b821cdbed8d124d1a86f0747ad3fc Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Thu, 7 Jun 2018 22:55:56 +0200
+Subject: [PATCH 3/4] Drop requirement for pylint at build-time
+
+This is a development QA tool anyway.
+---
+ meson.build | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index aa91ae10..f8f306e4 100644
+--- a/meson.build
++++ b/meson.build
+@@ -219,9 +219,8 @@ if python_option != 'no'
+     python_version = r.stdout().split(' ')[1]
+ 
+     pygobject_dep = dependency('pygobject-3.0', version: '>= 2.90.3', required: false)
+-    pylint = find_program('pylint-3', 'pylint3', 'pylint', required: false)
+ 
+-    if python_version.version_compare(python_req_version) and pygobject_dep.found() and pylint.found()
++    if python_version.version_compare(python_req_version) and pygobject_dep.found()
+       have_python = true
+       python_deps += pygobject_dep
+       meson.add_install_script('meson_compile_python.py')
+@@ -229,7 +228,7 @@ if python_option != 'no'
+   endif
+ 
+   if not have_python
+-    str = 'python ' + python_req_version + ', pygobject or pylint not found'
++    str = 'python ' + python_req_version + ' or pygobject not found'
+     if python_option == 'yes'
+       error(str)
+     endif
+-- 
+2.17.0
+

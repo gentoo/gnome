@@ -1,0 +1,40 @@
+From b66ceb0e2fe72591132576a6ca3469eff905cd8d Mon Sep 17 00:00:00 2001
+From: Gilles Dartiguelongue <eva@gentoo.org>
+Date: Thu, 7 Jun 2018 22:52:04 +0200
+Subject: [PATCH 1/4] meson.build: Fix typos in vala handling
+
+---
+ meson.build | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 8a87b8b9..9c4797dd 100644
+--- a/meson.build
++++ b/meson.build
+@@ -238,13 +238,13 @@ if python_option != 'no'
+ endif
+ 
+ # vala support
++vala_req_version = '>= 0.14.1'
+ have_vala = false
+ 
+ vala_option = get_option('enable-vala')
+ if vala_option != 'no'
+   if have_gir
+     if add_languages('vala', required: false)
+-      vala_req_version = '>= 0.14.1'
+       if meson.get_compiler('vala').version().version_compare(vala_req_version)
+         have_vala = true
+       endif
+@@ -258,7 +258,7 @@ if vala_option != 'no'
+   endif
+ 
+   if not have_vala
+-    if vala_options == 'yes' or introspection_option == 'yes'
++    if vala_option == 'yes' or introspection_option == 'yes'
+       error(str)
+     endif
+     message(str)
+-- 
+2.17.0
+
