@@ -1,13 +1,13 @@
-From e2dd2508e0b356159e00ba90afdfef0b6b623b27 Mon Sep 17 00:00:00 2001
-From: Gilles Dartiguelongue <eva@gentoo.org>
-Date: Thu, 7 Jun 2018 22:52:21 +0200
-Subject: [PATCH 2/5] Allow full control over which plugins are built
+From 5bdfac8a4a34e3edec05439fa3cd5544e0515e24 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?R=C3=A9mi=20Cardona?= <remi@gentoo.org>
+Date: Sun, 10 Jun 2018 10:09:16 +0200
+Subject: [PATCH] Allow full control over which plugins are built
 
 ---
  meson.build             |  2 +-
- meson_options.txt       | 28 +++++++++++++++++-
- src/plugins/meson.build | 65 ++++++++++++++++++++++++++++++-----------
- 3 files changed, 76 insertions(+), 19 deletions(-)
+ meson_options.txt       | 28 ++++++++++++++++++++-
+ src/plugins/meson.build | 56 ++++++++++++++++++++++++++++++-----------
+ 3 files changed, 69 insertions(+), 17 deletions(-)
 
 diff --git a/meson.build b/meson.build
 index 9c4797dd..aa91ae10 100644
@@ -62,7 +62,7 @@ index 3b6ff67b..6e056952 100644
  option('with-nautilusdir', type: 'string', value: '', description: 'Installation path for Nautilus extension')
  option('enable-gtk-doc', type: 'boolean', value: false, description: 'use gtk-doc to build documentation')
 diff --git a/src/plugins/meson.build b/src/plugins/meson.build
-index 95af6485..20134952 100644
+index 95af6485..289ba811 100644
 --- a/src/plugins/meson.build
 +++ b/src/plugins/meson.build
 @@ -41,8 +41,8 @@ allowed_plugins = [
@@ -76,7 +76,7 @@ index 95af6485..20134952 100644
      'apple-trailers',
      'autoload-subtitles',
      'im-status',
-@@ -56,61 +56,83 @@ if plugins_option != 'none'
+@@ -56,26 +56,38 @@ if plugins_option != 'none'
      'variable-rate',
      'vimeo'
    ]
@@ -120,21 +120,13 @@ index 95af6485..20134952 100644
        error(str)
      endif
      message(str)
-   endif
- 
--  libxml_req_version = '>= 2.6.0'
--  libxml_dep = dependency('libxml-2.0', version: libxml_req_version, required: false)
--  gtk_x11_dep = dependency('gtk+-x11-3.0', version: gtk_req_version, required: false)
-+  if plugins_option.contains('all') or plugins_option.contains('auto') or plugins_option.contains('brasero-disc-recorder')
-+    libxml_req_version = '>= 2.6.0'
-+    libxml_dep = dependency('libxml-2.0', version: libxml_req_version, required: false)
-+    gtk_x11_dep = dependency('gtk+-x11-3.0', version: gtk_req_version, required: false)
-+  else
-+    libxml_dep = disabler()
-+    gtk_x11_dep = disabler()
-+  endif
+@@ -84,33 +96,38 @@ if plugins_option != 'none'
+   libxml_req_version = '>= 2.6.0'
+   libxml_dep = dependency('libxml-2.0', version: libxml_req_version, required: false)
+   gtk_x11_dep = dependency('gtk+-x11-3.0', version: gtk_req_version, required: false)
+-  if libxml_dep.found() and gtk_x11_dep.found()
 +
-   if libxml_dep.found() and gtk_x11_dep.found()
++  if libxml_dep.found() and gtk_x11_dep.found() and (plugins_option.contains('all') or plugins_option.contains('auto') or plugins_option.contains('brasero-disc-recorder'))
      plugins += 'brasero-disc-recorder'
    else
      str = 'you need libxml-2.0 ' + libxml_req_version + ' and gtk+-x11-3.0 to use the brasero-disc-recorder plugin'
@@ -172,7 +164,7 @@ index 95af6485..20134952 100644
    endif
  
    if have_vala
-@@ -129,17 +151,26 @@ if plugins_option != 'none'
+@@ -129,17 +146,26 @@ if plugins_option != 'none'
        '--pkg=@0@-@1@'.format(totem_gir_ns, totem_api_version)
      ]
  
@@ -203,5 +195,5 @@ index 95af6485..20134952 100644
        endif
        message(str)
 -- 
-2.17.0
+2.17.1
 
