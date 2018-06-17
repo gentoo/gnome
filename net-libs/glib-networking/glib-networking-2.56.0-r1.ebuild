@@ -51,6 +51,10 @@ multilib_src_configure() {
 		# TODO gnutls is mandatory with meson
 }
 
+multilib_src_compile() {
+	gnome-meson_src_compile
+}
+
 multilib_src_test() {
 	# XXX: non-native tests fail if glib-networking is already installed.
 	# have no idea what's wrong. would appreciate some help.
