@@ -31,11 +31,15 @@ RDEPEND="${COMMON_DEPEND}
 	fat? ( sys-fs/dosfstools )
 	gnome? ( >=gnome-base/gnome-settings-daemon-3.8 )
 "
+# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${COMMON_DEPEND}
 	dev-libs/appstream-glib
 	dev-libs/libxslt
+	dev-libs/libxml2:2
+	>=dev-util/meson-0.41.0
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
+	x11-libs/gdk-pixbuf:2
 "
 
 src_configure() {
