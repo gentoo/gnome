@@ -21,7 +21,7 @@ COMMON_DEPEND="
 	dev-libs/libpwquality
 	>=media-libs/libcanberra-0.1[gtk3]
 	>=media-libs/libdvdread-4.2.0
-	>=sys-fs/udisks-2.1.1:2
+	>=sys-fs/udisks-2.7.2:2
 	>=x11-libs/gtk+-3.16.0:3
 	>=x11-libs/libnotify-0.7:=
 	systemd? ( >=sys-apps/systemd-209:0= )
