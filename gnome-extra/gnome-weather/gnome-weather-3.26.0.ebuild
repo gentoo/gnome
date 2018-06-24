@@ -16,7 +16,7 @@ IUSE="test"
 
 RDEPEND="
 	>=app-misc/geoclue-2.3.1:2.0
-	>=dev-libs/gjs-1.43.3
+	>=dev-libs/gjs-1.49.4
 	>=dev-libs/glib-2.32:2
 	>=dev-libs/gobject-introspection-1.35.9:=
 	>=dev-libs/libgweather-3.25.91:=
