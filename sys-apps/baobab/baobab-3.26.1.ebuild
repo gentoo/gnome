@@ -13,7 +13,6 @@ IUSE=""
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 
 COMMON_DEPEND="
-	dev-lang/vala:0.38
 	>=dev-libs/glib-2.40:2[dbus]
 	>=x11-libs/gtk+-3.19.1:3
 "
