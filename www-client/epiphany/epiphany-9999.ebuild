@@ -1,99 +1,77 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="yes"
+EAPI=6
 GNOME2_LA_PUNT="yes"
 
-inherit eutils gnome2 pax-utils versionator virtualx
+inherit gnome-meson virtualx
 if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
+	SRC_URI=""
+	EGIT_REPO_URI="https://gitlab.gnome.org/GNOME/epiphany.git"
+	inherit git-r3
 fi
 
 DESCRIPTION="GNOME webbrowser based on Webkit"
 HOMEPAGE="https://wiki.gnome.org/Apps/Web"
 
-# TODO: coverage
-LICENSE="GPL-2"
+LICENSE="GPL-3+"
 SLOT="0"
-IUSE="+jit +nss test"
+IUSE="test"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
+	KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~sparc ~x86"
 fi
 
 COMMON_DEPEND="
-	>=app-crypt/gcr-3.5.5
+	>=dev-libs/glib-2.52.0:2[dbus]
+	>=dev-libs/json-glib-1.2.4
+	>=x11-libs/gtk+-3.22.13:3
+	>=net-libs/webkit-gtk-2.17.4:4=
+	>=x11-libs/cairo-1.2
+	>=app-crypt/gcr-3.5.5:=[gtk]
+	>=x11-libs/gdk-pixbuf-2.36.5:2
+	>=gnome-base/gnome-desktop-2.91.2:3=
+	dev-libs/icu:=
+	>=x11-libs/libnotify-0.5.1:=
 	>=app-crypt/libsecret-0.14
-	>=app-text/iso-codes-0.35
-	>=dev-libs/glib-2.38:2
+	>=net-libs/libsoup-2.48:2.4
 	>=dev-libs/libxml2-2.6.12:2
 	>=dev-libs/libxslt-1.1.7
-	>=gnome-base/gsettings-desktop-schemas-0.0.1
-	>=net-dns/avahi-0.6.22[dbus]
-	>=net-libs/webkit-gtk-2.7.4:4[jit?]
-	>=net-libs/libsoup-2.48:2.4
-	>=x11-libs/gtk+-3.13:3
-	>=x11-libs/libnotify-0.5.1:=
-	gnome-base/gnome-desktop:3=
-
+	>=dev-libs/nettle-3.2
 	dev-db/sqlite:3
-	x11-libs/libwnck:3
-	x11-libs/libX11
-
-	x11-themes/gnome-icon-theme
-	x11-themes/gnome-icon-theme-symbolic
-
-	nss? ( dev-libs/nss )
+	dev-libs/gmp:0
+	>=app-text/iso-codes-0.35
+	>=gnome-base/gsettings-desktop-schemas-0.0.1
 "
 # epiphany-extensions support was removed in 3.7; let's not pretend it still works
 RDEPEND="${COMMON_DEPEND}
+	x11-themes/adwaita-icon-theme
 	!www-client/epiphany-extensions
 "
 # paxctl needed for bug #407085
-# eautoreconf requires gnome-common-3.5.5
 DEPEND="${COMMON_DEPEND}
-	>=dev-util/intltool-0.50
+	app-text/yelp-tools
+	dev-libs/appstream-glib
 	sys-apps/paxctl
-	sys-devel/gettext
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 "
-if [[ ${PV} == 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools
-		>=gnome-base/gnome-common-3.6"
-fi
 
+PATCHES=(
+	# https://bugzilla.gnome.org/show_bug.cgi?id=751593
+	"${FILESDIR}"/${PN}-3.14.0-unittest-2.patch
+)
+
+# FIXME: it seems it can't use newer libhttpseverywhere
 src_configure() {
-	local myconf=""
-	[[ ${PV} != 9999 ]] && myconf="ITSTOOL=$(type -P true)"
-	gnome2_src_configure \
-		--enable-shared \
-		--disable-static \
-		--with-distributor-name=Gentoo \
-		$(use_enable nss) \
-		$(use_enable test tests) \
-		${myconf}
-}
-
-src_compile() {
-	# needed to avoid "Command line `dbus-launch ...' exited with non-zero exit status 1"
-	unset DISPLAY
-	gnome2_src_compile
+	gnome-meson_src_configure \
+		-Ddistributor_name=Gentoo \
+		-Dhttps_everywhere=false \
+		$(meson_use test unit_tests)
 }
 
 src_test() {
-	# FIXME: this should be handled at eclass level
 	"${EROOT}${GLIB_COMPILE_SCHEMAS}" --allow-any-name "${S}/data" || die
-
-	unset DISPLAY
-	GSETTINGS_SCHEMA_DIR="${S}/data" Xemake check
-}
-
-src_install() {
-	DOCS="AUTHORS ChangeLog* HACKING MAINTAINERS NEWS README TODO"
-	gnome2_src_install
-	use jit && pax-mark m "${ED}usr/bin/epiphany"
+	GSETTINGS_SCHEMA_DIR="${S}/data" virtx meson_src_test
 }

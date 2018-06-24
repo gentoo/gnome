@@ -53,7 +53,8 @@ PATCHES=(
 	# https://bugzilla.gnome.org/show_bug.cgi?id=751593
 	"${FILESDIR}"/${PN}-3.14.0-unittest-2.patch
 )
-#FIXME: it seems it can't use newer libhttpseverywhere
+
+# FIXME: it seems it can't use newer libhttpseverywhere
 src_configure() {
 	gnome-meson_src_configure \
 		-Ddistributor_name=Gentoo \
