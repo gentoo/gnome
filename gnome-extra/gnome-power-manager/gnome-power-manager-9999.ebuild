@@ -1,13 +1,14 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
+EAPI=6
+inherit gnome-meson virtualx
 
-inherit eutils gnome2 virtualx
+inherit gnome-meson virtualx
 if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
+	SRC_URI=""
+	EGIT_REPO_URI="https://gitlab.gnome.org/GNOME/gnome-power-manager.git"
+	inherit git-r3
 fi
 
 DESCRIPTION="GNOME power management service"
@@ -19,7 +20,7 @@ IUSE="test"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS=" ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86 ~x86-fbsd"
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 fi
 
 COMMON_DEPEND="
@@ -29,14 +30,15 @@ COMMON_DEPEND="
 	>=sys-power/upower-0.99:=
 "
 RDEPEND="${COMMON_DEPEND}
-	x11-themes/gnome-icon-theme-symbolic
+	x11-themes/adwaita-icon-theme
 "
+# libxml2 required for glib-compile-resources
 DEPEND="${COMMON_DEPEND}
 	app-text/docbook-sgml-dtd:4.1
 	app-text/docbook-sgml-utils
 	dev-libs/appstream-glib
-	>=dev-util/intltool-0.50
-	sys-devel/gettext
+	dev-libs/libxml2:2
+	>=sys-devel/gettext-0.19.7
 	x11-base/xorg-proto
 	virtual/pkgconfig
 	test? ( sys-apps/dbus )
@@ -56,11 +58,10 @@ src_prepare() {
 }
 
 src_configure() {
-	gnome2_src_configure \
-		$(use_enable test tests)
+	gnome-meson_src_configure \
+		$(meson_use test enable-tests)
 }
 
 src_test() {
-	unset DBUS_SESSION_BUS_ADDRESS
-	Xemake check
+	virtx meson_src_test
 }
