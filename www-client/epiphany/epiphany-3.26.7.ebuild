@@ -31,6 +31,7 @@ COMMON_DEPEND="
 	>=dev-libs/libxslt-1.1.7
 	>=dev-libs/nettle-3.2
 	dev-db/sqlite:3
+	dev-libs/gmp:0
 	>=app-text/iso-codes-0.35
 	>=gnome-base/gsettings-desktop-schemas-0.0.1
 "
