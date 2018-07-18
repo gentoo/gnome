@@ -15,11 +15,9 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Attic/GnomeUtils"
 LICENSE="GPL-2+"
 SLOT="0"
 IUSE=""
-#if [[ ${PV} = 9999 ]]; then
-#	KEYWORDS=""
-#else
+if [[ ${PV} != 9999 ]]; then
 	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
-#fi
+fi
 
 # libcanberra 0.26-r2 is needed for gtk+:3 fixes
 COMMON_DEPEND="
