@@ -63,7 +63,6 @@ DEPEND="${COMMON_DEPEND}
 	dev-util/itstool
 	virtual/pkgconfig
 	x11-base/xorg-proto
-	test? ( dev-libs/glib:2[utils] )
 "
 
 if [[ ${PV} = 9999 ]]; then
@@ -79,11 +78,13 @@ src_prepare() {
 src_configure() {
 	gnome2_src_configure \
 		GST_INSPECT=$(type -P true) \
+		GTESTER_REPORT=$(type -P true) \
 		$(use_enable introspection) \
 		--disable-lcov \
 		--disable-static
 }
 
 src_test() {
-	virtx emake check
+	"${EROOT}${GLIB_COMPILE_SCHEMAS}" --allow-any-name "${S}/data" || die
+	GSETTINGS_SCHEMA_DIR="${S}/data" virtx emake check
 }
