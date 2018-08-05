@@ -36,7 +36,7 @@ COMMON_DEPEND="
 	gnome-base/gsettings-desktop-schemas
 	>=x11-libs/cairo-1.10:=
 	>=app-text/poppler-0.33[cairo]
-	>=app-arch/libarchive-3.1.2
+	>=app-arch/libarchive-3.2.0
 	djvu? ( >=app-text/djvu-3.5.22:= )
 	dvi? (
 		virtual/tex-base
