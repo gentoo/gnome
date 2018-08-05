@@ -1,9 +1,9 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="6"
 GNOME2_LA_PUNT="yes" # plugins are dlopened
-PYTHON_COMPAT=( python3_{4,5} )
+PYTHON_COMPAT=( python3_{4,5,6} )
 VALA_MIN_API_VERSION="0.26"
 VALA_USE_DEPEND="vapigen"
 
@@ -32,8 +32,8 @@ fi
 COMMON_DEPEND="
 	>=dev-libs/libxml2-2.5.0:2
 	>=dev-libs/glib-2.44:2[dbus]
-	>=x11-libs/gtk+-3.21.3:3[introspection?]
-	>=x11-libs/gtksourceview-3.21.2:3.0[introspection?]
+	>=x11-libs/gtk+-3.22.0:3[introspection?]
+	>=x11-libs/gtksourceview-3.22.0:3.0[introspection?]
 	>=dev-libs/libpeas-1.14.1[gtk]
 
 	gnome-base/gsettings-desktop-schemas
