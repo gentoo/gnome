@@ -16,7 +16,7 @@ IUSE="+crypt debug glade +introspection vala vanilla"
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~x64-solaris ~x86-solaris"
 REQUIRED_USE="vala? ( introspection )"
 
-SRC_URI="${SRC_URI} !vanilla? ( https://dev.gentoo.org/~tranquility/distfiles/${PN}/${P}-command-notify-scroll-speed.patch.xz )"
+SRC_URI="${SRC_URI} !vanilla? ( https://dev.gentoo.org/~tranquility/distfiles/${PN}/${PN}-0.50.2-command-notify-scroll-speed.patch.xz )"
 
 RDEPEND="
 	>=dev-libs/glib-2.40:2
@@ -49,7 +49,7 @@ src_prepare() {
 	if ! use vanilla; then
 		# First half of http://pkgs.fedoraproject.org/cgit/rpms/vte291.git/tree/vte291-command-notify-scroll-speed.patch
 		# Adds OSC 777 support for desktop notifications in gnome-terminal or elsewhere
-		eapply "${WORKDIR}"/${P}-command-notify-scroll-speed.patch
+		eapply "${WORKDIR}"/${PN}-0.50.2-command-notify-scroll-speed.patch
 	fi
 
 	use vala && vala_src_prepare
