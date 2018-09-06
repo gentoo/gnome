@@ -17,7 +17,6 @@ SRC_URI="${SRC_URI} !vanilla? ( https://dev.gentoo.org/~tranquility/distfiles/${
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 
 # FIXME: automagic dependency on gtk+[X], just transitive but needs proper control, bug 624960
-# Needed vte in 3.24.2 is 0.48.2, but we add desktop notification patches in 0.48.3 that non-vanilla needs
 RDEPEND="
 	>=dev-libs/glib-2.42:2
 	>=x11-libs/gtk+-3.20:3
