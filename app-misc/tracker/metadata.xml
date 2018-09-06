@@ -7,7 +7,6 @@
   </maintainer>
   <use>
     <flag name="stemmer">Add word stemming via <pkg>dev-libs/snowball-stemmer</pkg>.</flag>
-    <flag name="journal">enable database journal backup mechanism.</flag>
     <flag name="upower">Add word stemming via <pkg>dev-libs/snowball-stemmer</pkg>.</flag>
     <flag name="unistring">Use <pkg>dev-libs/libunistring</pkg> as unicode
     support library instead of <pkg>dev-libs/icu</pkg>.</flag>

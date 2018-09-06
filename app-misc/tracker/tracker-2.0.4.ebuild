@@ -5,20 +5,18 @@ EAPI=6
 GNOME2_LA_PUNT="yes"
 PYTHON_COMPAT=( python{3_4,3_5,3_6} )
 
-inherit bash-completion-r1 eutils gnome2 linux-info multilib python-any-r1 vala versionator virtualx
+inherit bash-completion-r1 gnome2 linux-info python-any-r1 virtualx
 
 DESCRIPTION="A tagging metadata database, search tool and indexer"
 HOMEPAGE="https://wiki.gnome.org/Projects/Tracker"
 
 LICENSE="GPL-2+ LGPL-2.1+"
 SLOT="0/2.0"
-IUSE="doc elibc_glibc journal networkmanager stemmer upower unistring test"
+IUSE="elibc_glibc networkmanager stemmer upower unistring test"
 
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 # glibc-2.12 needed for SCHED_IDLE (see bug #385003)
-# seccomp is automagic, though we want to use it whenever possible (linux)
-# FIXME libsoup automagic
 RDEPEND="
 	>=dev-db/sqlite-3.20:=
 	>=dev-libs/glib-2.44:2
@@ -28,20 +26,23 @@ RDEPEND="
 	>=net-libs/libsoup-2.40:2.4
 	>=sys-apps/dbus-1.3.1
 	sys-apps/util-linux
-	>=app-text/libgepub-0.5.2
 	elibc_glibc? ( >=sys-libs/glibc-2.12 )
 	networkmanager? ( >=net-misc/networkmanager-0.8 )
 	stemmer? ( dev-libs/snowball-stemmer )
 	unistring? ( dev-libs/libunistring )
 	!unistring? ( >=dev-libs/icu-4.8.1.1:= )
+	upower? ( >=sys-power/upower-0.9 )
 "
 DEPEND="${RDEPEND}
-	$(vala_depend)
 	dev-util/gdbus-codegen
+	>=dev-util/gtk-doc-am-1.8
+	>=dev-util/intltool-0.40
 	>=sys-devel/gettext-0.17
 	virtual/pkgconfig
-	doc? ( dev-util/gtk-doc-am )
 	test? ( ${PYTHON_DEPS} )
+"
+RDEPEND="${RDEPEND}
+	!!gnome-extra/nautilus-tracker-tags
 "
 
 function inotify_enabled() {
@@ -64,26 +65,20 @@ pkg_setup() {
 	python-any-r1_pkg_setup
 }
 
-src_prepare() {
-	gnome2_src_prepare
-	vala_src_prepare
-}
-#FIXME what to do with systemd user services
-#FIXME fts5 disabling is broken for meson_use
-#FIXME gcov useflag
 src_configure() {
 	gnome2_src_configure \
+		--disable-static \
 		--enable-introspection \
-	  	--enable-tracker-fts \
-	  	--with-bash-completion-dir="$(get_bashcompdir)" \
-	  	$(use_enable journal) \
-	  	$(use_enable networkmanager network-manager) \
-	  	$(use_enable stemmer libstemmer) \
-	  	$(use_enable test functional-tests) \
-	  	$(use_enable test unit-tests) \
-	  	$(use_enable upower upower) \
-	  	$(use_with !unistring icu) \
-	  	$(use_with unistring unistring)
+		--enable-journal \
+		--enable-tracker-fts \
+		--with-bash-completion-dir="$(get_bashcompdir)" \
+		$(use_enable networkmanager network-manager) \
+		$(use_enable stemmer libstemmer) \
+		$(use_enable test functional-tests) \
+		$(use_enable test unit-tests) \
+		$(use_enable upower upower) \
+		--with-unicode-support=$(usex unistring libunistring libicu) \
+		VALAC="$(type -P false)"
 }
 
 src_test() {
