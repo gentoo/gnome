@@ -1,14 +1,12 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
+EAPI=6
 GNOME2_LA_PUNT="yes"
-PYTHON_COMPAT=( python2_7 python3_{4,5} pypy )
+PYTHON_COMPAT=( python2_7 python3_{4,5,6} pypy )
 VALA_USE_DEPEND="vapigen"
 
-inherit db-use flag-o-matic gnome2 python-any-r1 vala virtualx
+inherit cmake-utils db-use flag-o-matic gnome2 python-any-r1 systemd vala virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -18,9 +16,9 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Evolution"
 
 # Note: explicitly "|| ( LGPL-2 LGPL-3 )", not "LGPL-2+".
 LICENSE="|| ( LGPL-2 LGPL-3 ) BSD Sleepycat"
-SLOT="0/57" # subslot = libcamel-1.2 soname + optional revision if needed
+SLOT="0/60" # subslot = libcamel-1.2 soname version
 
-IUSE="api-doc-extras +berkdb +gnome-online-accounts +gtk +google +introspection ipv6 ldap kerberos vala +weather"
+IUSE="api-doc-extras berkdb +gnome-online-accounts +gtk google +introspection ipv6 ldap kerberos vala +weather"
 REQUIRED_USE="vala? ( introspection )"
 
 if [[ ${PV} = 9999 ]]; then
@@ -28,19 +26,19 @@ if [[ ${PV} = 9999 ]]; then
 	REQUIRED_USE="${REQUIRED_USE} api-doc-extras? ( doc )"
 	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~ia64-linux ~x86-linux ~x86-solaris"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux ~x86-solaris"
 fi
 
 # sys-libs/db is only required for migrating from <3.13 versions
-# gdata-0.15.1 is required for google tasks
+# gdata-0.17.7 soft required for new gdata_feed_get_next_page_token API to handle more than 100 google tasks
 # berkdb needed only for migrating old calendar data, bug #519512
+gdata_depend=">=dev-libs/libgdata-0.17.7:="
 RDEPEND="
 	>=app-crypt/gcr-3.4
 	>=app-crypt/libsecret-0.5[crypt]
 	>=dev-db/sqlite-3.7.17:=
-	>=dev-libs/glib-2.40:2
-	>=dev-libs/libgdata-0.10:=
-	>=dev-libs/libical-0.43:=
+	>=dev-libs/glib-2.46:2
+	>=dev-libs/libical-2:=
 	>=dev-libs/libxml2-2
 	>=dev-libs/nspr-4.4:=
 	>=dev-libs/nss-3.9:=
@@ -57,10 +55,12 @@ RDEPEND="
 	)
 	google? (
 		>=dev-libs/json-glib-1.0.4
-		>=dev-libs/libgdata-0.15.1:=
-		>=net-libs/webkit-gtk-2.4.9:3
+		>=net-libs/webkit-gtk-2.11.91:4
+		${gdata_depend}
 	)
-	gnome-online-accounts? ( >=net-libs/gnome-online-accounts-3.8 )
+	gnome-online-accounts? (
+		>=net-libs/gnome-online-accounts-3.8:=
+		${gdata_depend} )
 	introspection? ( >=dev-libs/gobject-introspection-0.9.12:= )
 	kerberos? ( virtual/krb5:= )
 	ldap? ( >=net-nds/openldap-2:= )
@@ -72,7 +72,7 @@ DEPEND="${RDEPEND}
 	dev-util/gperf
 	>=dev-util/gtk-doc-am-1.14
 	>=dev-util/intltool-0.35.5
-	>=sys-devel/gettext-0.17
+	>=sys-devel/gettext-0.18.3
 	virtual/pkgconfig
 	vala? ( $(vala_depend) )
 "
@@ -92,15 +92,12 @@ pkg_setup() {
 
 src_prepare() {
 	use vala && vala_src_prepare
-
-	# Fix relink issues in src_install
-	ELTCONF="--reverse-deps"
-
 	gnome2_src_prepare
 
-	# Fix compilation flags crazyness, upstream bug #653157
-	sed 's/^\(AM_CFLAGS="\)$WARNING_FLAGS/\1/' \
-		-i configure || die "sed failed"
+	# Make CMakeLists versioned vala enabled
+	sed -e "s;\(find_program(VALAC\) valac);\1 ${VALAC});" \
+	    -e "s;\(find_program(VAPIGEN\) vapigen);\1 ${VAPIGEN});" \
+		-i "${S}"/CMakeLists.txt || die
 }
 
 src_configure() {
@@ -108,50 +105,56 @@ src_configure() {
 	# so include the right dir in CPPFLAGS
 	use berkdb && append-cppflags "-I$(db_includedir)"
 
+	local google_auth_enable
+	if use google || use gnome-online-accounts; then
+		google_auth_enable="ON"
+	else
+		google_auth_enable="OFF"
+	fi
+
 	# phonenumber does not exist in tree
-	gnome2_src_configure \
-		$(use_enable api-doc-extras gtk-doc) \
-		$(use_with api-doc-extras private-docs) \
-		$(usex berkdb --with-libdb="${EPREFIX}"/usr --with-libdb=no) \
-		$(use_enable gnome-online-accounts goa) \
-		$(use_enable gtk) \
-		$(use_enable google google-auth) \
-		$(use_enable google) \
-		$(use_enable introspection) \
-		$(use_enable ipv6) \
-		$(use_with kerberos krb5 "${EPREFIX}"/usr) \
-		$(use_with kerberos krb5-libs "${EPREFIX}"/usr/$(get_libdir)) \
-		$(use_with ldap openldap) \
-		$(use_enable vala vala-bindings) \
-		$(use_enable weather) \
-		--enable-largefile \
-		--enable-smime \
-		--without-phonenumber \
-		--disable-examples \
-		--disable-uoa
+	local mycmakeargs=(
+		-DENABLE_GTK_DOC=$(usex api-doc-extras)
+		-DWITH_PRIVATE_DOCS=$(usex api-doc-extras)
+		-DENABLE_SCHEMAS_COMPILE=OFF
+		-DENABLE_INTROSPECTION=$(usex introspection)
+		-DWITH_KRB5=$(usex kerberos)
+		-DWITH_KRB5_INCLUDES=$(usex kerberos "${EPREFIX}"/usr "")
+		-DWITH_KRB5_LIBS=$(usex kerberos "${EPREFIX}"/usr/$(get_libdir) "")
+		-DWITH_OPENLDAP=$(usex ldap)
+		-DWITH_PHONENUMBER=OFF
+		-DENABLE_SMIME=ON
+		-DENABLE_GTK=$(usex gtk)
+		-DENABLE_GOOGLE_AUTH=${google_auth_enable}
+		-DENABLE_EXAMPLES=OFF
+		-DENABLE_GOA=$(usex gnome-online-accounts)
+		-DENABLE_UOA=OFF
+		-DWITH_LIBDB=$(usex berkdb "${EPREFIX}"/usr OFF)
+		# ENABLE_BACKTRACES requires libdwarf ?
+		-DENABLE_IPV6=$(usex ipv6)
+		-DENABLE_WEATHER=$(usex weather)
+		-DENABLE_GOOGLE=$(usex google)
+		-DENABLE_LARGEFILE=ON
+		-DENABLE_VALA_BINDINGS=$(usex vala)
+	)
+
+	cmake-utils_src_configure
+}
+
+src_compile() {
+	cmake-utils_src_compile
 }
 
 src_test() {
-	unset ORBIT_SOCKETDIR
-	unset SESSION_MANAGER
-	unset DISPLAY
-	Xemake check
+	virtx cmake-utils_src_test
 }
 
 src_install() {
-	gnome2_src_install
+	cmake-utils_src_install
 
 	if use ldap; then
 		insinto /etc/openldap/schema
 		doins "${FILESDIR}"/calentry.schema
-		dosym /usr/share/${PN}/evolutionperson.schema /etc/openldap/schema/evolutionperson.schema
-	fi
-}
-
-pkg_postinst() {
-	gnome2_pkg_postinst
-	if ! use berkdb; then
-		ewarn "You will need to enable berkdb USE for migrating old"
-		ewarn "(pre-3.12 evolution versions) addressbook data"
+		dosym ../../../usr/share/${PN}/evolutionperson.schema /etc/openldap/schema/evolutionperson.schema
 	fi
 }
