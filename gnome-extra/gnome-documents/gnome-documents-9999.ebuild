@@ -21,7 +21,6 @@ fi
 
 # cairo-1.14 for cairo_surface_set_device_scale check and usage
 COMMON_DEPEND="
-	>=app-misc/tracker-1:=
 	>=app-text/evince-3.13.3[introspection]
 	>=net-libs/webkit-gtk-2.6:4[introspection]
 	>=dev-libs/gjs-1.48
@@ -40,7 +39,7 @@ COMMON_DEPEND="
 	>=app-text/libgepub-0.5[introspection]
 "
 RDEPEND="${COMMON_DEPEND}
-	media-libs/clutter[introspection]
+	>=app-misc/tracker-miners-2[miner-fs]
 	net-misc/gnome-online-miners
 	sys-apps/dbus
 	x11-themes/adwaita-icon-theme

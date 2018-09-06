@@ -32,6 +32,7 @@ COMMON_DEPEND="
 	>=app-text/libgepub-0.5[introspection]
 "
 RDEPEND="${COMMON_DEPEND}
+	>=app-misc/tracker-miners-2[miner-fs]
 	net-misc/gnome-online-miners
 	sys-apps/dbus
 	x11-themes/adwaita-icon-theme
