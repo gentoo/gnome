@@ -41,7 +41,7 @@ RDEPEND="
 	>=net-misc/spice-gtk-0.32[gtk3(+),smartcard,usbredir]
 	virtual/libusb:1
 
-	>=app-misc/tracker-0.16:0=[iso]
+	>=app-misc/tracker-2:0=
 
 	>=net-libs/libsoup-2.44:2.4
 
@@ -56,6 +56,9 @@ DEPEND="${RDEPEND}
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 	x11-libs/gdk-pixbuf:2
+"
+RDEPEND="${RDEPEND}
+	>=app-misc/tracker-miners-2[iso]
 "
 
 DISABLE_AUTOFORMATTING="yes"
