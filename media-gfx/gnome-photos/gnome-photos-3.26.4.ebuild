@@ -35,6 +35,7 @@ COMMON_DEPEND="
 # but out of all the grilo-plugins, only upnp-av and flickr get used, which have USE flags here,
 # so don't pull it always, but only if either USE flag is enabled
 RDEPEND="${COMMON_DEPEND}
+	>=app-misc/tracker-miners-2[miner-fs]
 	net-misc/gnome-online-miners[flickr?]
 	upnp-av? ( media-plugins/grilo-plugins:0.3[upnp-av] )
 	flickr? ( media-plugins/grilo-plugins:0.3[flickr] )
@@ -42,7 +43,7 @@ RDEPEND="${COMMON_DEPEND}
 DEPEND="${COMMON_DEPEND}
 	app-text/yelp-tools
 	dev-util/desktop-file-utils
-    >=sys-devel/gettext-0.19.8
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 	test? ( $(python_gen_any_dep 'dev-util/dogtail[${PYTHON_USEDEP}]') )
 "
