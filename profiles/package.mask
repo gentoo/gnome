@@ -7,6 +7,10 @@
 # breakage, especially if it ends up in the daily snapshot.
 #
 
+# Gilles Dartiguelongue <eva@gentoo.org> (07 Sep 2018)
+# No upstream activity for 3 years, not compatible with tracker-2
+app-misc/tracker-miner-media
+
 # Sobhan Mohammadpour <sobhan@gentoo.org> (21 Dec 2017)
 # Depends on masked dev-lang/spidermonkey:52
 =dev-libs/gjs-1.50.2
