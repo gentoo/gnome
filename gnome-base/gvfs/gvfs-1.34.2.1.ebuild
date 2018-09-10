@@ -13,7 +13,7 @@ HOMEPAGE="https://wiki.gnome.org/Projects/gvfs"
 LICENSE="LGPL-2+"
 SLOT="0"
 
-IUSE="afp archive bluray cdda elogind fuse google gnome-keyring gnome-online-accounts gphoto2 gtk +http ios mtp nfs policykit samba systemd test +udev udisks zeroconf"
+IUSE="afp archive bluray cdda elogind fuse google gnome-keyring gnome-online-accounts gphoto2 +http ios mtp nfs policykit samba systemd test +udev udisks zeroconf"
 REQUIRED_USE="
 	cdda? ( udev )
 	elogind? ( !systemd udisks )
@@ -22,7 +22,7 @@ REQUIRED_USE="
 	udisks? ( udev )
 	systemd? ( !elogind udisks )
 "
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~sparc-solaris ~x86-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~sparc-solaris ~x86-solaris"
 
 RDEPEND="
 	app-crypt/gcr:=
@@ -40,7 +40,6 @@ RDEPEND="
 		>=dev-libs/libgdata-0.17.9:=[crypt,gnome-online-accounts]
 		>=net-libs/gnome-online-accounts-3.17.1:= )
 	gphoto2? ( >=media-libs/libgphoto2-2.5.0:= )
-	gtk? ( >=x11-libs/gtk+-3.0:3 )
 	http? ( >=net-libs/libsoup-2.42:2.4 )
 	ios? (
 		>=app-pda/libimobiledevice-1.2:=
@@ -69,7 +68,7 @@ DEPEND="${RDEPEND}
 	dev-util/gdbus-codegen
 	dev-util/gtk-doc-am
 	test? (
-		>=dev-python/twisted-core-12.3.0
+		>=dev-python/twisted-16
 		|| (
 			net-analyzer/netcat
 			net-analyzer/netcat6 ) )
@@ -113,7 +112,6 @@ src_configure() {
 		$(use_enable gnome-online-accounts goa) \
 		$(use_enable google) \
 		$(use_enable gphoto2) \
-		$(use_enable gtk) \
 		$(use_enable http) \
 		$(use_enable ios afc) \
 		$(use_enable mtp libmtp) \
