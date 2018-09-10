@@ -4,7 +4,7 @@
 EAPI=6
 GNOME2_LA_PUNT="yes"
 
-inherit eutils gnome2 pam readme.gentoo-r1 systemd user versionator
+inherit eutils gnome2 pam readme.gentoo-r1 systemd user
 
 DESCRIPTION="GNOME Display Manager for managing graphical display servers and user logins"
 HOMEPAGE="https://wiki.gnome.org/Projects/GDM"
@@ -192,20 +192,7 @@ src_install() {
 }
 
 pkg_postinst() {
-	local d ret
-
 	gnome2_pkg_postinst
-
-	# bug #436456; gdm crashes if /var/lib/gdm subdirs are not owned by gdm:gdm
-	ret=0
-	ebegin "Fixing "${EROOT}"var/lib/gdm ownership"
-	chown gdm:gdm "${EROOT}var/lib/gdm" || ret=1
-	for d in "${EROOT}var/lib/gdm/"{.cache,.config,.local}; do
-		[[ ! -e "${d}" ]] || chown -R gdm:gdm "${d}" || ret=1
-	done
-	eend ${ret}
-
 	systemd_reenable gdm.service
-
 	readme.gentoo_print_elog
 }
