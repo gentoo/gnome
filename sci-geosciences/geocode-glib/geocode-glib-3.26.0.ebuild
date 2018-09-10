@@ -25,8 +25,6 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	test? ( sys-apps/dbus )
 "
-# eautoreconf requires:
-#	dev-libs/gobject-introspection-common
 
 # FIXME: need network #424719, recheck
 # need various locales to be present
@@ -36,7 +34,7 @@ src_configure() {
 	gnome-meson_src_configure \
 		$(meson_use test enable-installed-tests) \
 		$(meson_use introspection enable-introspection) \
-		-Denable-gtk-doc=true
+		-Denable-gtk-doc=false
 }
 
 src_test() {
