@@ -6,7 +6,7 @@ GNOME2_LA_PUNT="yes"
 GNOME2_EAUTORECONF="yes"
 PYTHON_COMPAT=( python3_{4,5,6} )
 
-inherit gnome-meson multilib pax-utils python-r1 systemd
+inherit gnome-meson multilib pax-utils python-r1 systemd virtualx
 
 DESCRIPTION="Provides core UI functions for the GNOME 3 desktop"
 HOMEPAGE="https://wiki.gnome.org/Projects/GnomeShell"
@@ -21,8 +21,6 @@ KEYWORDS="~amd64 ~ia64 ~ppc ~ppc64 ~x86"
 # libXfixes-5.0 needed for pointer barriers
 # FIXME:
 #  * gstreamer support is currently automagic
-#  * gnome-bluetooth is automagic
-#  * BROWSER_PLUGIN_DIR is not set
 COMMON_DEPEND="
 	>=app-accessibility/at-spi2-atk-2.5.3
 	>=dev-libs/atk-2[introspection]
@@ -121,6 +119,7 @@ PATCHES=(
 	# Change favorites defaults, bug #479918
 	"${FILESDIR}"/${PN}-3.22.0-defaults.patch
 	# Fix automagic gnome-bluetooth dep, bug #398145
+	"${FILESDIR}"/3.26-bluetooth-flag.patch
 )
 
 src_configure() {
@@ -129,7 +128,11 @@ src_configure() {
 		-Denable-documentation=false \
 		-Denable-systemd=$(usex !openrc-force yes no) \
 		-Denable-networkmanager=$(usex networkmanager yes no) \
-		$(meson_use nsplugin enable-browser-plugin) 
+		$(meson_use nsplugin enable-browser-plugin)
+}
+
+src_test() {
+	virtx meson_src_test
 }
 
 src_install() {
