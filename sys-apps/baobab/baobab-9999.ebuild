@@ -37,7 +37,6 @@ DEPEND="${COMMON_DEPEND}
 	dev-libs/libxml2:2
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
-	x11-libs/gdk-pixbuf:2
 "
 
 if [[ ${PV} = 9999 ]]; then

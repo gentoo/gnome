@@ -37,9 +37,9 @@ RDEPEND="
 	nautilus? ( >=gnome-base/nautilus-2.22.2 )
 	packagekit? ( app-admin/packagekit-base )
 "
-# libxml2+gdk-pixbuf required for glib-compile-resources
+# libxml2 required for glib-compile-resources
 DEPEND="${RDEPEND}
-	dev-libs/libxml2
+	dev-libs/libxml2:2
 	>=dev-util/intltool-0.50.1
 	dev-util/itstool
 	sys-devel/gettext
@@ -75,7 +75,7 @@ zoo     - app-arch/zoo"
 
 src_prepare() {
 	# File providing Gentoo package names for various archivers
-	cp -f "${FILESDIR}"/3.22-packages.match data/packages.match || die
+	cp -v "${FILESDIR}"/3.22-packages.match data/packages.match || die
 	gnome2_src_prepare
 }
 
