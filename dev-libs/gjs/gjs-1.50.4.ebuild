@@ -29,11 +29,6 @@ DEPEND="${RDEPEND}
 	test? ( sys-apps/dbus )
 "
 
-#PATCHES=(
-	# Disable unittest failing without pt_BR locale, upstream bug #????
-#	"${FILESDIR}"/1.48.6-disable-unittest.patch
-#)
-
 src_configure() {
 	# FIXME: add systemtap/dtrace support, like in glib:2
 	# FIXME: --enable-systemtap installs files in ${D}/${D} for some reason

@@ -1,10 +1,7 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
-
+EAPI=6
 inherit gnome2 pax-utils virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
@@ -23,23 +20,21 @@ else
 fi
 
 RDEPEND="
-	>=dev-libs/glib-2.36:2
-	>=dev-libs/gobject-introspection-1.41.4
+	>=dev-libs/glib-2.52.1
+	>=dev-libs/gobject-introspection-1.53.4.1:=
 
 	sys-libs/readline:0
-	dev-lang/spidermonkey:24
+	dev-lang/spidermonkey:52
 	virtual/libffi
 	cairo? ( x11-libs/cairo[X] )
-	gtk? ( x11-libs/gtk+:3 )
+	gtk? ( >=x11-libs/gtk+-3.20:3 )
 "
 DEPEND="${RDEPEND}
+	gnome-base/gnome-common
 	sys-devel/gettext
 	virtual/pkgconfig
 	test? ( sys-apps/dbus )
 "
-
-# Large amount of tests are broken even in master.
-#RESTRICT="test"
 
 src_configure() {
 	# FIXME: add systemtap/dtrace support, like in glib:2
@@ -48,17 +43,15 @@ src_configure() {
 	gnome2_src_configure \
 		--disable-systemtap \
 		--disable-dtrace \
-		--disable-coverage \
+		--disable-code-coverage \
 		$(use_with cairo cairo) \
-		$(use_with gtk)
-}
-
-src_test() {
-	Xemake check
+		$(use_with gtk) \
+		$(use_with test dbus-tests) \
+		$(use_with test xvfb-tests)
 }
 
 src_install() {
-	# installation sometimes fails in parallel
+	# installation sometimes fails in parallel, bug #???
 	gnome2_src_install -j1
 
 	if use examples; then
