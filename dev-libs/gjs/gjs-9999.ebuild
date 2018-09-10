@@ -23,7 +23,7 @@ RDEPEND="
 	>=dev-libs/glib-2.52.1
 	>=dev-libs/gobject-introspection-1.53.4.1:=
 
-	sys-libs/readline:0
+	sys-libs/readline:0=
 	dev-lang/spidermonkey:52
 	virtual/libffi
 	cairo? ( x11-libs/cairo[X] )
