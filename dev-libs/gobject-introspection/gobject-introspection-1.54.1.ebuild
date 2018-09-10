@@ -5,7 +5,7 @@ EAPI=6
 PYTHON_COMPAT=( python{2_7,3_4,3_5,3_6,3_7} )
 PYTHON_REQ_USE="xml"
 
-inherit gnome2 python-single-r1 toolchain-funcs versionator
+inherit eapi7-ver gnome2 python-single-r1 toolchain-funcs
 
 DESCRIPTION="Introspection system for GObject-based libraries"
 HOMEPAGE="https://wiki.gnome.org/Projects/GObjectIntrospection"
@@ -23,7 +23,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~spa
 # We force glib and g-i to be in sync by this way as explained in bug #518424
 RDEPEND="
 	>=dev-libs/gobject-introspection-common-${PV}
-	>=dev-libs/glib-2.$(get_version_component_range 2):2
+	>=dev-libs/glib-2.$(ver_cut 2):2
 	doctool? ( dev-python/mako[${PYTHON_USEDEP}] )
 	virtual/libffi:=
 	virtual/pkgconfig
