@@ -100,7 +100,7 @@ PATCHES=(
 	"${FILESDIR}"/3.26.1-optional.patch
 	# Allow specifying udevrulesdir via configure, bug 509484; requires eautoreconf
 	"${FILESDIR}"/3.24.2-udevrulesdir-configure.patch
-	# Fix build issue when gudev is present but not wayland, bug #627966
+	# Fix build system to require gudev with wayland, bug #627966
 	"${FILESDIR}"/3.24.3-fix-wayland-build.patch
 )
 
