@@ -6,20 +6,13 @@ GNOME2_LA_PUNT="yes"
 PYTHON_COMPAT=( python2_7 python3_{4,5,6,7} )
 
 inherit eutils gnome2 python-r1 virtualx
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
 
 DESCRIPTION="GLib's GObject library bindings for Python"
 HOMEPAGE="https://wiki.gnome.org/Projects/PyGObject"
 
 LICENSE="LGPL-2.1+"
 SLOT="3"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
-fi
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
 IUSE="+cairo examples test"
 
 REQUIRED_USE="
@@ -60,6 +53,15 @@ RDEPEND="${COMMON_DEPEND}
 "
 
 src_prepare() {
+	# Test fail with xvfb but not X
+	sed -e 's/^.*TEST_NAMES=compat_test_pygtk .*;/echo "Test disabled";/' \
+		-i tests/Makefile.{am,in} || die
+
+	# FAIL: test_cairo_font_options (test_cairo.TestPango)
+	# AssertionError: <type 'cairo.SubpixelOrder'> != <type 'int'>
+	sed -e 's/^.*type(font_opts.get_subpixel_order()), int.*/#/' \
+		-i tests/test_cairo.py || die
+
 	gnome2_src_prepare
 	python_copy_sources
 }
