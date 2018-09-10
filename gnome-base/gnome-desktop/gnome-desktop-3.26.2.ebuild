@@ -9,10 +9,11 @@ HOMEPAGE="https://git.gnome.org/browse/gnome-desktop"
 
 LICENSE="GPL-2+ FDL-1.1+ LGPL-2+"
 SLOT="3/12" # subslot = libgnome-desktop-3 soname version
-IUSE="debug +introspection udev"
+IUSE="debug +introspection seccomp udev"
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux ~x86-solaris"
 
 # cairo[X] needed for gnome-bg
+# automagic dependency on seccomp
 COMMON_DEPEND="
 	app-text/iso-codes
 	>=dev-libs/glib-2.53.0:2[dbus]
@@ -23,6 +24,7 @@ COMMON_DEPEND="
 	x11-misc/xkeyboard-config
 	>=gnome-base/gsettings-desktop-schemas-3.5.91
 	introspection? ( >=dev-libs/gobject-introspection-0.9.7:= )
+	seccomp? ( sys-libs/libseccomp )
 	udev? (
 		sys-apps/hwids
 		virtual/libudev:= )
