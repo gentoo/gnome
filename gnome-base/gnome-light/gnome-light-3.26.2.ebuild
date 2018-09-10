@@ -3,9 +3,9 @@
 
 EAPI=6
 
-inherit versionator
+inherit eapi7-ver
 
-P_RELEASE="$(get_version_components 2)"
+P_RELEASE="$(ver_cut 1-2)"
 
 DESCRIPTION="Meta package for GNOME-Light, merge this package to install"
 HOMEPAGE="https://www.gnome.org/"
@@ -24,14 +24,14 @@ KEYWORDS="~amd64 ~ia64 ~ppc ~ppc64 ~x86"
 RDEPEND="!gnome-base/gnome
 	>=gnome-base/gnome-core-libs-${PV}[cups?]
 
-	>=gnome-base/gnome-session-${PV}
+	>=gnome-base/gnome-session-3.26.1
 	>=gnome-base/gnome-settings-daemon-${PV}[cups?]
 	>=gnome-base/gnome-control-center-${PV}[cups?]
 
 	>=gnome-base/nautilus-${PV}
 
 	gnome-shell? (
-		>=x11-wm/mutter-${PV}
+		>=x11-wm/mutter-3.26.1
 		>=gnome-base/gnome-shell-${PV} )
 
 	>=x11-themes/adwaita-icon-theme-${P_RELEASE}
@@ -41,7 +41,7 @@ RDEPEND="!gnome-base/gnome
 	>=x11-terms/gnome-terminal-${PV}
 "
 DEPEND=""
-PDEPEND=">=gnome-base/gvfs-1.32.1"
+PDEPEND=">=gnome-base/gvfs-1.34.1"
 S="${WORKDIR}"
 
 pkg_pretend() {
