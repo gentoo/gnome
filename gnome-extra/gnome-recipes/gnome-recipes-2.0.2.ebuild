@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -18,6 +18,9 @@ RDEPEND="
 	media-libs/libcanberra
 	net-libs/libsoup:2.4
 	>=x11-libs/gtk+-3.22:3
+	>=dev-libs/json-glib-1
+	>=net-libs/rest-0.7
+	net-libs/gnome-online-accounts
 	archive? ( app-arch/gnome-autoar )
 	spell? ( >=app-text/gspell-1 )
 "
