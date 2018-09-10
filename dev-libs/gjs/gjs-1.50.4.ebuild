@@ -14,7 +14,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 
 RDEPEND="
 	>=dev-libs/glib-2.52.1
-	>=dev-libs/gobject-introspection-1.52.1:=
+	>=dev-libs/gobject-introspection-1.53.4:=
 
 	sys-libs/readline:0
 	dev-lang/spidermonkey:52
