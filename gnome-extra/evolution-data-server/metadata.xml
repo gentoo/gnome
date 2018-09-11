@@ -6,7 +6,6 @@
 		<name>Gentoo GNOME Desktop</name>
 	</maintainer>
 	<use>
-		<flag name="api-doc-extras">Build documentation for private APIs</flag>
 		<flag name="gnome-online-accounts">Enable using
 			<pkg>net-libs/gnome-online-accounts</pkg> for authorization</flag>
 		<flag name="google">Enable support for google authentication, contacts and tasks</flag>

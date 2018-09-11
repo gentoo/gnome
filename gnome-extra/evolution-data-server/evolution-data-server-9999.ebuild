@@ -18,14 +18,10 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Evolution"
 LICENSE="|| ( LGPL-2 LGPL-3 ) BSD Sleepycat"
 SLOT="0/60" # subslot = libcamel-1.2 soname version
 
-IUSE="api-doc-extras berkdb +gnome-online-accounts +gtk google +introspection ipv6 ldap kerberos vala +weather"
+IUSE="berkdb +gnome-online-accounts +gtk gtk-doc google +introspection ipv6 ldap kerberos vala +weather"
 REQUIRED_USE="vala? ( introspection )"
 
-if [[ ${PV} = 9999 ]]; then
-	IUSE="${IUSE} doc"
-	REQUIRED_USE="${REQUIRED_USE} api-doc-extras? ( doc )"
-	KEYWORDS=""
-else
+if [[ ${PV} != 9999 ]]; then
 	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux ~x86-solaris"
 fi
 
@@ -38,7 +34,7 @@ RDEPEND="
 	>=app-crypt/libsecret-0.5[crypt]
 	>=dev-db/sqlite-3.7.17:=
 	>=dev-libs/glib-2.46:2
-	>=dev-libs/libical-2:=
+	>=dev-libs/libical-2.0:=
 	>=dev-libs/libxml2-2
 	>=dev-libs/nspr-4.4:=
 	>=dev-libs/nss-3.9:=
@@ -69,22 +65,14 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	${PYTHON_DEPS}
 	dev-util/gdbus-codegen
+	dev-util/glib-utils
 	dev-util/gperf
-	>=dev-util/gtk-doc-am-1.14
+	gtk-doc? ( >=dev-util/gtk-doc-1.14 )
 	>=dev-util/intltool-0.35.5
 	>=sys-devel/gettext-0.18.3
 	virtual/pkgconfig
 	vala? ( $(vala_depend) )
 "
-
-# eautoreconf needs:
-#	>=gnome-base/gnome-common-2
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		doc? ( >=dev-util/gtk-doc-1.14 )
-	"
-fi
 
 pkg_setup() {
 	python-any-r1_pkg_setup
@@ -96,7 +84,7 @@ src_prepare() {
 
 	# Make CMakeLists versioned vala enabled
 	sed -e "s;\(find_program(VALAC\) valac);\1 ${VALAC});" \
-	    -e "s;\(find_program(VAPIGEN\) vapigen);\1 ${VAPIGEN});" \
+		-e "s;\(find_program(VAPIGEN\) vapigen);\1 ${VAPIGEN});" \
 		-i "${S}"/CMakeLists.txt || die
 }
 
@@ -114,8 +102,8 @@ src_configure() {
 
 	# phonenumber does not exist in tree
 	local mycmakeargs=(
-		-DENABLE_GTK_DOC=$(usex api-doc-extras)
-		-DWITH_PRIVATE_DOCS=$(usex api-doc-extras)
+		-DENABLE_GTK_DOC=$(usex gtk-doc)
+		-DWITH_PRIVATE_DOCS=$(usex gtk-doc)
 		-DENABLE_SCHEMAS_COMPILE=OFF
 		-DENABLE_INTROSPECTION=$(usex introspection)
 		-DWITH_KRB5=$(usex kerberos)
