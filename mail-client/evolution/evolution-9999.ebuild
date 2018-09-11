@@ -16,7 +16,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Evolution"
 LICENSE="|| ( LGPL-2 LGPL-3 ) CC-BY-SA-3.0 FDL-1.3+ OPENLDAP"
 SLOT="2.0"
 
-IUSE="archive +bogofilter crypt geolocation highlight ldap spamassassin spell ssl +weather ytnef"
+IUSE="archive +bogofilter crypt geolocation gtk-doc highlight ldap spamassassin spell ssl +weather ytnef"
 
 KEYWORDS=""
 
@@ -73,9 +73,9 @@ COMMON_DEPEND="
 "
 DEPEND="${COMMON_DEPEND}
 	app-text/docbook-xml-dtd:4.1.2
-	app-text/yelp-tools
 	dev-util/gdbus-codegen
-	>=dev-util/gtk-doc-am-1.14
+	dev-util/glib-utils
+	gtk-doc? ( dev-util/gtk-doc )
 	>=dev-util/intltool-0.40.0
 	>=sys-devel/gettext-0.18.3
 	virtual/pkgconfig
@@ -100,18 +100,16 @@ x-scheme-handler/https=firefox.desktop
 file from /usr/share/applications if you use a different browser)."
 
 src_prepare() {
-	# Leave post-install actions to eclass
-	sed -e "s;\(find_program(GTK_UPDATE_ICON_CACHE\).*;\1 $(type -P true));" \
-		-i "${S}"/cmake/modules/IconCache.cmake || die
-
+	cmake-utils_src_prepare
 	gnome2_src_prepare
 }
 
 src_configure() {
 	# Use NSS/NSPR only if 'ssl' is enabled.
 	local mycmakeargs=(
+		-DSYSCONF_INSTALL_DIR="${EPREFIX}"/etc
 		-DENABLE_SCHEMAS_COMPILE=OFF
-		-DENABLE_GTK_DOC=OFF
+		-DENABLE_GTK_DOC=$(usex gtk-doc)
 		-DWITH_OPENLDAP=$(usex ldap)
 		-DENABLE_SMIME=$(usex ssl)
 		-DENABLE_GNOME_DESKTOP=ON
