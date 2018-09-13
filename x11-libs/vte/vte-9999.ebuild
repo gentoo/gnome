@@ -38,8 +38,8 @@ RDEPEND="
 	introspection? ( >=dev-libs/gobject-introspection-0.9.0:= )
 "
 DEPEND="${RDEPEND}
-	dev-util/gperf
-	dev-libs/libxml2
+	dev-libs/libxml2:2
+	dev-util/glib-utils
 	>=dev-util/gtk-doc-am-1.13
 	>=dev-util/intltool-0.35
 	sys-devel/gettext
@@ -76,12 +76,10 @@ src_configure() {
 		export ac_cv_header_stropts_h=no
 	fi
 
-	# Python bindings are via gobject-introspection
-	# Ex: from gi.repository import Vte
 	gnome2_src_configure \
-		--disable-test-application \
 		--disable-static \
 		--with-gtk=3.0 \
+		--with-iconv \
 		$(use_enable debug) \
 		$(use_enable glade glade-catalogue) \
 		$(use_with crypt gnutls) \
