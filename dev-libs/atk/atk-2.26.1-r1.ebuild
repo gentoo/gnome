@@ -18,6 +18,7 @@ RDEPEND="
 "
 DEPEND="${RDEPEND}
 	>=dev-lang/perl-5
+	dev-util/glib-utils
 	>=dev-util/gtk-doc-1.25
 	>=virtual/pkgconfig-0-r1[${MULTILIB_USEDEP}]
 	nls? ( >=sys-devel/gettext-0.19.2 )
