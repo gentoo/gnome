@@ -43,6 +43,7 @@ DEPEND="${RDEPEND}
 	>=dev-util/gtk-doc-am-1.19
 	sys-devel/bison
 	sys-devel/flex
+	test? ( x11-libs/cairo[glib] )
 "
 
 if [[ ${PV} == 9999 ]]; then
@@ -50,7 +51,7 @@ if [[ ${PV} == 9999 ]]; then
 		doc? ( >=dev-util/gtk-doc-1.19 )"
 fi
 
-# PDEPEND to avoid circular dependencies, bug #391213
+# PDEPEND to avoid circular dependencies, bug #391213; but needed for tests, thus test DEPEND as well
 PDEPEND="cairo? ( x11-libs/cairo[glib] )"
 
 pkg_setup() {
