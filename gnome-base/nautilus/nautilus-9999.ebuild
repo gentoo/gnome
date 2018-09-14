@@ -20,7 +20,7 @@ if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
 	KEYWORDS=""
 else
-	KEYWORDS="~amd64 ~arm64 ~ia64 ~x86 ~x86-fbsd ~amd64-linux ~arm-linux ~x86-linux"
+	KEYWORDS="~amd64 ~arm64 ~ia64 ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 fi
 
 # FIXME: tests fails under Xvfb, but pass when building manually

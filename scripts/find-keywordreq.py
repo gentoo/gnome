@@ -14,7 +14,7 @@ from pprint import pprint
 
 ARCH_GNOME=['alpha', 'amd64', 'arm', 'hppa', 'ia64', 'ppc', 'ppc64', 'sh', 'sparc', 'x86']
 ARCH_DEV=["mips", "amd64-fbsd", "sparc-fbsd", "x86-fbsd"]
-ARCH_EXP=["ppc-aix", "x86-freebsd", "x64-freebsd", "hppa-hpux", "ia64-hpux", "x86-interix", "mips-irix", "amd64-linux", "arm-linux", "ia64-linux", "x86-linux", "ppc-macos", "x86-macos", "x64-macos", "m68k-mint", "x86-netbsd", "ppc-openbsd", "x86-openbsd", "x64-openbsd", "sparc-solaris", "sparc64-solaris", "x64-solaris", "x86-solaris", "x86-winnt"]
+ARCH_EXP=["ppc-aix", "x86-freebsd", "x64-freebsd", "hppa-hpux", "ia64-hpux", "x86-interix", "mips-irix", "amd64-linux", "ia64-linux", "x86-linux", "ppc-macos", "x86-macos", "x64-macos", "m68k-mint", "x86-netbsd", "ppc-openbsd", "x86-openbsd", "x64-openbsd", "sparc-solaris", "sparc64-solaris", "x64-solaris", "x86-solaris", "x86-winnt"]
 
 def package_sort(item1, item2):
 	""" Sort revisions """
