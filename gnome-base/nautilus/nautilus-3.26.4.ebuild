@@ -11,7 +11,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Nautilus"
 
 LICENSE="GPL-2+ LGPL-2+ FDL-1.1"
 SLOT="0"
-IUSE="exif gnome +introspection packagekit +previewer selinux sendto tracker xmp"
+IUSE="doc exif gnome +introspection packagekit +previewer selinux sendto tracker xmp"
 
 KEYWORDS="~alpha ~amd64 ~arm64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 
@@ -44,6 +44,8 @@ DEPEND="${COMMON_DEPEND}
 	>=sys-devel/gettext-0.19.7
 	virtual/pkgconfig
 	x11-base/xorg-proto
+
+	doc? ( dev-util/gtk-doc )
 "
 RDEPEND="${COMMON_DEPEND}
 	gnome-base/dconf
@@ -75,9 +77,9 @@ src_configure() {
 	# FIXME no doc useflag??
 	gnome-meson_src_configure \
 		-Denable-desktop=true \
-		-Denable-gtk-doc=false \
 		-Denable-profiling=false \
 		-Dtracker=$(usex tracker auto disabled) \
+		$(meson_use doc enable-gtk-doc) \
 		$(meson_use exif enable-exif) \
 		$(meson_use packagekit enable-packagekit) \
 		$(meson_use sendto nst-extension) \
