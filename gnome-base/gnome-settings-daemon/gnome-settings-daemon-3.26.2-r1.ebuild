@@ -76,13 +76,13 @@ RDEPEND="${COMMON_DEPEND}
 	!<gnome-base/gnome-session-3.25.4
 "
 DEPEND="${COMMON_DEPEND}
-	cups? ( sys-apps/sed )
 	test? (
 		${PYTHON_DEPS}
 		$(python_gen_any_dep 'dev-python/pygobject:3[${PYTHON_USEDEP}]')
 		$(python_gen_any_dep 'dev-python/dbusmock[${PYTHON_USEDEP}]')
 		gnome-base/gnome-session )
 	dev-libs/libxml2:2
+	dev-util/glib-utils
 	sys-devel/gettext
 	>=dev-util/intltool-0.40
 	virtual/pkgconfig
