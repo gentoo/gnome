@@ -7,7 +7,7 @@ GNOME2_LA_PUNT="yes"
 #PYTHON_COMPAT=( python{2_7,3_4,3_5,3_6} ) # https://bugzilla.gnome.org/show_bug.cgi?id=783186
 PYTHON_COMPAT=( python2_7 )
 
-inherit gnome2 python-any-r1 systemd udev virtualx
+inherit gnome2 python-any-r1 udev virtualx
 
 DESCRIPTION="Gnome Settings Daemon"
 HOMEPAGE="https://git.gnome.org/browse/gnome-settings-daemon"
@@ -15,8 +15,9 @@ SRC_URI+=" https://dev.gentoo.org/~leio/distfiles/${P}-patchset.tar.xz"
 
 LICENSE="GPL-2+"
 SLOT="0"
-IUSE="+colord +cups debug input_devices_wacom -openrc-force networkmanager policykit smartcard test +udev wayland"
+IUSE="+colord +cups debug elogind input_devices_wacom networkmanager policykit smartcard systemd test +udev wayland"
 REQUIRED_USE="
+	^^ ( elogind systemd )
 	input_devices_wacom? ( udev )
 	smartcard? ( udev )
 	wayland? ( udev )
@@ -66,11 +67,12 @@ COMMON_DEPEND="
 	udev? ( virtual/libgudev:= )
 	wayland? ( dev-libs/wayland )
 "
-# systemd needed for power and session management, bug #464944
+# logind needed for power and session management, bug #464944
 # gnome-session-3.25.4 adapts to Orientation and XRANDR components removal (moved to mutter)
 RDEPEND="${COMMON_DEPEND}
 	gnome-base/dconf
-	!openrc-force? ( sys-apps/systemd )
+	elogind? ( sys-auth/elogind )
+	systemd? ( sys-apps/systemd )
 	!<gnome-base/gnome-session-3.25.4
 "
 DEPEND="${COMMON_DEPEND}
@@ -126,22 +128,4 @@ src_configure() {
 
 src_test() {
 	virtx emake check
-}
-
-pkg_postinst() {
-	gnome2_pkg_postinst
-
-	if ! systemd_is_booted; then
-		ewarn "${PN} needs Systemd to be *running* for working"
-		ewarn "properly. Please follow the this guide to migrate:"
-		ewarn "https://wiki.gentoo.org/wiki/Systemd"
-	fi
-
-	if use openrc-force; then
-		ewarn "You are enabling 'openrc-force' USE flag to skip systemd requirement,"
-		ewarn "this can lead to unexpected problems and is not supported neither by"
-		ewarn "upstream neither by Gnome Gentoo maintainers. If you suffer any problem,"
-		ewarn "you will need to disable this USE flag system wide and retest before"
-		ewarn "opening any bug report."
-	fi
 }
