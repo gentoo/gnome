@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="6"
@@ -23,7 +23,7 @@ fi
 RDEPEND="
 	>=dev-libs/glib-2.42:2
 	>=x11-libs/gtk+-3.20:3
-	>=x11-libs/vte-0.52.2:2.91
+	>=x11-libs/vte-0.54.1:2.91
 	>=dev-libs/libpcre2-10
 	>=gnome-base/dconf-0.14
 	>=gnome-base/gsettings-desktop-schemas-0.1.0
@@ -31,13 +31,14 @@ RDEPEND="
 	gnome-shell? ( gnome-base/gnome-shell )
 	nautilus? ( >=gnome-base/nautilus-3 )
 "
-# itstool/yelp-tools required for help/* with non-en LINGUAS, see bug #549358
+# itstool required for help/* with non-en LINGUAS, see bug #549358
 # xmllint required for glib-compile-resources, see bug #549304
 DEPEND="${RDEPEND}
-	app-text/yelp-tools
-	dev-libs/libxml2
+	dev-libs/libxml2:2
 	dev-util/gdbus-codegen
+	dev-util/glib-utils
 	>=dev-util/intltool-0.50
+	dev-util/itstool
 	sys-devel/gettext
 	virtual/pkgconfig
 "
@@ -58,7 +59,6 @@ src_configure() {
 
 	gnome2_src_configure \
 		--disable-static \
-		--disable-migration \
 		$(use_enable debug) \
 		$(use_enable gnome-shell search-provider) \
 		$(use_with nautilus nautilus-extension) \
