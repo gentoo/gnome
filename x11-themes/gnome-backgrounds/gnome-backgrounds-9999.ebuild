@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -8,7 +8,7 @@ inherit gnome2
 DESCRIPTION="A set of backgrounds packaged with the GNOME desktop"
 HOMEPAGE="https://git.gnome.org/browse/gnome-backgrounds"
 
-LICENSE="GPL-2"
+LICENSE="CC-BY-SA-2.0 CC-BY-SA-3.0 CC-BY-2.0"
 SLOT="0"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
