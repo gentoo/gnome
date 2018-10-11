@@ -1,8 +1,8 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
-inherit gnome-meson
+inherit meson gnome.org
 
 DESCRIPTION="GLib geocoding library that uses the Yahoo! Place Finder service"
 HOMEPAGE="https://git.gnome.org/browse/geocode-glib"
@@ -31,10 +31,12 @@ DEPEND="${RDEPEND}
 RESTRICT="test"
 
 src_configure() {
-	gnome-meson_src_configure \
-		$(meson_use test enable-installed-tests) \
-		$(meson_use introspection enable-introspection) \
-		-Denable-gtk-doc=false
+	local emesonargs=(
+		$(meson_use test enable-installed-tests)
+		$(meson_use introspection enable-introspection)
+		"-Denable-gtk-doc=true"
+		)
+	meson_src_configure
 }
 
 src_test() {
