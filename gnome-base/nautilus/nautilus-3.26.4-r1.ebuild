@@ -1,10 +1,10 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
 GNOME2_LA_PUNT="yes" # Needed with USE 'sendto'
 
-inherit gnome-meson readme.gentoo-r1 virtualx
+inherit gnome.org gnome2-utils meson readme.gentoo-r1 virtualx xdg
 
 DESCRIPTION="A file manager for the GNOME desktop"
 HOMEPAGE="https://wiki.gnome.org/Apps/Nautilus"
@@ -70,21 +70,23 @@ src_prepare() {
 			To activate the previewer, select a file and press space; to
 			close the previewer, press space again."
 	fi
-	gnome-meson_src_prepare
+	xdg_src_prepare
 }
 
 src_configure() {
 	# FIXME no doc useflag??
-	gnome-meson_src_configure \
-		-Denable-desktop=true \
-		-Denable-profiling=false \
-		-Dtracker=$(usex tracker auto disabled) \
-		$(meson_use doc enable-gtk-doc) \
-		$(meson_use exif enable-exif) \
-		$(meson_use packagekit enable-packagekit) \
-		$(meson_use sendto nst-extension) \
-		$(meson_use selinux enable-selinux) \
+	local emesonargs=(
+		"-Denable-desktop=true"
+		"-Denable-profiling=false"
+		"-Dtracker=$(usex tracker auto disabled)"
+		$(meson_use doc enable-gtk-doc)
+		$(meson_use exif enable-exif)
+		$(meson_use packagekit enable-packagekit)
+		$(meson_use sendto enable-nst-extension)
+		$(meson_use selinux enable-selinux)
 		$(meson_use xmp enable-xmp)
+	)
+	meson_src_configure
 }
 
 src_test() {
@@ -93,15 +95,23 @@ src_test() {
 
 src_install() {
 	use previewer && readme.gentoo_create_doc
-	gnome-meson_src_install
+	meson_src_install
 }
 
 pkg_postinst() {
-	gnome-meson_pkg_postinst
+	xdg_pkg_postinst
+	gnome2_icon_cache_update
+	gnome2_schemas_update
 
 	if use previewer; then
 		readme.gentoo_print_elog
 	else
 		elog "To preview media files, emerge nautilus with USE=previewer"
 	fi
+}
+
+pkg_postrm() {
+	gnome2_icon_cache_update
+	xdg_pkg_postrm
+	gnome2_schemas_update
 }
