@@ -1,11 +1,11 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="6"
 GCONF_DEBUG="yes"
 PYTHON_COMPAT=( python3_{4,5,6} )
 
-inherit gnome-meson python-r1
+inherit gnome.org gnome2-utils meson python-r1
 
 DESCRIPTION="GObject to SQLite object mapper library"
 HOMEPAGE="https://wiki.gnome.org/Projects/Gom"
@@ -36,33 +36,31 @@ pkg_setup() {
 }
 
 src_prepare() {
-	gnome-meson_src_prepare
-
+	default
 	python_copy_sources
 }
 
 src_configure() {
-	gnome-meson_src_configure \
-		$(meson_use introspection enable-introspection) \
+	local emesonargs=(
+		$(meson_use introspection enable-introspection)
 		$(meson_use doc enable-gtk-doc)
+	)
+# FIXME: is this needed???
+	meson_src_configure
 
 	python_foreach_impl run_in_build_dir \
-		gnome-meson_src_configure \
-			$(meson_use introspection enable-introspection) \
-			$(meson_use doc enable-gtk-doc)
-
+		meson_src_configure
 }
 
 src_install() {
-	gnome-meson_src_install
+	meson_src_install
 
 
 	docinto examples
 	dodoc examples/*.py
 
 	python_foreach_impl run_in_build_dir \
-		meson_src_install DESTDIR="${D}" install-overridesPYTHON
-
+		meson_src_install DESTDIR="${D}"
 }
 
 src_test() {
