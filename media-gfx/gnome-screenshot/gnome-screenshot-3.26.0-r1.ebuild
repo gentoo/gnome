@@ -1,8 +1,8 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
-inherit gnome-meson readme.gentoo-r1
+inherit gnome.org gnome2-utils meson readme.gentoo-r1
 
 DESCRIPTION="Screenshot utility for GNOME"
 HOMEPAGE="https://wiki.gnome.org/Apps/Attic/GnomeUtils"
@@ -40,11 +40,10 @@ DOC_CONTENTS="${P} saves screenshots in ~/Pictures/ and defaults to
 	where to save the screenshot, run 'gnome-screenshot --interactive'"
 
 src_install() {
-	gnome-meson_src_install
+	meson_src_install
 	readme.gentoo_create_doc
 }
 
 pkg_postinst() {
-	gnome-meson_pkg_postinst
 	readme.gentoo_print_elog
 }
