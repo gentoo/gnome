@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -22,10 +22,11 @@ fi
 IUSE="debug"
 
 # Automagic glib-2.32 dep
+# glibmm: first version in tree providing Thread API fix
 COMMON_DEPEND="
 	>=app-crypt/libsecret-0.8
 	>=app-text/gtkspell-3.0:3
-	>=dev-cpp/glibmm-2.32:2
+	>=dev-cpp/glibmm-2.52.1-r1:2
 	>=dev-cpp/gtkmm-3.18:3.0
 	>=dev-libs/glib-2.32:2[dbus]
 	>=dev-libs/libxml2-2:2
