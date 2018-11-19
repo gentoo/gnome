@@ -1,25 +1,18 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
-GNOME2_LA_PUNT="yes"
 
-inherit gnome2 readme.gentoo-r1
-if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
-fi
+inherit git-r3 gnome2-utils meson readme.gentoo-r1 xdg
 
 DESCRIPTION="Archive manager for GNOME"
 HOMEPAGE="https://wiki.gnome.org/Apps/FileRoller"
+EGIT_REPO_URI="https://gitlab.gnome.org/GNOME/${PN}.git"
 
 LICENSE="GPL-2+ CC-BY-SA-3.0"
 SLOT="0"
 IUSE="libnotify nautilus packagekit"
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
-fi
+KEYWORDS=""
 
 # gdk-pixbuf used extensively in the source
 # cairo used in eggtreemultidnd.c
@@ -40,18 +33,10 @@ RDEPEND="
 # libxml2 required for glib-compile-resources
 DEPEND="${RDEPEND}
 	dev-libs/libxml2:2
-	>=dev-util/intltool-0.50.1
 	dev-util/itstool
-	sys-devel/gettext
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 "
-# eautoreconf needs:
-#	gnome-base/gnome-common
-
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		app-text/yelp-tools"
-fi
 
 DISABLE_AUTOFORMATTING="yes"
 DOC_CONTENTS="
@@ -76,28 +61,36 @@ zoo     - app-arch/zoo"
 src_prepare() {
 	# File providing Gentoo package names for various archivers
 	cp -v "${FILESDIR}"/3.22-packages.match data/packages.match || die
-	gnome2_src_prepare
+
+	xdg_src_prepare
 }
 
 src_configure() {
-	# --disable-debug because enabling it adds -O0 to CFLAGS
-	gnome2_src_configure \
-		--disable-run-in-place \
-		--disable-static \
-		--disable-debug \
-		--enable-magic \
-		--enable-libarchive \
-		$(use_enable libnotify notification) \
-		$(use_enable nautilus nautilus-actions) \
-		$(use_enable packagekit)
+	local emesonargs=(
+		-Drun-in-place=false
+		$(meson_use nautilus nautilus-actions)
+		$(meson_use libnotify notification)
+		$(meson_use packagekit)
+		-Dlibarchive=true
+		-Dmagic=true
+	)
+	meson_src_configure
 }
 
 src_install() {
-	gnome2_src_install
+	meson_src_install
 	readme.gentoo_create_doc
 }
 
 pkg_postinst() {
-	gnome2_pkg_postinst
+	xdg_pkg_postinst
+	gnome2_icon_cache_update
+	gnome2_schemas_update
 	readme.gentoo_print_elog
+}
+
+pkg_postrm() {
+	xdg_pkg_postrm
+	gnome2_icon_cache_update
+	gnome2_schemas_update
 }
