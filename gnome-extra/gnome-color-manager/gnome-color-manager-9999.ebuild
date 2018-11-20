@@ -1,8 +1,8 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
-inherit git-r3 gnome-meson virtualx
+inherit git-r3 gnome.org gnome2-utils meson virtualx xdg
 
 DESCRIPTION="Color profile manager for the GNOME desktop"
 HOMEPAGE="https://git.gnome.org/browse/gnome-color-manager"
@@ -46,12 +46,22 @@ PATCHES=(
 	"${FILESDIR}"/9999-remove-unwanted-check.patch
 )
 
+src_prepare() {
+	xdg_src_prepare
+
+	# Fix hard-coded package name
+	# https://gitlab.gnome.org/GNOME/gnome-color-manager/issues/3
+	sed 's:argyllcms:media-gfx/argyllcms:' src/gcm-utils.h || die
+}
+
 src_configure() {
 	# Always enable tests since they are check_PROGRAMS anyway
-	gnome-meson_src_configure \
-		$(meson_use raw enable-exiv) \
-		$(meson_use packagekit enable-packagekit) \
-		$(meson_use test enable-tests)
+	local emesonargs=(
+		$(meson_use raw exiv)
+		$(meson_use packagekit)
+		$(meson_use test tests)
+	)
+	meson_src_configure
 }
 
 src_test() {
@@ -59,10 +69,16 @@ src_test() {
 }
 
 pkg_postinst() {
-	gnome-meson_pkg_postinst
+	xdg_pkg_postinst
+	gnome2_icon_cache_update
 
 	if ! has_version media-gfx/argyllcms ; then
 		elog "If you want to do display or scanner calibration, you will need to"
 		elog "install media-gfx/argyllcms"
 	fi
+}
+
+pkg_postrm() {
+	xdg_pkg_postrm
+	gnome2_icon_cache_update
 }
