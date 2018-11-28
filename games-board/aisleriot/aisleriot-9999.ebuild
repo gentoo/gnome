@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -22,11 +22,10 @@ fi
 IUSE="debug gnome qt5"
 
 # FIXME: quartz support?
-# Does not build with guile-2.0.0 or 2.0.1
+# Lookup guile modules grep "use-modules" *.scm
 COMMON_DEPEND="
 	>=dev-libs/glib-2.32:2
-	>=dev-scheme/guile-2.0.5:12[deprecated,regex]
-	<dev-scheme/guile-2.1
+	>=dev-scheme/guile-2.2:12
 	>=gnome-base/librsvg-2.32:2
 	>=media-libs/libcanberra-0.26[gtk3]
 	>=x11-libs/cairo-1.10
@@ -37,6 +36,8 @@ COMMON_DEPEND="
 DEPEND="${COMMON_DEPEND}
 	app-arch/gzip
 	app-text/yelp-tools
+	dev-libs/libxml2:2
+	dev-util/glib-utils
 	>=dev-util/intltool-0.40.4
 	gnome-base/gnome-common
 	sys-apps/lsb-release
@@ -79,7 +80,7 @@ src_configure() {
 
 	gnome2_src_configure \
 		--with-gtk=3.0 \
-		--with-guile=2.0 \
+		--with-guile=2.2 \
 		$(usex debug --enable-debug=yes --enable-debug=minimum) \
 		--enable-sound \
 		--with-pysol-card-theme-path="${EPREFIX}${GAMES_DATADIR}"/pysolfc \
