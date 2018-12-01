@@ -10,7 +10,7 @@ HOMEPAGE="https://git.gnome.org/browse/geocode-glib"
 LICENSE="LGPL-2"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-IUSE="+introspection test"
+IUSE="gtk-doc +introspection test"
 
 RDEPEND="
 	>=dev-libs/glib-2.44:2
@@ -20,9 +20,9 @@ RDEPEND="
 	introspection? ( >=dev-libs/gobject-introspection-0.6.3:= )
 "
 DEPEND="${RDEPEND}
-	dev-util/gtk-doc
 	>=sys-devel/gettext-0.19.6
 	virtual/pkgconfig
+	gtk-doc? ( dev-util/gtk-doc )
 	test? ( sys-apps/dbus )
 "
 
@@ -34,8 +34,8 @@ src_configure() {
 	local emesonargs=(
 		$(meson_use test enable-installed-tests)
 		$(meson_use introspection enable-introspection)
-		"-Denable-gtk-doc=true"
-		)
+		$(meson_use gtk-doc enable-gtk-doc)
+	)
 	meson_src_configure
 }
 
