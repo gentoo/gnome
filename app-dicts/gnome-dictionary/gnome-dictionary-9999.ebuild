@@ -10,29 +10,24 @@ SRC_URI=""
 EGIT_REPO_URI="https://gitlab.gnome.org/GNOME/gnome-dictionary.git"
 
 LICENSE="GPL-2+ LGPL-2.1+ FDL-1.1+"
-SLOT="0"
+SLOT="0" # does not provide a public libgdict-1.0.so anymore
 IUSE="ipv6"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 
 COMMON_DEPEND="
-	>=dev-libs/glib-2.42:2[dbus]
-	x11-libs/cairo:=
-	>=x11-libs/gtk+-3.21.1:3
-	x11-libs/pango
+	>=dev-libs/glib-2.42:2
+	>=x11-libs/gtk+-3.21.2:3
 "
 RDEPEND="${COMMON_DEPEND}
 	gnome-base/gsettings-desktop-schemas
-	!<gnome-extra/gnome-utils-3.4
 "
-# ${PN} was part of gnome-utils before 3.4
 DEPEND="${COMMON_DEPEND}
 	app-text/docbook-xsl-stylesheets
-	dev-libs/appstream-glib
-	dev-util/glib-utils
+	app-text/docbook-xml-dtd:4.3
 	dev-libs/libxslt
+	dev-util/glib-utils
 	dev-util/itstool
-	>=dev-util/meson-0.42.0
-	>=sys-devel/gettext-0.17
+	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 "
 
