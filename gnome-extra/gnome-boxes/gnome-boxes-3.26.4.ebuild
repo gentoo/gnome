@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -12,9 +12,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Boxes"
 
 LICENSE="LGPL-2"
 SLOT="0"
-
-# We force 'bindist' due to licenses from gnome-boxes-nonfree
-IUSE="" #bindist
+IUSE=""
 
 KEYWORDS="~amd64"
 
@@ -41,24 +39,23 @@ RDEPEND="
 	>=net-misc/spice-gtk-0.32[gtk3(+),smartcard,usbredir]
 	virtual/libusb:1
 
-	>=app-misc/tracker-2:0=
-
 	>=net-libs/libsoup-2.44:2.4
 
 	sys-fs/mtools
 	>=virtual/libgudev-165:=
 "
-#	!bindist? ( gnome-extra/gnome-boxes-nonfree )
-# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${RDEPEND}
 	$(vala_depend)
 	app-text/yelp-tools
+	>=app-misc/tracker-1:0=
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
-	x11-libs/gdk-pixbuf:2
 "
 RDEPEND="${RDEPEND}
-	>=app-misc/tracker-miners-2[iso]
+	|| (
+		>=app-misc/tracker-1[iso(-)]
+		>=app-misc/tracker-miners-2[iso]
+	)
 "
 
 DISABLE_AUTOFORMATTING="yes"
