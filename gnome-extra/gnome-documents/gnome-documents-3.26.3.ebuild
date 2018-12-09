@@ -30,6 +30,7 @@ COMMON_DEPEND="
 	x11-libs/pango[introspection]
 	>=net-libs/libzapojit-0.0.2[introspection]
 	>=app-text/libgepub-0.5[introspection]
+	<app-text/libgepub-0.6[introspection]
 "
 RDEPEND="${COMMON_DEPEND}
 	>=app-misc/tracker-miners-2[miner-fs]
