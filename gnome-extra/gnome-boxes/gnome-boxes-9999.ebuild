@@ -1,13 +1,15 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
 VALA_USE_DEPEND="vapigen"
 VALA_MIN_API_VERSION="0.36"
 
-inherit gnome2 linux-info readme.gentoo-r1 vala
+inherit gnome.org gnome2-utils linux-info meson readme.gentoo-r1 vala xdg
 if [[ ${PV} = 9999 ]]; then
-	inherit gnome2-live
+	inherit git-r3
+	SRC_URI=""
+	EGIT_REPO_URI="https://gitlab.gnome.org/GNOME/${GNOME_ORG_MODULE}"
 fi
 
 DESCRIPTION="Simple GNOME 3 application to access remote or virtual systems"
@@ -15,7 +17,7 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Boxes"
 
 LICENSE="LGPL-2"
 SLOT="0"
-IUSE="bindist"
+IUSE="rdp"
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
@@ -24,47 +26,42 @@ fi
 
 # NOTE: sys-fs/* stuff is called via exec()
 # FIXME: ovirt is not available in tree
-RDEPEND="
+# FIXME: qemu probably needs to depend on spice[smartcard]
+#        directly with USE=spice
+# gtk-vnc raised due to missing vala bindings in earlier ebuilds
+COMMON_DEPEND="
 	>=app-arch/libarchive-3:=
-	>=dev-libs/glib-2.38:2
-	>=dev-libs/gobject-introspection-0.9.6:=
-	>=dev-libs/libxml2-2.7.8:2
-	>=sys-libs/libosinfo-0.2.12
-	>=app-emulation/qemu-1.3.1[spice,smartcard,usbredir]
-	>=app-emulation/libvirt-0.9.3[libvirtd,qemu]
-	>=app-emulation/libvirt-glib-0.2.3
-	>=x11-libs/gtk+-3.19.8:3
-	>=net-libs/gtk-vnc-0.4.4[gtk3(+)]
-	app-crypt/libsecret
-	app-emulation/spice[smartcard]
-	>=net-misc/spice-gtk-0.32[gtk3(+),smartcard,usbredir]
-	virtual/libusb:1
-
-	>=app-misc/tracker-0.16:0=[iso]
-
+	>=dev-libs/glib-2.52:2
+	>=x11-libs/gtk+-3.22.20:3
+	>=net-libs/gtk-vnc-0.8.0-r1[gtk3(+),vala]
+	>=sys-libs/libosinfo-1.1.0[vala]
+	app-crypt/libsecret[vala]
 	>=net-libs/libsoup-2.44:2.4
-
-	sys-fs/mtools
+	virtual/libusb:1
+	>=app-emulation/libvirt-glib-0.2.3[vala]
+	>=dev-libs/libxml2-2.7.8:2
+	>=net-misc/spice-gtk-0.32[gtk3(+),smartcard,usbredir,vala]
+	>=app-misc/tracker-2:0=
+	net-libs/webkit-gtk:4
 	>=virtual/libgudev-165:=
-	!bindist? ( gnome-extra/gnome-boxes-nonfree )
+	>=dev-libs/gobject-introspection-1:=
+	rdp? ( net-misc/freerdp )
 "
-# libxml2+gdk-pixbuf required for glib-compile-resources
-DEPEND="${RDEPEND}
-	app-text/yelp-tools
+DEPEND="${COMMON_DEPEND}
+	$(vala_depend)
+	dev-util/itstool
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
-	x11-libs/gdk-pixbuf:2
-"
 
-if [[ ${PV} = 9999 ]]; then
-	DEPEND="${DEPEND}
-		$(vala_depend)
-		sys-libs/libosinfo[introspection,vala]
-		app-emulation/libvirt-glib[introspection,vala]
-		net-libs/gtk-vnc[introspection,vala]
-		net-misc/spice-gtk[introspection,vala]
-		net-libs/rest:0.7[introspection]"
-fi
+	>=dev-util/meson-0.47.0
+"
+RDEPEND="${COMMON_DEPEND}
+	>=app-misc/tracker-miners-2[iso]
+	app-emulation/spice[smartcard]
+	>=app-emulation/libvirt-0.9.3[libvirtd,qemu]
+	>=app-emulation/qemu-1.3.1[spice,smartcard,usbredir]
+	sys-fs/mtools
+"
 
 DISABLE_AUTOFORMATTING="yes"
 DOC_CONTENTS="Before running gnome-boxes, you will need to load the KVM modules.
@@ -86,28 +83,32 @@ pkg_pretend() {
 }
 
 src_prepare() {
-	# Do not change CFLAGS, wondering about VALA ones but appears to be
-	# needed as noted in configure comments below
-	sed 's/CFLAGS="$CFLAGS -O0 -ggdb3"//' -i configure.ac || die
-
 	vala_src_prepare
-	gnome2_src_prepare
+	xdg_src_prepare
 }
 
 src_configure() {
-	# debug needed for splitdebug proper behavior (cardoe), bug #????
-	gnome2_src_configure \
-		--enable-debug \
-		--disable-strict-cc \
-		--disable-ovirt
+	local emesonargs=(
+		$(meson_use rdp)
+		-Dovirt=false
+	)
+	meson_src_configure
 }
 
 src_install() {
-	gnome2_src_install
+	meson_src_install
 	readme.gentoo_create_doc
 }
 
 pkg_postinst() {
-	gnome2_pkg_postinst
+	xdg_pkg_postinst
+	gnome2_schemas_update
+	gnome2_icon_cache_update
 	readme.gentoo_print_elog
+}
+
+pkg_postrm() {
+	xdg_pkg_postrm
+	gnome2_schemas_update
+	gnome2_icon_cache_update
 }
