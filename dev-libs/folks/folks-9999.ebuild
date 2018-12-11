@@ -1,11 +1,8 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="yes"
+EAPI=6
 GNOME2_LA_PUNT="yes"
-VALA_MIN_API_VERSION="0.22"
 VALA_USE_DEPEND="vapigen"
 
 inherit gnome2 vala virtualx
@@ -25,23 +22,23 @@ else
 fi
 # TODO: --enable-profiling
 # Vala isn't really optional, https://bugzilla.gnome.org/show_bug.cgi?id=701099
-IUSE="bluetooth eds +telepathy test tracker utils zeitgeist"
+IUSE="bluetooth debug eds +telepathy test tracker utils"
 REQUIRED_USE="bluetooth? ( eds )"
 
 COMMON_DEPEND="
 	$(vala_depend)
 	>=dev-libs/glib-2.40:2
 	dev-libs/dbus-glib
+	>=dev-libs/gobject-introspection-1.30:=
 	>=dev-libs/libgee-0.10:0.8[introspection]
 	dev-libs/libxml2
-	sys-libs/ncurses:=
-	sys-libs/readline:=
+	sys-libs/ncurses:0=
+	sys-libs/readline:0=
 
 	bluetooth? ( >=net-wireless/bluez-5 )
 	eds? ( >=gnome-extra/evolution-data-server-3.13.90:=[vala] )
 	telepathy? ( >=net-libs/telepathy-glib-0.19.9[vala] )
 	tracker? ( >=app-misc/tracker-1:0= )
-	zeitgeist? ( >=gnome-extra/zeitgeist-0.9.14 )
 "
 # telepathy-mission-control needed at runtime; it is used by the telepathy
 # backend via telepathy-glib's AccountManager binding.
@@ -54,7 +51,6 @@ RDEPEND="${COMMON_DEPEND}
 # FIXME:
 # test? ( bluetooth? ( dbusmock is missing in the tree ) )
 DEPEND="${COMMON_DEPEND}
-	>=dev-libs/gobject-introspection-1.30
 	>=dev-util/intltool-0.50.0
 	sys-devel/gettext
 	virtual/pkgconfig
@@ -63,11 +59,13 @@ DEPEND="${COMMON_DEPEND}
 		sys-apps/dbus
 		bluetooth? (
 			>=gnome-extra/evolution-data-server-3.9.1
-			>=dev-libs/glib-2.40 ) )
-	!<dev-lang/vala-0.22.1:0.22
+			>=dev-libs/glib-2.40:2 ) )
 "
 
 src_prepare() {
+	# Force re-generation of introspection files, otherwise it does not match installed libs
+	find -name "*.vala" -exec touch {} \; || die
+
 	vala_src_prepare
 	gnome2_src_prepare
 }
@@ -76,13 +74,13 @@ src_configure() {
 	# Rebuilding docs needs valadoc, which has no release
 	gnome2_src_configure \
 		$(use_enable bluetooth bluez-backend) \
+		$(use_enable debug) \
 		$(use_enable eds eds-backend) \
 		$(use_enable eds ofono-backend) \
 		$(use_enable telepathy telepathy-backend) \
 		$(use_enable tracker tracker-backend) \
 		$(use_enable utils inspect-tool) \
 		$(use_enable test modular-tests) \
-		$(use_enable zeitgeist) \
 		--enable-vala \
 		--enable-import-tool \
 		--disable-docs \
@@ -91,5 +89,5 @@ src_configure() {
 }
 
 src_test() {
-	dbus-launch Xemake check
+	dbus-launch virtx emake check
 }
