@@ -1,10 +1,9 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
-inherit gnome-meson virtualx
+inherit gnome.org gnome2-utils meson virtualx xdg
 
-inherit gnome-meson virtualx
 if [[ ${PV} = 9999 ]]; then
 	SRC_URI=""
 	EGIT_REPO_URI="https://gitlab.gnome.org/GNOME/gnome-power-manager.git"
@@ -32,12 +31,9 @@ COMMON_DEPEND="
 RDEPEND="${COMMON_DEPEND}
 	x11-themes/adwaita-icon-theme
 "
-# libxml2 required for glib-compile-resources
 DEPEND="${COMMON_DEPEND}
 	app-text/docbook-sgml-dtd:4.1
 	app-text/docbook-sgml-utils
-	dev-libs/appstream-glib
-	dev-libs/libxml2:2
 	>=sys-devel/gettext-0.19.7
 	x11-base/xorg-proto
 	virtual/pkgconfig
@@ -46,22 +42,26 @@ DEPEND="${COMMON_DEPEND}
 
 # docbook-sgml-utils and docbook-sgml-dtd-4.1 used for creating man pages
 # (files under ${S}/man).
-# docbook-xml-dtd-4.4 and -4.1.2 are used by the xml files under ${S}/docs.
-
-src_prepare() {
-	# Drop debugger CFLAGS from configure
-	# Touch configure.ac only if running eautoreconf, otherwise
-	# maintainer mode gets triggered -- even if the order is correct
-	sed -e 's:^CPPFLAGS="$CPPFLAGS -g"$::g' \
-		-i configure || die "debugger sed failed"
-	gnome2_src_prepare
-}
 
 src_configure() {
-	gnome-meson_src_configure \
+	local emesonargs=(
 		$(meson_use test enable-tests)
+	)
+	meson_src_configure
 }
 
 src_test() {
 	virtx meson_src_test
+}
+
+pkg_postinst() {
+	xdg_pkg_postinst
+	gnome2_schemas_update
+	gnome2_icon_cache_update
+}
+
+pkg_postrm() {
+	xdg_pkg_postrm
+	gnome2_schemas_update
+	gnome2_icon_cache_update
 }
