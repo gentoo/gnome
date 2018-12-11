@@ -1,18 +1,18 @@
-From a87d6c0c7bdf52f5c1b73972e850c0ce0e1d3043 Mon Sep 17 00:00:00 2001
+From 75c1aca1128bf29c9d195abfb8184f8c20b05b15 Mon Sep 17 00:00:00 2001
 From: Gilles Dartiguelongue <eva@gentoo.org>
 Date: Sun, 27 May 2018 13:54:38 +0200
 Subject: [PATCH] Make tracker support optional
 
 ---
  config.h.meson                      |  1 +
- meson.build                         | 10 +++++++---
+ meson.build                         |  9 ++++++---
  meson_options.txt                   |  4 ++++
  src/meson.build                     | 19 ++++++++++++-------
  src/nautilus-file-undo-operations.c |  4 ++++
  src/nautilus-file.c                 |  2 ++
  src/nautilus-files-view.c           |  4 ++++
  src/nautilus-search-engine.c        | 14 ++++++++++++++
- 8 files changed, 48 insertions(+), 10 deletions(-)
+ 8 files changed, 47 insertions(+), 10 deletions(-)
 
 diff --git a/config.h.meson b/config.h.meson
 index 4f5cb5848..58d71e96f 100644
@@ -27,18 +27,17 @@ index 4f5cb5848..58d71e96f 100644
  #mesondefine ENABLE_PACKAGEKIT
  #mesondefine LOCALEDIR
 diff --git a/meson.build b/meson.build
-index 6256193cc..7258e00e1 100644
+index 6256193cc..d6418d770 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -81,9 +81,13 @@ if get_option ('enable-selinux')
+@@ -81,9 +81,12 @@ if get_option ('enable-selinux')
      conf.set10 ('HAVE_SELINUX', true)
  endif
  
 -tracker_sparql = dependency ('tracker-sparql-2.0', required: false)
 -if not tracker_sparql.found()
 -    tracker_sparql = dependency ('tracker-sparql-1.0')
-+tracker_api = get_option ('tracker')
-+if tracker_api
++if get_option ('tracker')
 +    tracker_sparql = dependency ('tracker-sparql-2.0', required: false)
 +    if not tracker_sparql.found()
 +        tracker_sparql = dependency ('tracker-sparql-1.0')
