@@ -1,18 +1,18 @@
-From 664c66bd231c5d0ac20f6f4f14be461bfb206a1e Mon Sep 17 00:00:00 2001
+From a87d6c0c7bdf52f5c1b73972e850c0ce0e1d3043 Mon Sep 17 00:00:00 2001
 From: Gilles Dartiguelongue <eva@gentoo.org>
 Date: Sun, 27 May 2018 13:54:38 +0200
 Subject: [PATCH] Make tracker support optional
 
 ---
  config.h.meson                      |  1 +
- meson.build                         | 15 ++++++++++++---
- meson_options.txt                   |  5 +++++
+ meson.build                         | 10 +++++++---
+ meson_options.txt                   |  4 ++++
  src/meson.build                     | 19 ++++++++++++-------
  src/nautilus-file-undo-operations.c |  4 ++++
  src/nautilus-file.c                 |  2 ++
  src/nautilus-files-view.c           |  4 ++++
  src/nautilus-search-engine.c        | 14 ++++++++++++++
- 8 files changed, 54 insertions(+), 10 deletions(-)
+ 8 files changed, 48 insertions(+), 10 deletions(-)
 
 diff --git a/config.h.meson b/config.h.meson
 index 4f5cb5848..58d71e96f 100644
@@ -27,10 +27,10 @@ index 4f5cb5848..58d71e96f 100644
  #mesondefine ENABLE_PACKAGEKIT
  #mesondefine LOCALEDIR
 diff --git a/meson.build b/meson.build
-index 6256193cc..776111f81 100644
+index 6256193cc..7258e00e1 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -81,9 +81,18 @@ if get_option ('enable-selinux')
+@@ -81,9 +81,13 @@ if get_option ('enable-selinux')
      conf.set10 ('HAVE_SELINUX', true)
  endif
  
@@ -38,32 +38,26 @@ index 6256193cc..776111f81 100644
 -if not tracker_sparql.found()
 -    tracker_sparql = dependency ('tracker-sparql-1.0')
 +tracker_api = get_option ('tracker')
-+if tracker_api == 'disabled'
-+    # pass
-+elif tracker_api == 'auto'
++if tracker_api
 +    tracker_sparql = dependency ('tracker-sparql-2.0', required: false)
 +    if not tracker_sparql.found()
 +        tracker_sparql = dependency ('tracker-sparql-1.0')
 +    endif
 +    conf.set10 ('HAVE_TRACKER', true)
-+else
-+    tracker_sparql = dependency ('tracker-sparql-@0@'.format(tracker_api))
-+    conf.set10 ('HAVE_TRACKER', true)
  endif
  
  if get_option ('enable-xmp')
 diff --git a/meson_options.txt b/meson_options.txt
-index c934dd8b1..d2ba885a2 100644
+index c934dd8b1..0c23c7921 100644
 --- a/meson_options.txt
 +++ b/meson_options.txt
-@@ -8,6 +8,11 @@ option ('enable-exif',
+@@ -8,6 +8,10 @@ option ('enable-exif',
          type: 'boolean',
          value: false,
          description: 'enable EXIF support')
 +option ('tracker',
-+        type: 'combo',
-+        choices: ['auto', '1.0', '2.0', 'disabled'],
-+        value: 'auto',
++        type: 'boolean',
++        value: true,
 +        description: 'enable bulk renames and search using Tracker')
  option ('enable-xmp',
          type: 'boolean',
@@ -267,5 +261,5 @@ index 209bd4f80..436cd7471 100644
      priv->model = nautilus_search_engine_model_new ();
      connect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (priv->model));
 -- 
-2.17.0
+2.19.2
 

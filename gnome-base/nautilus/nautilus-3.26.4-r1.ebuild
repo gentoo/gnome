@@ -77,7 +77,7 @@ src_configure() {
 	local emesonargs=(
 		"-Denable-desktop=true"
 		"-Denable-profiling=false"
-		"-Dtracker=$(usex tracker auto disabled)"
+		$(meson_use tracker)
 		$(meson_use gtk-doc enable-gtk-doc)
 		$(meson_use exif enable-exif)
 		$(meson_use packagekit enable-packagekit)
