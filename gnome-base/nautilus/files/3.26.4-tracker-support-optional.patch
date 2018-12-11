@@ -1,4 +1,4 @@
-From 75c1aca1128bf29c9d195abfb8184f8c20b05b15 Mon Sep 17 00:00:00 2001
+From 0008d41d0b3d75ba01ffa2ebfc2cfb9055f60f78 Mon Sep 17 00:00:00 2001
 From: Gilles Dartiguelongue <eva@gentoo.org>
 Date: Sun, 27 May 2018 13:54:38 +0200
 Subject: [PATCH] Make tracker support optional
@@ -62,7 +62,7 @@ index c934dd8b1..0c23c7921 100644
          type: 'boolean',
          value: false,
 diff --git a/src/meson.build b/src/meson.build
-index cc08345d8..40f337cde 100644
+index cc08345d8..8ea10b16b 100644
 --- a/src/meson.build
 +++ b/src/meson.build
 @@ -254,12 +254,6 @@ libnautilus_sources = [
@@ -90,7 +90,7 @@ index cc08345d8..40f337cde 100644
      nautilus_deps += exempi
  endif
  
-+if get_option ('tracker') != 'disabled'
++if get_option ('tracker')
 +    libnautilus_sources += [
 +        'nautilus-batch-rename-dialog.c',
 +        'nautilus-batch-rename-dialog.h',
