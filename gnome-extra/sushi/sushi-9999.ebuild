@@ -1,17 +1,14 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
-
+EAPI=6
 inherit gnome2
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
 
 DESCRIPTION="A quick previewer for Nautilus, the GNOME file manager"
-HOMEPAGE="http://git.gnome.org/browse/sushi"
+HOMEPAGE="https://git.gnome.org/browse/sushi"
 
 LICENSE="GPL-2+"
 SLOT="0"
@@ -24,29 +21,30 @@ IUSE="office"
 
 # Optional app-office/unoconv support (OOo to pdf)
 # freetype needed for font loader
-# libX11 needed for sushi_create_foreign_window()
+# gtk+[X] optionally needed for sushi_create_foreign_window(); when wayland is more widespread, might want to not force it
 COMMON_DEPEND="
 	>=x11-libs/gdk-pixbuf-2.23[introspection]
 	>=dev-libs/gjs-1.40
 	>=dev-libs/glib-2.29.14:2
-	>=dev-libs/gobject-introspection-0.9.6
+	>=dev-libs/gobject-introspection-0.9.6:=
 	>=media-libs/clutter-1.11.4:1.0[introspection]
 	>=media-libs/clutter-gtk-1.0.1:1.0[introspection]
-	>=x11-libs/gtk+-3.13.2:3[introspection]
+	>=x11-libs/gtk+-3.13.2:3[X,introspection]
 
 	>=app-text/evince-3.0[introspection]
 	media-libs/freetype:2
 	media-libs/gstreamer:1.0[introspection]
 	media-libs/gst-plugins-base:1.0[introspection]
-	media-libs/clutter-gst:2.0[introspection]
-	media-libs/musicbrainz:5
+	>=media-libs/harfbuzz-0.9.9:=
+	media-libs/clutter-gst:3.0[introspection]
+	media-libs/musicbrainz:5=
 	net-libs/webkit-gtk:4[introspection]
 	x11-libs/gtksourceview:3.0[introspection]
-	x11-libs/libX11
 
 	office? ( app-office/unoconv )
 "
 DEPEND="${RDEPEND}
+	dev-util/glib-utils
 	>=dev-util/intltool-0.40
 	virtual/pkgconfig
 "
