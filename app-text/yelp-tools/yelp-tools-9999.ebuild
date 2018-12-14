@@ -1,9 +1,7 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
+EAPI=6
 
 inherit gnome2
 if [[ ${PV} = 9999 ]]; then
@@ -11,7 +9,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="Collection of tools for building and converting documentation"
-HOMEPAGE="http://www.gnome.org/"
+HOMEPAGE="https://wiki.gnome.org/Apps/Yelp/Tools"
 
 LICENSE="|| ( GPL-2+ freedist ) GPL-2+" # yelp.m4 is GPL2 || freely distributable
 SLOT="0"
@@ -26,7 +24,7 @@ RDEPEND="
 	>=dev-libs/libxml2-2.6.12
 	>=dev-libs/libxslt-1.1.8
 	dev-util/itstool
-	gnome-extra/yelp-xsl
+	>=gnome-extra/yelp-xsl-3.17.3
 	virtual/awk
 "
 DEPEND="${RDEPEND}
