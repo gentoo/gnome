@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -19,16 +19,14 @@ RDEPEND="
 	>=net-libs/webkit-gtk-2.10.0:4
 	net-libs/gnome-online-accounts:=
 	dev-libs/libxml2:2
-	>=app-misc/tracker-2:=
+	>=app-misc/tracker-1:=
 	sys-apps/util-linux
 "
-# libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${RDEPEND}
-	app-text/yelp-tools
 	dev-libs/appstream-glib
 	dev-util/gdbus-codegen
 	>=dev-util/intltool-0.50.1
+	dev-util/itstool
 	sys-devel/gettext
 	virtual/pkgconfig
-	x11-libs/gdk-pixbuf:2
 "
