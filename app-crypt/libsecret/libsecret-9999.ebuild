@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -13,7 +13,7 @@ if [[ ${PV} = 9999 ]]; then
 fi
 
 DESCRIPTION="GObject library for accessing the freedesktop.org Secret Service API"
-HOMEPAGE="https://live.gnome.org/Libsecret"
+HOMEPAGE="https://wiki.gnome.org/Projects/Libsecret"
 
 LICENSE="LGPL-2.1+ Apache-2.0" # Apache-2.0 license is used for tests only
 SLOT="0"
