@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Authors
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -41,7 +41,7 @@ COMMON_DEPEND="
 	>=x11-libs/cairo-1.14
 "
 RDEPEND="${COMMON_DEPEND}
-	>=app-misc/tracker-miners-2[miner-fs]
+	>=app-misc/tracker-miners-2
 	net-misc/gnome-online-miners
 	sys-apps/dbus
 	x11-themes/adwaita-icon-theme
