@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Authors
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -37,7 +37,7 @@ COMMON_DEPEND="
 # but out of all the grilo-plugins, only upnp-av and flickr get used, which have USE flags here,
 # so don't pull it always, but only if either USE flag is enabled
 RDEPEND="${COMMON_DEPEND}
-	>=app-misc/tracker-miners-2[miner-fs]
+	>=app-misc/tracker-miners-2
 	net-misc/gnome-online-miners[flickr?]
 	upnp-av? ( media-plugins/grilo-plugins:0.3[upnp-av] )
 	flickr? ( media-plugins/grilo-plugins:0.3[flickr] )
