@@ -1,9 +1,9 @@
 # Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="6"
+EAPI="7"
 
-PYTHON_COMPAT=( python2_7 )
+PYTHON_COMPAT=( python2_7 python3_{4,5,6})
 PYTHON_REQ_USE="xml"
 
 inherit autotools python-single-r1
@@ -23,8 +23,11 @@ RDEPEND="${PYTHON_DEPS}
 	dev-libs/libxml2[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}"
 
+PATCHES=(
+	"${FILESDIR}/${PN}-segfault.patch"
+)
+
 src_prepare() {
-	eapply "${FILESDIR}/${PN}-segfault.patch"
 	python_fix_shebang .
 	eapply_user
 	eautoreconf
