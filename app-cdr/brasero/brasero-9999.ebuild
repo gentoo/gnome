@@ -1,9 +1,7 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
-GCONF_DEBUG="no"
+EAPI=6
 GNOME2_LA_PUNT="yes"
 
 inherit gnome2
@@ -19,9 +17,8 @@ SLOT="0/3.1" # subslot is 3.suffix of libbrasero-burn3
 IUSE="+css +introspection +libburn mp3 nautilus packagekit playlist test tracker"
 if [[ ${PV} = 9999 ]]; then
 	IUSE="${IUSE} doc"
-	KEYWORDS=""
 else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 fi
 
 COMMON_DEPEND="
@@ -36,30 +33,28 @@ COMMON_DEPEND="
 	x11-libs/libICE
 	x11-libs/libSM
 
-	introspection? ( >=dev-libs/gobject-introspection-0.6.3 )
+	introspection? ( >=dev-libs/gobject-introspection-1.30:= )
 	libburn? (
 		>=dev-libs/libburn-0.4:=
 		>=dev-libs/libisofs-0.6.4:= )
 	nautilus? ( >=gnome-base/nautilus-2.91.90 )
 	playlist? ( >=dev-libs/totem-pl-parser-2.29.1:= )
-	tracker? ( >=app-misc/tracker-0.12:0= )
+	tracker? ( >=app-misc/tracker-1:0= )
 "
 RDEPEND="${COMMON_DEPEND}
 	media-libs/gst-plugins-good:1.0
-	media-plugins/gst-plugins-meta:1.0
+	media-plugins/gst-plugins-meta:1.0[mp3?]
 	x11-themes/hicolor-icon-theme
 	css? ( media-libs/libdvdcss:1.2 )
 	!libburn? (
 		app-cdr/cdrdao
 		app-cdr/dvd+rw-tools
 		virtual/cdrtools )
-	mp3? (
-		media-libs/gst-plugins-ugly:1.0
-		media-plugins/gst-plugins-mad:1.0 )
 	packagekit? ( app-admin/packagekit-base )
 "
 DEPEND="${COMMON_DEPEND}
 	>=dev-util/intltool-0.50
+	dev-util/itstool
 	>=dev-util/gtk-doc-am-1.12
 	sys-devel/gettext
 	virtual/pkgconfig
@@ -83,7 +78,6 @@ src_configure() {
 
 	[[ ${PV} != 9999 ]] && myconf="${myconf} ITSTOOL=$(type -P true)"
 
-	DOCS="AUTHORS ChangeLog MAINTAINERS NEWS README"
 	gnome2_src_configure \
 		--disable-caches \
 		$(use_enable !libburn cdrtools) \
