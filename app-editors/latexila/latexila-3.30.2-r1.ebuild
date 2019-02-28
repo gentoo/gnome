@@ -17,7 +17,6 @@ KEYWORDS="~amd64 ~x86"
 IUSE="+introspection +latexmk rubber"
 
 COMMON_DEPEND="
-	$(vala_depend)
 	app-text/enchant
 	>=app-text/gspell-1.8:0=
 	>=dev-libs/glib-2.56:2[dbus]
@@ -38,9 +37,11 @@ RDEPEND="${COMMON_DEPEND}
 "
 # libxml2+gdk-pixbuf required for glib-compile-resources
 DEPEND="${COMMON_DEPEND}
+	$(vala_depend)
 	app-text/yelp-tools
-	dev-libs/libxml2
+	dev-libs/libxml2:2
 	dev-util/gdbus-codegen
+	dev-util/glib-utils
 	>=dev-util/gtk-doc-am-1.14
 	>=dev-util/intltool-0.50.1
 	virtual/pkgconfig
