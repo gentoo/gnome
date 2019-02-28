@@ -18,3 +18,7 @@ app-misc/tracker-miner-media
 # Gilles Dartiguelongue <eva@gentoo.org> (29 Jan 2018)
 # Lots of unittests broken, no multilib support
 >=gnome-base/librsvg-2.41
+
+# Sobhan Mohammadpour <sobhan@gentoo.org> (28 Feb 2019)
+# Depends on maksed >=app-text/gspell-1.8.1
+>=app-editors/latexila-3.30.2
