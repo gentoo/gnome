@@ -1,14 +1,12 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI="5"
+EAPI=6
 GNOME2_LA_PUNT="yes"
-GCONF_DEBUG="no"
-PYTHON_COMPAT=( python3_{3,4} )
+PYTHON_COMPAT=( python3_{4,5,6} )
 PYTHON_REQ_USE="xml"
 
-inherit eutils gnome2 python-r1 multilib virtualx
+inherit eutils gnome2 python-single-r1 multilib virtualx
 if [[ ${PV} = 9999 ]]; then
 	inherit gnome2-live
 fi
@@ -18,59 +16,49 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Rhythmbox"
 
 LICENSE="GPL-2"
 SLOT="0"
-IUSE="cdr daap dbus +libsecret html ipod libnotify lirc mtp nsplugin +python
-test +udev upnp-av visualizer webkit zeitgeist"
 
-if [[ ${PV} = 9999 ]]; then
-	KEYWORDS=""
-else
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
-fi
-
+IUSE="cdr daap dbus gnome-keyring ipod libnotify lirc mtp nsplugin +python test +udev upnp-av"
 REQUIRED_USE="
 	ipod? ( udev )
 	mtp? ( udev )
 	dbus? ( python )
-	webkit? ( python )
-	python? ( ^^ ( $(python_gen_useflags '*') ) )
+	python? ( ${PYTHON_REQUIRED_USE} )
 "
 
+if [[ ${PV} != 9999 ]]; then
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
+fi
+
 # FIXME: double check what to do with fm-radio plugin
-# webkit-gtk-1.10 is needed because it uses gstreamer-1.0
 COMMON_DEPEND="
-	>=dev-libs/glib-2.34.0:2
+	>=dev-libs/glib-2.38:2
 	>=dev-libs/libxml2-2.7.8:2
-	>=x11-libs/gtk+-3.6:3[introspection]
-	>=x11-libs/gdk-pixbuf-2.18.0:2
-	>=dev-libs/gobject-introspection-0.10.0
-	>=dev-libs/libpeas-0.7.3[gtk,python?]
-	>=dev-libs/totem-pl-parser-3.2.0
-	>=net-libs/libsoup-2.34:2.4
-	media-libs/gst-plugins-base:1.0[introspection]
-	media-libs/gstreamer:1.0[introspection]
+	>=x11-libs/gtk+-3.20.0:3[X,introspection]
+	>=x11-libs/gdk-pixbuf-2.18:2
+	>=dev-libs/gobject-introspection-0.10:=
+	>=dev-libs/libpeas-0.7.3[gtk]
+	>=dev-libs/totem-pl-parser-3.2
+	>=net-libs/libsoup-2.42:2.4
+	>=media-libs/gst-plugins-base-1.4:1.0[introspection]
+	>=media-libs/gstreamer-1.4:1.0[introspection]
 	>=sys-libs/tdb-1.2.6
 	dev-libs/json-glib
 
-	visualizer? (
-		>=media-libs/clutter-1.8:1.0
-		>=media-libs/clutter-gst-1.9.92:2.0
-		>=media-libs/clutter-gtk-1.0:1.0
-		>=x11-libs/mx-1.0.1:1.0
-		media-plugins/gst-plugins-libvisual:1.0 )
 	cdr? ( >=app-cdr/brasero-2.91.90 )
 	daap? (
 		>=net-libs/libdmapsharing-2.9.19:3.0
-		media-plugins/gst-plugins-soup:1.0 )
-	libsecret? ( >=app-crypt/libsecret-0.18 )
-	html? ( >=net-libs/webkit-gtk-1.10:3 )
+		>=media-plugins/gst-plugins-soup-1.4:1.0 )
+	gnome-keyring? ( >=app-crypt/libsecret-0.18 )
 	libnotify? ( >=x11-libs/libnotify-0.7.0 )
 	lirc? ( app-misc/lirc )
-	python? ( >=dev-python/pygobject-3.0:3[${PYTHON_USEDEP}] )
+	python? (
+		${PYTHON_DEPS}
+		>=dev-python/pygobject-3.0:3[${PYTHON_USEDEP}]
+	)
 	udev? (
 		virtual/libgudev:=
 		ipod? ( >=media-libs/libgpod-0.7.92[udev] )
 		mtp? ( >=media-libs/libmtp-0.3 ) )
-	zeitgeist? ( gnome-extra/zeitgeist )
 "
 RDEPEND="${COMMON_DEPEND}
 	media-plugins/gst-plugins-soup:1.0
@@ -80,43 +68,32 @@ RDEPEND="${COMMON_DEPEND}
 		media-plugins/gst-plugins-cdio:1.0 )
 	media-plugins/gst-plugins-meta:1.0
 	media-plugins/gst-plugins-taglib:1.0
-	x11-themes/gnome-icon-theme-symbolic
-	upnp-av? (
-		>=media-libs/grilo-0.2:0.2
-		>=media-plugins/grilo-plugins-0.2:0.2[upnp-av] )
+	x11-themes/adwaita-icon-theme
 	python? (
-		>=dev-libs/libpeas-0.7.3[${PYTHON_USEDEP}]
+		>=dev-libs/libpeas-0.7.3[python,${PYTHON_USEDEP}]
+		net-libs/libsoup:2.4[introspection]
 		x11-libs/gdk-pixbuf:2[introspection]
 		x11-libs/gtk+:3[introspection]
 		x11-libs/pango[introspection]
 
 		dbus? ( sys-apps/dbus )
-		libsecret? ( >=app-crypt/libsecret-0.18[introspection] )
-		webkit? (
-			dev-python/mako[${PYTHON_USEDEP}]
-			>=net-libs/webkit-gtk-1.10:3[introspection] ) )
+		gnome-keyring? ( >=app-crypt/libsecret-0.18[introspection] ) )
+	upnp-av? (
+		>=media-libs/grilo-0.3:0.3
+		>=media-plugins/grilo-plugins-0.3:0.3[upnp-av] )
 "
 DEPEND="${COMMON_DEPEND}
-	virtual/pkgconfig
 	app-text/yelp-tools
 	dev-util/gtk-doc-am
 	>=dev-util/intltool-0.35
-	>=app-text/gnome-doc-utils-0.9.1
+	dev-util/itstool
+	virtual/pkgconfig
 	test? ( dev-libs/check )
 "
+# eautoreconf needs yelp-tools
 
 pkg_setup() {
-	use python && [[ ${MERGE_TYPE} != binary ]] && python_setup
-}
-
-src_prepare() {
-	DOCS="AUTHORS ChangeLog DOCUMENTERS INTERNALS \
-		MAINTAINERS MAINTAINERS.old NEWS README THANKS"
-
-	# upstream bug 737831
-	rm -v lib/rb-marshal.{c,h} || die
-
-	gnome2_src_prepare
+	use python && python-single-r1_pkg_setup
 }
 
 src_configure() {
@@ -127,13 +104,11 @@ src_configure() {
 	# checks are broken, so don't enable it
 	gnome2_src_configure \
 		MOZILLA_PLUGINDIR=/usr/$(get_libdir)/nsbrowser/plugins \
-		VALAC=$(type -P valac-0.14) \
+		VALAC=$(type -P true) \
 		--enable-mmkeys \
 		--disable-more-warnings \
 		--disable-static \
 		--disable-vala \
-		--without-hal \
-		$(use_enable visualizer) \
 		$(use_enable daap) \
 		$(use_enable libnotify) \
 		$(use_enable lirc) \
@@ -141,15 +116,21 @@ src_configure() {
 		$(use_enable python) \
 		$(use_enable upnp-av grilo) \
 		$(use_with cdr brasero) \
-		$(use_with html webkit) \
+		$(use_with gnome-keyring libsecret) \
 		$(use_with ipod) \
-		$(use_with libsecret) \
 		$(use_with mtp) \
 		$(use_with udev gudev)
 }
 
 src_test() {
 	unset SESSION_MANAGER
-	unset DBUS_SESSION_BUS_ADDRESS
-	Xemake check
+	"${EROOT}${GLIB_COMPILE_SCHEMAS}" --allow-any-name "${S}/data" || die
+	GSETTINGS_SCHEMA_DIR="${S}/data" virtx emake check CK_DEFAULT_TIMEOUT=60
+}
+
+src_install() {
+	DOCS="AUTHORS ChangeLog DOCUMENTERS INTERNALS \
+		MAINTAINERS MAINTAINERS.old NEWS README THANKS"
+
+	gnome2_src_install
 }
