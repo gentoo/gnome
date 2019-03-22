@@ -1,1 +1,2 @@
 move x11-libs/amtk gui-libs/amtk
+slotmove =gui-libs/amtk-5.0.0 3 5

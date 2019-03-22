@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Authors
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -9,7 +9,7 @@ DESCRIPTION="Actions, Menus and Toolbars Kit for GTK+ applications"
 HOMEPAGE="https://gitlab.gnome.org/GNOME/amtk"
 
 LICENSE="LGPL-2.1+"
-SLOT="3"
+SLOT="5"
 KEYWORDS="~amd64 ~x86"
 IUSE="+introspection test"
 
