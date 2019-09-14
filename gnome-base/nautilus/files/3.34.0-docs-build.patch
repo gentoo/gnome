@@ -1,0 +1,40 @@
+From 49d85c31346ff61afdd2c03b19b75c657416bacc Mon Sep 17 00:00:00 2001
+From: Sobhan Mohammadpour <sobhan@gentoo.org>
+Date: Sat, 14 Sep 2019 15:03:53 -0400
+Subject: [PATCH] [Patch] update 3.30-5: build: always install man pages
+
+originally by: Mart Raudsepp<leio@gentoo.org>
+---
+ docs/meson.build | 5 +++--
+ meson.build      | 4 +---
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/docs/meson.build b/docs/meson.build
+index a54574f..ae0b171 100644
+--- a/docs/meson.build
++++ b/docs/meson.build
+@@ -1,4 +1,5 @@
+ install_man('nautilus.1')
+ install_man('nautilus-autorun-software.1')
+-
+-subdir('reference')
++if get_option('docs')
++   subdir('reference')
++endif
+diff --git a/meson.build b/meson.build
+index 8ab4fb6..98cc73b 100644
+--- a/meson.build
++++ b/meson.build
+@@ -196,9 +196,7 @@ subdirs = [
+ # Conditional building #
+ ########################
+
+-if get_option('docs')
+-  subdirs += 'docs'
+-endif
++subdirs += 'docs'
+ if get_option('tests') != 'none'
+   subdirs += 'test'
+ endif
+--
+2.23.0
