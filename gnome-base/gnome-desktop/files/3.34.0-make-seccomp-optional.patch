@@ -1,0 +1,39 @@
+From ecaf36f478d160618c1b9a23ed1c17f09a716c6f Mon Sep 17 00:00:00 2001
+From: Sobhan Mohammadpour <sobhan@gentoo.org>
+Date: Sat, 14 Sep 2019 16:21:18 -0400
+Subject: [PATCH] make seccomp optional
+
+---
+ meson.build       | 2 +-
+ meson_options.txt | 5 +++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 6781ca7..9361f26 100644
+--- a/meson.build
++++ b/meson.build
+@@ -57,7 +57,7 @@ host_os = host_machine.system()
+ host_cpu = host_machine.cpu()
+ supported_os = ['linux']
+ unsupported_cpus = ['alpha', 'ia64', 'm68k', 'sh4', 'sparc', 'sparc64']
+-if supported_os.contains(host_os) and not unsupported_cpus.contains(host_cpu)
++if supported_os.contains(host_os) and not unsupported_cpus.contains(host_cpu) and get_option('seccomp')
+   seccomp_dep = dependency('libseccomp')
+ else
+   seccomp_dep = dependency('', required: false)
+diff --git a/meson_options.txt b/meson_options.txt
+index e3402a1..a7e7f2e 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -28,3 +28,8 @@ option('gtk_doc',
+ option('installed_tests',
+   type: 'boolean', value: false, description: 'Enable installed tests'
+ )
++
++option('seccomp',
++  type: 'boolean', value: true,
++  description: 'add seccomp support'
++)
+-- 
+2.23.0
+
