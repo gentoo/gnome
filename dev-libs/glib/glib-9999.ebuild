@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # Until bug #537330 glib is a reverse dependency of pkgconfig and, then
@@ -10,7 +10,7 @@ PYTHON_COMPAT=( python2_7 )
 # Completely useless with or without USE static-libs, people need to use pkg-config
 GNOME2_LA_PUNT="yes"
 
-inherit bash-completion-r1 epunt-cxx flag-o-matic gnome-meson libtool linux-info \
+inherit bash-completion-r1 flag-o-matic gnome-meson libtool linux-info \
 	multilib multilib-minimal pax-utils python-r1 toolchain-funcs versionator virtualx
 
 if [[ ${PV} = 9999 ]]; then
@@ -142,8 +142,6 @@ src_prepare() {
 		-i glib/Makefile.{am,in} || die
 
 	gnome-meson_src_prepare
-
-	epunt_cxx
 }
 
 multilib_src_configure() {
