@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -19,13 +19,17 @@ RDEPEND="
 	>=net-libs/gnome-online-accounts-3.25.3
 	>=dev-libs/libpeas-1.17
 	>=gnome-extra/evolution-data-server-3.17.1:=[gtk]
+	<gnome-extra/evolution-data-server-3.33
 	>=dev-libs/libical-0.43
+	net-libs/rest:0.7
+	dev-libs/json-glib
 	introspection? ( >=dev-libs/gobject-introspection-1.42:= )
 "
 DEPEND="${RDEPEND}
 	dev-libs/libxml2:2
 	dev-util/glib-utils
-	gtk-doc? ( dev-util/gtk-doc )
+	gtk-doc? ( dev-util/gtk-doc
+		app-text/docbook-xml-dtd:4.3 )
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 "
@@ -53,11 +57,9 @@ src_configure() {
 pkg_postinst() {
 	xdg_pkg_postinst
 	gnome2_schemas_update
-	gnome2_icon_cache_update
 }
 
 pkg_postrm() {
 	xdg_pkg_postrm
 	gnome2_schemas_update
-	gnome2_icon_cache_update
 }
