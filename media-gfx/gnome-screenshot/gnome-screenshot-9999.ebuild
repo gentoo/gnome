@@ -16,7 +16,7 @@ LICENSE="GPL-2+"
 SLOT="0"
 IUSE=""
 if [[ ${PV} != 9999 ]]; then
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 fi
 
 # libcanberra 0.26-r2 is needed for gtk+:3 fixes

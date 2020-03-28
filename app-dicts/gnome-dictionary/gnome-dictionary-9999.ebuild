@@ -12,7 +12,7 @@ EGIT_REPO_URI="https://gitlab.gnome.org/GNOME/gnome-dictionary.git"
 LICENSE="GPL-2+ LGPL-2.1+ FDL-1.1+"
 SLOT="0" # does not provide a public libgdict-1.0.so anymore
 IUSE="ipv6"
-KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 
 COMMON_DEPEND="
 	>=dev-libs/glib-2.42:2

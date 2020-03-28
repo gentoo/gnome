@@ -16,7 +16,7 @@ LICENSE="GPL-3+"
 SLOT="0"
 IUSE="debug +gnome-shell +nautilus"
 if [[ ${PV} != 9999 ]]; then
-	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
+	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 fi
 
 # FIXME: automagic dependency on gtk+[X], just transitive but needs proper control, bug 624960

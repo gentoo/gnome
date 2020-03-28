@@ -18,7 +18,7 @@ LICENSE="GPL-2+"
 SLOT="0"
 IUSE="fat gnome systemd"
 if [[ ${PV} != 9999 ]]; then
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 fi
 
 COMMON_DEPEND="
