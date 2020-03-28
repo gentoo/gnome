@@ -40,7 +40,7 @@ portage.portdb.porttrees = [portage.settings['PORTDIR']]
 STABLE_ARCHES = ('amd64', 'arm', 'arm64', 'hppa', 'ia64',
                  'ppc', 'ppc64', 's390', 'sparc', 'x86')
 UNSTABLE_ARCHES = ('~alpha', '~amd64', '~arm', '~arm64', '~hppa', '~ia64',
-                   '~m68k', '~ppc', '~ppc64', '~s390', '~sh', '~sparc',
+                   '~m68k', '~ppc', '~ppc64', '~s390', '~sparc',
                    '~x86', '~x86-fbsd')
 ALL_ARCHES = STABLE_ARCHES + UNSTABLE_ARCHES
 SYSTEM_PACKAGES = []
