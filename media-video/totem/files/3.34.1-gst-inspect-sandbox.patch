@@ -1,7 +1,7 @@
-From 742b64b7a74eabd67344ef1cc260427dc402588f Mon Sep 17 00:00:00 2001
+From 2108ed8d025499fbf11dfe750ebc7617bdbb795a Mon Sep 17 00:00:00 2001
 From: Gilles Dartiguelongue <eva@gentoo.org>
 Date: Thu, 7 Jun 2018 23:47:48 +0200
-Subject: [PATCH 5/5] Make gst-inspect calls optional at build-time
+Subject: [PATCH] Make gst-inspect calls optional at build-time
 
 Crashes on Gentoo due to plugins trying to access dri nodes which are sandboxed
 ---
@@ -10,16 +10,16 @@ Crashes on Gentoo due to plugins trying to access dri nodes which are sandboxed
  2 files changed, 3 insertions(+)
 
 diff --git a/meson_options.txt b/meson_options.txt
-index 6e056952..631b8cca 100644
+index d6f8b4290..c8db92335 100644
 --- a/meson_options.txt
 +++ b/meson_options.txt
-@@ -32,3 +32,4 @@ option('enable-nautilus', type: 'combo', choices: ['yes', 'no', 'auto'], value:
- option('with-nautilusdir', type: 'string', value: '', description: 'Installation path for Nautilus extension')
+@@ -2,3 +2,4 @@ option('enable-easy-codec-installation', type: 'combo', choices: ['yes', 'no', '
+ option('enable-python', type: 'combo', choices: ['yes', 'no', 'auto'], value: 'auto', description: 'Enable python support')
+ option('with-plugins', type: 'combo', choices: ['all', 'none', 'auto'], value: 'auto', description: 'Which Totem plugins to compile (default: auto; "all", "none" and "auto" are valid)')
  option('enable-gtk-doc', type: 'boolean', value: false, description: 'use gtk-doc to build documentation')
- option('enable-introspection', type: 'combo', choices: ['yes', 'no', 'auto'], value: 'auto', description: 'Enable GObject Introspection (depends on GObject)')
 +option('gst-inspect', type: 'boolean', value: true, description: 'build-time test of available gstreamer plugins')
 diff --git a/src/backend/meson.build b/src/backend/meson.build
-index 28c8e123..55037a6a 100644
+index 7a63bab1b..5c4ebb996 100644
 --- a/src/backend/meson.build
 +++ b/src/backend/meson.build
 @@ -1,5 +1,6 @@
@@ -38,5 +38,5 @@ index 28c8e123..55037a6a 100644
  sources = files(
    'bacon-time-label.c',
 -- 
-2.17.0
+2.20.1
 

@@ -1,11 +1,11 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
-PYTHON_COMPAT=( python{3_4,3_5,3_6} )
-PYTHON_REQ_USE="threads"
+EAPI=7
+PYTHON_COMPAT=( python3_{6,7,8} )
+PYTHON_REQ_USE="threads(+)"
 
-inherit gnome-meson python-single-r1 vala
+inherit gnome.org gnome2-utils meson virtualx xdg python-single-r1
 if [[ ${PV} = 9999 ]]; then
 	SRC_URI=""
 	EGIT_REPO_URI="https://gitlab.gnome.org/GNOME/totem.git"
@@ -17,87 +17,72 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Videos"
 
 LICENSE="GPL-2+ LGPL-2+"
 SLOT="0"
-IUSE="cdr +introspection lirc nautilus +python test vala"
+IUSE="gtk-doc +python test"
 # see bug #359379
 REQUIRED_USE="
-	python? ( introspection ${PYTHON_REQUIRED_USE} )
+	python? ( ${PYTHON_REQUIRED_USE} )
 "
+RESTRICT="!test? ( test )"
 
 if [[ ${PV} = 9999 ]]; then
 	KEYWORDS=""
 else
-	KEYWORDS="~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~x86 ~x86-fbsd"
+	KEYWORDS="~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~x86"
 fi
 
-# FIXME:
-# Runtime dependency on gnome-session-2.91
-COMMON_DEPEND="
-	>=dev-libs/glib-2.43.4:2[dbus]
-	>=dev-libs/libpeas-1.1[gtk]
-	>=dev-libs/totem-pl-parser-3.10.1:0=[introspection?]
+DEPEND="
+	>=dev-libs/glib-2.43.4:2
+	>=x11-libs/gtk+-3.19.4:3[introspection]
+	>=media-libs/gstreamer-1.6.0:1.0
+	>=media-libs/gst-plugins-base-1.6.0:1.0[pango]
+	>=media-libs/gst-plugins-good-1.6.0:1.0
+	>=media-libs/grilo-0.3.0:0.3[playlist]
+	>=dev-libs/libpeas-1.1.0[gtk]
+	>=dev-libs/totem-pl-parser-3.10.1:0=[introspection]
 	>=media-libs/clutter-1.17.3:1.0[gtk]
 	>=media-libs/clutter-gst-2.99.2:3.0
 	>=media-libs/clutter-gtk-1.8.1:1.0
-	>=x11-libs/cairo-1.14
-	>=x11-libs/gdk-pixbuf-2.23.0:2
-	>=x11-libs/gtk+-3.19.4:3[introspection?]
-
-	>=media-libs/grilo-0.3.0:0.3[playlist]
-	>=media-libs/gstreamer-1.6.0:1.0
-	>=media-libs/gst-plugins-base-1.6.0:1.0[X,introspection?,pango]
-	media-libs/gst-plugins-good:1.0
-
-	x11-libs/libX11
-
 	gnome-base/gnome-desktop:3=
 	gnome-base/gsettings-desktop-schemas
+	>=x11-libs/cairo-1.14
+	x11-libs/gdk-pixbuf:2
+	>=dev-libs/gobject-introspection-1.54:=
 
-	cdr? (
-		>=dev-libs/libxml2-2.6:2
-		>=x11-libs/gtk+-3.19.4:3[X]
-	)
-	introspection? ( >=dev-libs/gobject-introspection-0.6.7:= )
-	lirc? ( app-misc/lirc )
-	nautilus? ( >=gnome-base/nautilus-2.91.3 )
 	python? (
 		${PYTHON_DEPS}
-		>=dev-python/pygobject-2.90.3:3[${PYTHON_USEDEP}] )
+		$(python_gen_cond_dep '
+			>=dev-python/pygobject-2.90.3:3[${PYTHON_MULTI_USEDEP}]
+		')
+	)
 "
-RDEPEND="${COMMON_DEPEND}
+RDEPEND="${DEPEND}
 	media-plugins/grilo-plugins:0.3
 	media-plugins/gst-plugins-meta:1.0
 	media-plugins/gst-plugins-taglib:1.0
 	x11-themes/adwaita-icon-theme
 	python? (
-		>=dev-libs/libpeas-1.1.0[python,${PYTHON_USEDEP}]
-		dev-python/pyxdg[${PYTHON_USEDEP}]
-		dev-python/dbus-python[${PYTHON_USEDEP}]
-		>=x11-libs/gtk+-3.5.2:3[introspection] )
+		x11-libs/pango[introspection]
+		>=dev-libs/libpeas-1.1.0[python,${PYTHON_SINGLE_USEDEP}]
+		$(python_gen_cond_dep '
+			dev-python/dbus-python[${PYTHON_MULTI_USEDEP}]
+		')
+	)
 "
-# libxml2+gdk-pixbuf required for glib-compile-resources
-DEPEND="${COMMON_DEPEND}
-	app-text/docbook-xml-dtd:4.5
-	app-text/yelp-tools
-	>=dev-libs/libxml2-2.6:2
-	>=dev-util/meson-0.44
-	>=dev-util/intltool-0.50.1
+BDEPEND="
+	dev-lang/perl
+	gtk-doc? ( >=dev-util/gtk-doc-1.14
+		app-text/docbook-xml-dtd:4.5 )
+	dev-util/glib-utils
+	dev-util/itstool
 	>=sys-devel/gettext-0.19.8
 	virtual/pkgconfig
 	x11-base/xorg-proto
-	vala? ( $(vala_depend) )
 "
-# docbook-xml-dtd is needed for user doc
+# perl for pod2man
 # Prevent dev-python/pylint dep, bug #482538
 
 PATCHES=(
-	# Fix some typos in meson.build files
-	"${FILESDIR}"/3.26-meson-fixes.patch
-	# Do not force all plugins
-	"${FILESDIR}"/3.26-control-plugins.patch
-	# Do not force pylint with USE=python
-	"${FILESDIR}"/3.26-skip-pylint-check.patch
-	# Allow disabling calls to gst-inspect (sandbox issue)
-	"${FILESDIR}"/3.26-gst-inspect-sandbox.patch
+	"${FILESDIR}"/3.34.1-gst-inspect-sandbox.patch # Allow disabling calls to gst-inspect (sandbox issue)
 )
 
 pkg_setup() {
@@ -105,45 +90,39 @@ pkg_setup() {
 }
 
 src_prepare() {
-	vala_src_prepare
-	gnome-meson_src_prepare
+	# Drop pointless samplepython plugin from build
+	sed -e '/samplepython/d' -i src/plugins/meson.build || die
+	xdg_src_prepare
 }
 
 src_configure() {
-	# Disabled: sample-python, sample-vala, zeitgeist-dp
-	# brasero-disc-recorder and gromit depend on GTK+ X11 backend and could be made optional
-	# if totem itself didn't depend on it
-	local plugins="apple-trailers,autoload-subtitles"
-	plugins+=",im-status,media-player-keys,ontop"
-	plugins+=",properties,recent,screensaver,screenshot"
-	plugins+=",skipto,variable-rate,vimeo"
-	use cdr && plugins+=",brasero-disc-recorder"
-	use lirc && plugins+=",lirc"
-	use nautilus && plugins+=",save-file"
-	use python && plugins+=",dbusservice,pythonconsole,opensubtitles"
-	use vala && plugins+=",rotation"
-	plugins+=",gromit"
-
-	# pylint is checked unconditionally, but is only used for make check
-	# appstream-util overriding necessary until upstream fixes their macro
-	# to respect configure switch
-	gnome-meson_src_configure \
-		-Denable-easy-codec-installation=yes \
-		-Denable-gtk-doc=false \
-		-Denable-introspection=$(usex introspection yes no) \
-		-Denable-nautilus=$(usex nautilus yes no) \
-		-Denable-python=$(usex python yes no) \
-		-Denable-vala=$(usex vala yes no) \
-	    -Dgst-inspect=false \
-		-Dwith-plugins=${plugins}
+	local emesonargs=(
+		-Denable-easy-codec-installation=yes
+		-Denable-python=$(usex python yes no)
+		-Dwith-plugins=all # in 3.34.1 only builtin and python plugins are left, and python is extra controlled by enable-python
+		$(meson_use gtk-doc enable-gtk-doc)
+		-Dgst-inspect=false
+	)
+	meson_src_configure
 }
 
 src_install() {
-	gnome-meson_src_install
+	meson_src_install
 	if use python ; then
-		local plugin
-		for plugin in dbusservice pythonconsole opensubtitles ; do
-			python_optimize "${ED}"usr/$(get_libdir)/totem/plugins/${plugin}
-		done
+		python_optimize "${ED}"/usr/$(get_libdir)/totem/plugins/
 	fi
+}
+
+pkg_postinst() {
+	xdg_pkg_postinst
+	gnome2_schemas_update
+}
+
+pkg_postrm() {
+	xdg_pkg_postrm
+	gnome2_schemas_update
+}
+
+src_test() {
+	virtx meson_src_test
 }
