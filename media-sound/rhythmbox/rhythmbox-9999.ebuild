@@ -1,9 +1,9 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
 GNOME2_LA_PUNT="yes"
-PYTHON_COMPAT=( python3_{4,5,6} )
+PYTHON_COMPAT=( python3_{6,7,8} )
 PYTHON_REQ_USE="xml"
 
 inherit eutils gnome2 python-single-r1 multilib virtualx
@@ -17,7 +17,8 @@ HOMEPAGE="https://wiki.gnome.org/Apps/Rhythmbox"
 LICENSE="GPL-2"
 SLOT="0"
 
-IUSE="cdr daap dbus gnome-keyring ipod libnotify lirc mtp nsplugin +python test +udev upnp-av"
+IUSE="cdr daap dbus gnome-keyring ipod libnotify lirc mtp +python test +udev upnp-av"
+RESTRICT="!test? ( test )"
 REQUIRED_USE="
 	ipod? ( udev )
 	mtp? ( udev )
@@ -29,7 +30,6 @@ if [[ ${PV} != 9999 ]]; then
 	KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 fi
 
-# FIXME: double check what to do with fm-radio plugin
 COMMON_DEPEND="
 	>=dev-libs/glib-2.38:2
 	>=dev-libs/libxml2-2.7.8:2
@@ -53,10 +53,12 @@ COMMON_DEPEND="
 	lirc? ( app-misc/lirc )
 	python? (
 		${PYTHON_DEPS}
-		>=dev-python/pygobject-3.0:3[${PYTHON_USEDEP}]
+		$(python_gen_cond_dep '
+			>=dev-python/pygobject-3.0:3[${PYTHON_MULTI_USEDEP}]
+		')
 	)
 	udev? (
-		virtual/libgudev:=
+		dev-libs/libgudev:=
 		ipod? ( >=media-libs/libgpod-0.7.92[udev] )
 		mtp? ( >=media-libs/libmtp-0.3 ) )
 "
@@ -70,7 +72,7 @@ RDEPEND="${COMMON_DEPEND}
 	media-plugins/gst-plugins-taglib:1.0
 	x11-themes/adwaita-icon-theme
 	python? (
-		>=dev-libs/libpeas-0.7.3[python,${PYTHON_USEDEP}]
+		>=dev-libs/libpeas-0.7.3[python,${PYTHON_SINGLE_USEDEP}]
 		net-libs/libsoup:2.4[introspection]
 		x11-libs/gdk-pixbuf:2[introspection]
 		x11-libs/gtk+:3[introspection]
@@ -83,7 +85,6 @@ RDEPEND="${COMMON_DEPEND}
 		>=media-plugins/grilo-plugins-0.3:0.3[upnp-av] )
 "
 DEPEND="${COMMON_DEPEND}
-	app-text/yelp-tools
 	dev-util/gtk-doc-am
 	>=dev-util/intltool-0.35
 	dev-util/itstool
@@ -97,13 +98,9 @@ pkg_setup() {
 }
 
 src_configure() {
-	# FIXME: bug???
-	export GST_INSPECT=/bin/true
-
 	# --enable-vala just installs the sample vala plugin, and the configure
 	# checks are broken, so don't enable it
 	gnome2_src_configure \
-		MOZILLA_PLUGINDIR=/usr/$(get_libdir)/nsbrowser/plugins \
 		VALAC=$(type -P true) \
 		--enable-mmkeys \
 		--disable-more-warnings \
@@ -112,7 +109,6 @@ src_configure() {
 		$(use_enable daap) \
 		$(use_enable libnotify) \
 		$(use_enable lirc) \
-		$(use_enable nsplugin browser-plugin) \
 		$(use_enable python) \
 		$(use_enable upnp-av grilo) \
 		$(use_with cdr brasero) \
