@@ -334,7 +334,6 @@ app-crypt/gcr
 app-crypt/seahorse
 app-crypt/seahorse-plugins
 app-crypt/libsecret
-gnome-base/libgnome-keyring
 gnome-base/gnome-keyring
 
 # Vala

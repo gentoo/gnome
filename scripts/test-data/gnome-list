@@ -32,7 +32,6 @@ app-text/gnome-spell
 dev-libs/liboobs
 dev-libs/totem-pl-parser
 dev-python/gdata
-gnome-base/libgnome-keyring
 gnome-base/libgtop
 gnome-extra/gtkhtml
 gnome-extra/libgsf
